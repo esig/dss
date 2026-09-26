@@ -199,49 +199,56 @@ public final class PAdESUtils {
 		}
 		byte[] signature = Utils.toHex(cmsSignedData).getBytes();
 
-		ByteArrayOutputStream temp = null;
 		try (DSSResourcesHandler resourcesHandler = resourcesHandlerBuilder.createResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
-			 InputStream is = toBeSignedDocument.openStream();
-			 BufferedInputStream bis = new BufferedInputStream(is)) {
+			 InputStream is = toBeSignedDocument.openStream()) {
 
 			final byte startSuspicion = '<';
 			final byte continueSuspicion = '0';
 
 			boolean suspicion = false;
 			boolean cmsPasted = false;
+			int zeros = 0;
 
-			int b;
-			while ((b = bis.read()) != -1) {
+			// NOTE: read by blocks, as per-byte read/write calls are costly on large documents
+			final byte[] buffer = new byte[8192];
+			int count;
+			while ((count = is.read(buffer)) != -1) {
+				int from = 0;
+				for (int i = 0; i < count; i++) {
+					byte b = buffer[i];
 
-				if (suspicion) {
-					if (continueSuspicion == b) {
-						temp.write(b);
-						if (signature.length == temp.size()) {
-							if (cmsPasted) {
-								throw new IllegalInputException("PDF document contains more than one empty signature!");
+					if (suspicion) {
+						if (continueSuspicion == b) {
+							from = i + 1;
+							if (signature.length == ++zeros) {
+								if (cmsPasted) {
+									throw new IllegalInputException("PDF document contains more than one empty signature!");
+								}
+								os.write(signature);
+								suspicion = false;
+								cmsPasted = true;
 							}
-							os.write(signature);
-							temp.close();
-							suspicion = false;
-							cmsPasted = true;
-						}
-						continue;
+							continue;
 
-					} else {
-						os.write(temp.toByteArray());
-						temp.close();
-						suspicion = false;
+						} else {
+							if (zeros > 0) {
+								byte[] temp = new byte[zeros];
+								Arrays.fill(temp, continueSuspicion);
+								os.write(temp);
+							}
+							suspicion = false;
+						}
+					}
+
+					if (startSuspicion == b) {
+						os.write(buffer, from, i + 1 - from);
+						from = i + 1;
+						zeros = 0;
+						suspicion = true;
 					}
 				}
-
-				os.write(b);
-
-				if (startSuspicion == b) {
-					temp = new ByteArrayOutputStream();
-					suspicion = true;
-				}
-
+				os.write(buffer, from, count - from);
 			}
 
 			if (!cmsPasted) {
@@ -253,11 +260,6 @@ public final class PAdESUtils {
 		} catch (IOException e) {
 			throw new DSSException(String.format(
 					"Unable to replace /Contents value within a toBeSigned document. Reason : %s", e.getMessage()), e);
-
-		} finally {
-			if (temp != null) {
-				Utils.closeQuietly(temp);
-			}
 		}
 	}
 

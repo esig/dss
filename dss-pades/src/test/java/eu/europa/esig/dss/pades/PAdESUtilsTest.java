@@ -40,6 +40,7 @@ import org.bouncycastle.cms.CMSSignedData;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -121,6 +122,35 @@ public abstract class PAdESUtilsTest {
 
         Exception exception = assertThrows(IllegalInputException.class, () -> PAdESUtils.replaceSignature(documentToBeSigned,
                 DSSASN1Utils.getDEREncoded(Utils.fromHex(hexEncodedCMSSignedData)), new InMemoryResourcesHandlerBuilder()));
+        assertEquals("PDF document contains more than one empty signature!", exception.getMessage());
+    }
+
+    @Test
+    void replaceSignatureAcrossBufferBoundariesTest() {
+        byte[] cmsSignedData = new byte[10000];
+        for (int i = 0; i < cmsSignedData.length; i++) {
+            cmsSignedData[i] = (byte) i;
+        }
+        String signature = Utils.toHex(cmsSignedData);
+        String placeholder = String.join("", Collections.nCopies(signature.length(), "0"));
+
+        // a zero run one byte shorter than the placeholder, then the placeholder, both longer than a read block
+        String prefix = "%PDF-1.7\n<0<00 <" + String.join("", Collections.nCopies(signature.length() - 1, "0")) + ">/Contents <";
+        String suffix = ">\n<00>\n%%EOF\n";
+
+        DSSDocument documentToBeSigned = new InMemoryDocument((prefix + placeholder + suffix).getBytes());
+        DSSDocument signedDocument = PAdESUtils.replaceSignature(documentToBeSigned, cmsSignedData, new InMemoryResourcesHandlerBuilder());
+        assertEquals(prefix + signature + suffix, new String(DSSUtils.toByteArray(signedDocument)));
+    }
+
+    @Test
+    void replaceSignatureWithTwoPlaceholdersAcrossBufferBoundariesTest() {
+        byte[] cmsSignedData = new byte[10000];
+        String placeholder = "<" + String.join("", Collections.nCopies(2 * cmsSignedData.length, "0")) + ">";
+
+        DSSDocument documentToBeSigned = new InMemoryDocument(("%PDF-1.7\n" + placeholder + placeholder + "\n%%EOF\n").getBytes());
+        Exception exception = assertThrows(IllegalInputException.class, () -> PAdESUtils.replaceSignature(documentToBeSigned,
+                cmsSignedData, new InMemoryResourcesHandlerBuilder()));
         assertEquals("PDF document contains more than one empty signature!", exception.getMessage());
     }
 
