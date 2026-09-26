@@ -49,8 +49,6 @@ import org.bouncycastle.asn1.ASN1Encodable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -275,62 +273,63 @@ public final class PAdESUtils {
 		final List<PdfByteRangeDocument> revisions = new ArrayList<>();
 
 		int position = 0;
-		ByteArrayOutputStream tempLine = null;
-		try (InputStream is = document.openStream();
-			 BufferedInputStream bis = new BufferedInputStream(is)) {
-			tempLine = new ByteArrayOutputStream();
-			int b;
-			while ((b = bis.read()) != -1) {
-				++position;
+		// line prefix compared to %%EOF
+		final byte[] line = new byte[PDF_EOF_STRING.length];
+		int lineLength = 0;
+		// end of the last %%EOF, with its line break
+		int eofPosition = 0;
+		// bytes still to check for a line break after %%EOF
+		int eofBytesToRead = 0;
+		try (InputStream is = document.openStream()) {
+			// NOTE: read by blocks, as per-byte read calls are costly on large documents
+			final byte[] buffer = new byte[8192];
+			int count;
+			while ((count = is.read(buffer)) != -1) {
+				for (int i = 0; i < count; i++) {
+					byte b = buffer[i];
+					++position;
 
-				tempLine.write(b);
-				byte[] stringBytes = tempLine.toByteArray();
-
-				if (Arrays.equals(PDF_EOF_STRING, stringBytes)) {
-					tempLine.close();
-					tempLine = new ByteArrayOutputStream();
-
-					int eofPosition = position;
-					int c = bis.read();
-					if (c != -1) {
-						++position;
-					}
-
-					if (DSSUtils.LINE_FEED == c) {
-						// if \n
-						++eofPosition;
-					} else if (DSSUtils.CARRIAGE_RETURN == c) {
-						// if \r
-						++eofPosition;
-
-						int d = bis.read();
-						if (d != -1) {
-							++position;
-						}
-						if (DSSUtils.LINE_FEED == d) {
-							// if \r\n
+					if (eofBytesToRead > 0) {
+						if (DSSUtils.LINE_FEED == b) {
+							// if \n or \r\n
 							++eofPosition;
+							eofBytesToRead = 0;
+						} else if (DSSUtils.CARRIAGE_RETURN == b && eofBytesToRead == 2) {
+							// if \r
+							++eofPosition;
+							eofBytesToRead = 1;
+							continue;
+						} else {
+							eofBytesToRead = 0;
 						}
+						revisions.add(new PdfByteRangeDocument(document, getTwoIntegersByteRange(0, eofPosition)));
+						continue;
 					}
 
-					revisions.add(new PdfByteRangeDocument(document, getTwoIntegersByteRange(0, eofPosition)));
+					if (lineLength < line.length) {
+						line[lineLength] = b;
+					}
+					++lineLength;
 
-				} else if (DSSUtils.isLineBreakByte((byte) b) || stringBytes.length > PDF_EOF_STRING.length) {
-					tempLine.close();
-					tempLine = new ByteArrayOutputStream();
+					if (lineLength == line.length && Arrays.equals(PDF_EOF_STRING, line)) {
+						lineLength = 0;
+						eofPosition = position;
+						eofBytesToRead = 2;
+
+					} else if (DSSUtils.isLineBreakByte(b) || lineLength > line.length) {
+						lineLength = 0;
+					}
 				}
+			}
 
+			if (eofBytesToRead > 0) {
+				revisions.add(new PdfByteRangeDocument(document, getTwoIntegersByteRange(0, eofPosition)));
 			}
 
 			return revisions;
 
 		} catch (IOException e) {
 			throw new DSSException("Unable to retrieve the last revision", e);
-
-		} finally {
-			if (tempLine != null) {
-				Utils.closeQuietly(tempLine);
-			}
 		}
 	}
 

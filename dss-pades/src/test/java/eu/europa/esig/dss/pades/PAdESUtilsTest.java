@@ -230,6 +230,22 @@ public abstract class PAdESUtilsTest {
     }
 
     @Test
+    void extractRevisionsAcrossBufferBoundariesTest() {
+        // %%EOF across the first 8 KiB block boundary, then \r as the last byte of the second block
+        String firstRevision = "%PDF-1.7\n" + String.join("", Collections.nCopies(8180, "a")) + "\n%%EOF\n";
+        String secondRevision = firstRevision + String.join("", Collections.nCopies(8181, "a")) + "\n%%EOF\r\n";
+        String thirdRevision = secondRevision + String.join("", Collections.nCopies(100, "a")) + "\n%%EOF\r";
+        String fourthRevision = thirdRevision + String.join("", Collections.nCopies(100, "a")) + "\n%%EOF\r";
+
+        List<PdfByteRangeDocument> revisions = PAdESUtils.extractRevisions(new InMemoryDocument(fourthRevision.getBytes()));
+        assertEquals(4, revisions.size());
+        assertEquals(firstRevision.length(), revisions.get(0).getByteRange().getLength());
+        assertEquals(secondRevision.length(), revisions.get(1).getByteRange().getLength());
+        assertEquals(thirdRevision.length(), revisions.get(2).getByteRange().getLength());
+        assertEquals(fourthRevision.length(), revisions.get(3).getByteRange().getLength());
+    }
+
+    @Test
     void getSignatureValueTest()  {
         DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/validation/PAdES-LT.pdf"));
         ByteRange byteRange = new ByteRange(new int[]{0, 92856, 111802, 50376});
