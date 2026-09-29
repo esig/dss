@@ -131,6 +131,9 @@ public final class DSSUtils {
 	private static final Pattern RFC3986_URI_PATTERN = Pattern.compile(
 			"^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?");
 
+	/** URI scheme regex defined in RFC 3986 (3.1) */
+	private static final Pattern RFC3986_SCHEME_PATTERN = Pattern.compile("^[A-Za-z][A-Za-z0-9+.-]*:");
+
 	/**
 	 * This class is a utility class and cannot be instantiated.
 	 */
@@ -984,7 +987,48 @@ public final class DSSUtils {
 			return fileURI;
 		}
 	}
-	
+
+	/**
+	 * This method encodes a document name (e.g. a filename of a detached document or of a container entry)
+	 * to be used as a URI reference (e.g. within a ds:Reference or asic:DataObjectReference element).
+	 * NOTE: Unlike {@link #encodeURI(String)}, the document name is considered as a relative path, therefore
+	 * the characters '#' and '?' are percent-encoded, as they are a part of the filename and not
+	 * the fragment or query delimiters. A document name defined as an absolute URI (i.e. starting with a scheme)
+	 * is encoded with {@link #encodeURI(String)}.
+	 *
+	 * @param documentName the document name to be encoded
+	 * @return the encoded result
+	 */
+	public static String encodeDocumentName(String documentName) {
+		if (documentName == null) {
+			return null;
+		}
+
+		if (RFC3986_SCHEME_PATTERN.matcher(documentName).lookingAt()) {
+			return encodeURI(documentName);
+		}
+
+		try {
+			// "./" prefix prevents a colon within the first segment from being interpreted as a scheme delimiter
+			String encodedPath = new URI(null, null, "./" + documentName, null, null).getRawPath().substring(2);
+			// a colon is not allowed within the first segment of a relative-path reference (see RFC 3986 (4.2))
+			int firstSegmentEnd = encodedPath.indexOf('/');
+			if (firstSegmentEnd == -1) {
+				firstSegmentEnd = encodedPath.length();
+			}
+			return encodedPath.substring(0, firstSegmentEnd).replace(":", "%3A") + encodedPath.substring(firstSegmentEnd);
+
+		} catch (URISyntaxException e) {
+			String errorMessage = "Unable to encode document name: {}. Reason {}. Original document name is returned.";
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(errorMessage, documentName, e.getMessage(), e);
+			} else {
+				LOG.warn(errorMessage, documentName, e.getMessage());
+			}
+			return documentName;
+		}
+	}
+
 	/**
 	 * Returns a message retrieved from an exception,
 	 * its cause message if the first is not defined,

@@ -487,6 +487,44 @@ class DSSUtilsTest {
 	}
 
 	@Test
+	void encodeDocumentName() {
+		assertNull(DSSUtils.encodeDocumentName(null));
+		assertEquals("", DSSUtils.encodeDocumentName(""));
+
+		// Simple names
+		assertEquals("helloworld.txt", DSSUtils.encodeDocumentName("helloworld.txt"));
+		assertEquals("Hello%20world.txt", DSSUtils.encodeDocumentName("Hello world.txt"));
+		assertEquals("Hello+world.txt", DSSUtils.encodeDocumentName("Hello+world.txt"));
+		assertEquals("hello/world%20wide", DSSUtils.encodeDocumentName("hello/world wide"));
+		assertEquals("hello%2520world", DSSUtils.encodeDocumentName("hello%20world"));
+
+		// '#' and '?' are a part of the filename, not fragment or query delimiters
+		assertEquals("file%20%23%20name.txt", DSSUtils.encodeDocumentName("file # name.txt"));
+		assertEquals("doc.xml%23sig", DSSUtils.encodeDocumentName("doc.xml#sig"));
+		assertEquals("%23helloworld", DSSUtils.encodeDocumentName("#helloworld"));
+		assertEquals("what%3F.txt", DSSUtils.encodeDocumentName("what?.txt"));
+		assertEquals("folder/a%3Fb%23c.txt", DSSUtils.encodeDocumentName("folder/a?b#c.txt"));
+		assertEquals("012éù*34ä5µ£%206789~%23%25&()+=%60%20@%7B%5B%5D%7D'.txt",
+				DSSUtils.encodeDocumentName("012éù*34ä5µ£ 6789~#%&()+=` @{[]}'.txt"));
+
+		// Colon within the first segment of a relative path
+		assertEquals("a%20b%3Ac.txt", DSSUtils.encodeDocumentName("a b:c.txt"));
+		assertEquals("1%3A2.txt", DSSUtils.encodeDocumentName("1:2.txt"));
+		assertEquals("dir/a:b%23c.txt", DSSUtils.encodeDocumentName("dir/a:b#c.txt"));
+
+		// Unicode letters are kept
+		assertEquals("привет%20%231.xml", DSSUtils.encodeDocumentName("привет #1.xml"));
+
+		// Illegal characters requiring encoding
+		assertEquals("a%3Cb%3E", DSSUtils.encodeDocumentName("a<b>"));
+		assertEquals("x%7Cy", DSSUtils.encodeDocumentName("x|y"));
+
+		// Absolute URIs are processed as URIs
+		assertEquals("https://example.com/hello%20world#frag", DSSUtils.encodeDocumentName("https://example.com/hello world#frag"));
+		assertEquals("urn:oid:1.2.3", DSSUtils.encodeDocumentName("urn:oid:1.2.3"));
+	}
+
+	@Test
 	void testRSASSAPSS() {
 		CertificateToken token = DSSUtils.loadCertificate(this.getClass().getResourceAsStream("/BA-QC-Wurzel-CA-2_PN.txt"));
 		assertTrue(token.isSelfSigned());
