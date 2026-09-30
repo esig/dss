@@ -218,10 +218,10 @@ sigPId = {
 DigAlgVal = [ hashAlg: (int / tstr), hashValue: bstr ]
 
 SigPQual = {
-     ? 1 ^=> #6.32(tstr) //    ;spURI: URL where a copy of the signature policy document
+     ? 1 => #6.32(tstr) //    ;spURI: URL where a copy of the signature policy document
                               ;can be obtained
-     ? 2 ^=> SpUserNotice//  ;spUserNotice: Info displayed when signature is validated
-     ? 3 ^=> SpDesc //   ;spDSpec: identifier of the technical specification that defines
+     ? 2 => SpUserNotice//  ;spUserNotice: Info displayed when signature is validated
+     ? 3 => SpDSpec //   ;spDSpec: identifier of the technical specification that defines
                         ;the syntax used for producing the signature policy document
     *label => value   ;otherQuals: extension point for qualifiers not specified in
                       ;the present document. Reminder: label is defined in clause 5.2.5
@@ -238,7 +238,7 @@ NoticeRef = {
     2 => [+uint] ;noticeNumbers: the notice numbers identifying textual statements
 }
 
-SpDSpec = obId
+SpDSpec = oId
 
 sigD = {
     1 => #6.32(tstr), ;mId: URI identifying the mechanism used for referencing and processing each
