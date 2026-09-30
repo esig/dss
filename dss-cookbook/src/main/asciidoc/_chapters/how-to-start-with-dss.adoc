@@ -345,6 +345,7 @@ specs-lote-json:: ETSI TS 119 602 JSON schema for List of Trusted Entities (<<R3
 ===== CBOR validation modules
 
 dss-cbor-common:: Utils for working with CBOR-based content.
+specs-cb-ades:: CDDL Schemas based on the ETSI TS 119 152-1 specifications (<<R31>>).
 specs-mdoc:: CDDL Schemas based on the ISO/IEC 18013-5 specifications (<<R38>>).
 
 ===== Utils modules

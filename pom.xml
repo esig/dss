@@ -111,6 +111,7 @@
 		<module>specs-jws</module>
 		<module>specs-jades</module>
 		<module>specs-lote-json</module>
+		<module>specs-cb-ades</module>
 		<module>specs-mdoc</module>
 		<module>dss-policy-jaxb</module>
 		<module>dss-policy-crypto-xml</module>
@@ -212,7 +213,7 @@
 
 		<module>dss-jacoco-coverage</module>
 		<module>dss-bom</module>
-	</modules>
+    </modules>
 
 	<build>
 		<plugins>
@@ -519,6 +520,11 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>specs-lote-json</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>specs-cb-ades</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

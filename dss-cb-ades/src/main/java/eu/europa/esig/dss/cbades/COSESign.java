@@ -168,6 +168,11 @@ public class COSESign implements COSESignStructure {
 
     @Override
     public byte[] serialize() {
+        return CBORUtils.serializeCbor(toCBORValue());
+    }
+
+    @Override
+    public CBORValue toCBORValue() {
         CBORValue coseSign = CBOR.array()
                 .add(getProtectedHeader().asByteString())
                 .add(getUnprotectedHeader().getValue())
@@ -190,7 +195,7 @@ public class COSESign implements COSESignStructure {
             coseSign = CBOR.tag(getContext().getTag(), coseSign);
         }
 
-        return CBORUtils.serializeCbor(coseSign);
+        return coseSign;
     }
 
     @Override

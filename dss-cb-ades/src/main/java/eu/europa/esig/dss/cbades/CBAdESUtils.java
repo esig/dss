@@ -22,6 +22,7 @@ package eu.europa.esig.dss.cbades;
 
 import eu.europa.ec.digit.cddl4j.cbor.CBOR;
 import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
+import eu.europa.esig.cbades.CBAdESSchemaUtils;
 import eu.europa.esig.dss.cbades.cbor.CBORArray;
 import eu.europa.esig.dss.cbades.cbor.CBORMap;
 import eu.europa.esig.dss.cbades.cbor.CBORObject;
@@ -608,6 +609,20 @@ public class CBAdESUtils {
                 // counter signatures
                 return cose.getSignerSignature();
         }
+    }
+
+    /**
+     * Validates COSE signature against the CB-AdES CDDL definition
+     *
+     * @param cose {@link CBORSignature} to be validated
+     * @return a list of errors if validation fails, empty list if succeeds
+     */
+    public static List<String> validateAgainstCBAdESSchema(CBORSignature cose) {
+        COSEStructure coseStructure = cose.getCoseSignStructure() != null ? cose.getCoseSignStructure() : cose.getSignerSignature();
+        if (cose.getContext().isCounterSignature() || cose.getContext().isCounterSignatureV2()) {
+            return CBAdESSchemaUtils.getInstance().validateAgainstSchema(coseStructure.toCBORValue(), CBAdESSchemaUtils.COSE_COUNTER_SIGNATURE);
+        }
+        return CBAdESSchemaUtils.getInstance().validateAgainstSchema(coseStructure.toCBORValue(), CBAdESSchemaUtils.COSE_MESSAGES);
     }
 
 }

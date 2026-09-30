@@ -7,6 +7,7 @@ import eu.europa.ec.digit.cddl4j.validator.validation.ValidationError;
 import eu.europa.ec.digit.cddl4j.validator.validation.ValidationResult;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -112,10 +113,55 @@ public abstract class CBORSchemaAbstractUtils {
         if (validationResult != null && !validationResult.isValid()) {
             List<ValidationError> validationErrors = validationResult.getErrors();
             if (validationErrors != null && !validationErrors.isEmpty()) {
+                validationErrors = filterValidationErrors(validationErrors, false);
                 return validationErrors.stream().map(e -> toString(e, rootRule)).collect(Collectors.toList());
             }
         }
         return Collections.emptyList();
+    }
+
+    /**
+     * This method filters validation messages in a way to return an error cause except of the root choice error,
+     * in order to get a more relevant information of the error
+     *
+     * @param validationErrors a list of {@link ValidationError}s
+     * @param cause if the current list of errors are the cause
+     * @return a list of filtered {@link ValidationError}s
+     */
+    protected List<ValidationError> filterValidationErrors(List<ValidationError> validationErrors, boolean cause) {
+        List<ValidationError> filteredErrors = new ArrayList<>();
+        for (ValidationError validationError : validationErrors) {
+            if (validationError.getMessage().contains("alternative (") || validationError.getMessage().contains("choice (")) {
+                List<ValidationError> causeErrors = filterValidationErrors(validationError.getCauses(), true);
+                if (causeErrors != null && !causeErrors.isEmpty()) {
+                    if (filteredErrors.isEmpty()) {
+                        filteredErrors.addAll(causeErrors);
+                    } else {
+                        if (containsAny(filteredErrors, causeErrors)) {
+                            filteredErrors = intersection(filteredErrors, causeErrors);
+                        } else {
+                            filteredErrors.add(validationError);
+                        }
+                    }
+                    continue;
+                }
+            }
+            if (cause) {
+                if ("/".equals(validationError.getInstancePath())) {
+                    continue;
+                }
+            }
+            filteredErrors.add(validationError);
+        }
+        return filteredErrors;
+    }
+
+    private boolean containsAny(List<ValidationError> originalList, List<ValidationError> listToCompare) {
+        return originalList.stream().anyMatch(listToCompare::contains);
+    }
+
+    private List<ValidationError> intersection(List<ValidationError> originalList, List<ValidationError> listToCompare) {
+        return originalList.stream().distinct().filter(listToCompare::contains).collect(Collectors.toList());
     }
 
     /**

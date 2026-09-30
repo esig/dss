@@ -89,6 +89,11 @@ public class COSESign1 extends COSESignature implements COSESignStructure {
 
     @Override
     public byte[] serialize() {
+        return CBORUtils.serializeCbor(toCBORValue());
+    }
+
+    @Override
+    public CBORValue toCBORValue() {
         CBORValue coseSign1 = CBOR.array(4)
                 .add(getProtectedHeader().asByteString())
                 .add(getUnprotectedHeader().getValue())
@@ -98,7 +103,7 @@ public class COSESign1 extends COSESignature implements COSESignStructure {
         if (tagged) {
             coseSign1 = CBOR.tag(getContext().getTag(), coseSign1);
         }
-        return CBORUtils.serializeCbor(coseSign1);
+        return coseSign1;
     }
 
     @Override

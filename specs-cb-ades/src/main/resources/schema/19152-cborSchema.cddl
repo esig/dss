@@ -1,0 +1,455 @@
+; RFC 9052 definitions
+COSE_Messages = COSE_Untagged_Message / COSE_Tagged_Message
+
+COSE_Untagged_Message = COSE_Sign / COSE_Sign1 /
+    COSE_Encrypt / COSE_Encrypt0 /
+    COSE_Mac / COSE_Mac0
+
+COSE_Tagged_Message = COSE_Sign_Tagged / COSE_Sign1_Tagged /
+    COSE_Encrypt_Tagged / COSE_Encrypt0_Tagged /
+    COSE_Mac_Tagged / COSE_Mac0_Tagged
+
+; NOTE: CDDL does not allow extension, therefore we replace the original Headers with CB-AdES definition
+;Headers = (
+;    protected : empty_or_serialized_map,
+;    unprotected : header_map
+;)
+
+Headers = CBAdES_Headers
+
+header_map = {
+    Generic_Headers,
+    * label => values
+}
+
+empty_or_serialized_map = bstr .cbor header_map / bstr .size 0
+
+Generic_Headers = (
+    ? 1 => int / tstr,  ; algorithm identifier
+    ? 2 => [+label],    ; criticality
+    ? 3 => tstr / int,  ; content type
+    ? 4 => bstr,        ; key identifier
+    ? ( 5 => bstr //    ; IV
+        6 => bstr )     ; Partial IV
+)
+
+COSE_Sign_Tagged = #6.98(COSE_Sign)
+
+COSE_Sign = [
+    Headers,
+    payload : bstr / nil,
+    signatures : [+ COSE_Signature]
+]
+
+COSE_Signature =  [
+    Headers,
+    signature : bstr
+]
+
+COSE_Sign1_Tagged = #6.18(COSE_Sign1)
+
+COSE_Sign1 = [
+    Headers,
+    payload : bstr / nil,
+    signature : bstr
+]
+
+Sig_structure = [
+    context : "Signature" / "Signature1",
+    body_protected : empty_or_serialized_map,
+    ? sign_protected : empty_or_serialized_map,
+    external_aad : bstr,
+    payload : bstr
+]
+
+COSE_Encrypt_Tagged = #6.96(COSE_Encrypt)
+
+COSE_Encrypt = [
+    Headers,
+    ciphertext : bstr / nil,
+    recipients : [+COSE_recipient]
+]
+
+COSE_recipient = [
+    Headers,
+    ciphertext : bstr / nil,
+    ? recipients : [+COSE_recipient]
+]
+
+COSE_Encrypt0_Tagged = #6.16(COSE_Encrypt0)
+
+COSE_Encrypt0 = [
+    Headers,
+    ciphertext : bstr / nil,
+]
+
+Enc_structure = [
+    context : "Encrypt" / "Encrypt0" / "Enc_Recipient" /
+        "Mac_Recipient" / "Rec_Recipient",
+    protected : empty_or_serialized_map,
+    external_aad : bstr
+]
+
+COSE_Mac_Tagged = #6.97(COSE_Mac)
+
+COSE_Mac = [
+   Headers,
+   payload : bstr / nil,
+   tag : bstr,
+   recipients : [+COSE_recipient]
+]
+
+COSE_Mac0_Tagged = #6.17(COSE_Mac0)
+
+COSE_Mac0 = [
+   Headers,
+   payload : bstr / nil,
+   tag : bstr,
+]
+
+MAC_structure = [
+     context : "MAC" / "MAC0",
+     protected : empty_or_serialized_map,
+     external_aad : bstr,
+     payload : bstr
+]
+
+COSE_Key = {
+    1 => tstr / int,          ; kty
+    ? 2 => bstr,              ; kid
+    ? 3 => tstr / int,        ; alg
+    ? 4 => [+ (tstr / int) ], ; key_ops
+    ? 5 => bstr,              ; Base IV
+    * label => values
+}
+
+COSE_KeySet = [+COSE_Key]
+
+label = int / tstr
+values = any
+
+; ETSI TS 119 152-1 v1.1.1 definitions
+
+CBAdES_Headers = (
+    protected : bstr .cbor CBAdES_Signed_Headers,
+    unprotected : CBAdES_Unprotected_Headers
+)
+
+CBAdES_Signed_Headers = {
+    Generic_Headers,
+    RFC_9360_Headers,
+    CWT_Claim_header,
+    ETSI_Signed_Headers,
+    * label => values
+}
+
+CBAdES_Unprotected_Headers = {
+    ? 268 ^=> uHeaders,
+    * label => values
+}
+
+; ETSI TS 119 152-1 v1.1.1 signed headers
+
+x5ts_l = 261
+srCms_l = 262
+sigPl_l = 263
+srAts_l = 264
+adoTst_l = 265
+sigPId_l = 266
+sigD_l = 267
+
+ETSI_Signed_Headers = (
+    ? 33 ^=> x5chain, ;X.509 cert path or signing certificate
+    ? x5ts_l ^=> x5ts, ;Reference to signing certificate / certs in cert path
+    ? srCms_l ^=> srCms, ;Signer commitments
+    ? sigPl_l ^=> sigPl, ;Signature production place
+    ? srAts_l ^=> srAts, ;Signer attributes
+    ? adoTst_l ^=> adoTst, ;COSE payload time-stamp
+    ? sigPId_l ^=> sigPId, ;Signature Policy Identifier
+    ? sigD_l ^=> sigD ;Detached COSE Payload reference data
+)
+
+x5ts = [2*x5t: COSE_CertHash]
+
+srCms = [+SrCm]
+SrCm = {
+    1 => oId, ;commId the commitment identifier: an oId data type
+    ? 2 => [+any] ;commQuals: qualifiers
+}
+
+sigPl = {
+    ? 1 => tstr, ; addressCountry
+    ? 2 => tstr, ; addressLocality
+    ? 3 => tstr, ; addressRegion
+    ? 4 => tstr, ; postOfficeBoxNumber
+    ? 5 => tstr, ; postalCode
+    ? 6 => tstr, ; streetAddress
+}
+
+srAts = {
+    ? 1 => CertifiedAttrs, ;certified: Certified signer attributes
+    ? 2 => AttrArrays, ; signedAssertions: Signed assertions for signer
+    ? 3 => AttrArrays ; claimed: Claimed signer attributes
+}
+CertifiedAttrs = [ + CertifiedAttr]
+CertifiedAttr = {CertifiedAttrChoice}
+CertifiedAttrChoice = (
+    1 => pkiObj // ;x509AttrCert: encapsulates a X.509 attribute certificate
+    2 => pkiObj  ; otherAttrCert: encapsulates another type of attribute certificate
+)
+AttrArrays = [+NotCertifiedItem]
+NotCertifiedItem = [
+    mediaType : tstr, ;String identifying the media type of claimed attributes or signed
+                      ; assertions
+    *any ; the not certified item
+]
+
+adoTst = tstContainer
+
+sigPId = {
+    1 => oId, ;id: instance of oId type identifying the signature policy
+    2 => DigAlgVal, ;digAlgVal: digest algorithm and value of the signature policy
+                    ;document
+    ? 3 => bool .default false, ;digPSp: indicates whether the digest has been computed according to
+                                ;some spec, default value: false
+    ? 4 => [+SigPQual] ;sigPQuals: signature policy qualifiers
+}
+
+DigAlgVal = [ hashAlg: (int / tstr), hashValue: bstr ]
+
+SigPQual = {
+     ? 1 ^=> #6.32(tstr) //    ;spURI: URL where a copy of the signature policy document
+                              ;can be obtained
+     ? 2 ^=> SpUserNotice//  ;spUserNotice: Info displayed when signature is validated
+     ? 3 ^=> SpDesc //   ;spDSpec: identifier of the technical specification that defines
+                        ;the syntax used for producing the signature policy document
+    *label => value   ;otherQuals: extension point for qualifiers not specified in
+                      ;the present document. Reminder: label is defined in clause 5.2.5
+                      ; either as an uint or a tstr, and value is defined as any.
+}
+
+SpUserNotice = {
+     ? 1 => NoticeRef, ; noticeRef: User notice and references
+     ? 2 => tstr   ;explText: notice text to be displayed
+}
+
+NoticeRef = {
+    1 => tstr, ;org: the name of the organization
+    2 => [+uint] ;noticeNumbers: the notice numbers identifying textual statements
+}
+
+SpDSpec = obId
+
+sigD = {
+    1 => #6.32(tstr), ;mId: URI identifying the mechanism used for referencing and processing each
+                      ;referenced data object
+    2 => [+tstr], ;pars: References to data objects as per the mechanism identified by mId
+    ? 3 => (int / tstr) ;hashM: Digest algorithm identifier
+    ? 4 => [+bstr], ;hashV: Digest values of referenced data objects as per algorithm identified by
+                    ;hashM
+    ? 5 => [+tstr] ;ctys: Indication of the content type of each referenced object
+}
+
+CWT_Claim_header = (
+  ? 15 ^=> CWT-Claims
+)
+
+RFC_9360_Headers = (
+    ? 32 ^=> COSE_X509, ; x5bag
+    ? 33 ^=> COSE_X509, ; x5chain
+    ? 34 ^=> COSE_CertHash, ; x5t
+    ? 35 ^=> uri ; x5u
+)
+
+
+; ETSI TS 119 152-1 v1.1.1 unsigned headers
+
+uHeaders_l = 268
+sigTst_l = 1
+valData_l = 2
+arcTst_l = 3
+refs_l = 4
+sigRTst_l = 5
+rfsTst_l = 6
+sigPSt_l = 7
+
+uHeaders = [+bstr .cbor UHeaderInstance] ;an array of CBOR byte strings each on encapsulating
+                                         ;one instance of UHeaderInstance
+UHeaderInstance = {
+    sigTst_l ^=> sigTst // ;Signature time-stamp OR
+    valData_l ^=> valData //    ;Validation data (certificate values and revocation data) OR
+    arcTst_l ^=> arcTst // ;Archive-time-stamp OR
+    refs_l ^=> refs // ;References to certificates and revocation data OR
+    sigRTst_l ^=> sigRTst // ;Signature and references time-stamp OR
+    rfsTst_l ^=> rfsTst // ;References only time-stamp OR
+    sigPSt_l^ => sigPSt // ; Signature Policy Store OR
+    11 ^=> COSE_Countersignature /  ;full counter signature as specified in IETF RFC 9338
+            [+COSE_Countersignature] //
+    12 ^=> COSE_Countersignature0 // ;abbreviated counter signature as specified in IETF RFC 9338
+    33 ^=> bstr / [2*certs:bstr] // ;x5chain for the signing certificate
+    *label => value ;other additional unsigned attributes not specified in the
+                    ;present document
+}
+
+sigPSt = {
+    1 => DocOrLocalURI, ;docOrLocalUri: either the signature policy document itself or a URI
+                        ;referene to it
+    ?2 => oId   ;spDSpec: identifier of the technical specification defining the syntax
+                ;of the signature policy
+}
+
+DocOrLocalURI = {
+    1 => bstr //  ;sigPolDoc: The signature policy document itself
+    2 => #6.32(tstr), ;sigPolLocalURI: a local URI to the signature policy document
+}
+
+sigTst = tstContainer
+
+valData = {
+    ? 1 => xVals, ;xVals: DER-encoded encapsulated X.509 certificates or other
+                  ;encapsulated certificates
+    ? 2 => rVals  ;rVals: validation material
+}
+xVals = [
+    +X509OrOther
+]
+X509OrOther = {
+   1 => pkiOb, // ; x509Cert: DER-encoded X.509 certificate encapsulated in an instance
+                  ;of pkiOb type
+   2 => pkiOb  ; otherCert: Other type of certificate encoded and encapsulated in an instance
+               ;of pkiOb type
+}
+
+rVals = {
+    ? 1 => [+pkiOb], ;crlVals: array of CRLs encapsulated in an instance of pkiOb type
+    ? 2 => [+pkiOb], ;ocspVals: array of DER-encoded OCSPResponse encapsulated in an instance
+                     ;of pkiOb type
+    ? 3 => [+pkiOb] ;otherVals: other revocation values encoded and encapsulated in
+                    ; an instance of pkiOb type
+}
+
+arcTst = tstContainer
+
+; ETSI TS 119 152-1 v1.1.1 generic definitions
+
+oId = {
+    1 => #6.32(tstr),
+    ? 2 => tstr,
+    ? 3 => [
+        +ref: #6.32(tstr)
+      ]
+}
+
+pkiOb = {
+    1 => bstr, ;val: CBOR byte string encapsulating the encoded PKI object
+    ? 2 => #6.32(tstr), ;encoding: an URI identifying the encoding
+    ? 3 => #6.32(tstr) ;specRef: an URI identifying the specification of the
+                       ;encapsulated PKI object
+}
+
+tstContainer = {
+    1 => [+TstToken];tstTokens: CBOR array containing one or more time-stamp tokens
+}
+
+TstToken = {
+    1 : bstr, ;val: Encoded time-stamp token encapsulated in a CBOR byte string
+    ? 2 => tstr, ;type: String identifying the type of time-stamp token
+    ? 3 => #6.32(tstr), ;encoding: URI identifying the type of encoding
+    ? 4 => #6.32(tstr) ;specRef: a URI pointing to the reference where
+                       ;the time-stamp token is defined
+}
+
+
+; ETSI TS 119 152-1 v1.1.1 additional components
+
+refs = {
+    ? 1 => xRefs, ; xRefs: references to certificates
+    ? 2 => rRefs ; rRefs: references to revocation data
+}
+
+xRefs = [+CertId]
+
+CertId = {
+    1 => COSE_CertHash, ;x5t: the digest algorithm identifier and value
+    ? 2 => int / tstr / bstr, ;kid: optional key identifier
+    ? 3 => #6.32 (tstr) ;x5u: URI pointing to X.509 certificate
+}
+
+rRefs = {
+    ? 1 => [+CRLRef], ;crlRefs: array of references to CRLs
+    ? 2 => [+OCSPRef], ;ocspRefs: array of references to OCSP responses
+    ? 3 => [+any]  ;otherRefs: array of references to OCSP responses
+}
+
+CRLRef = {
+    1 => DigAlgVal, ;digAlgVal: digest algorithm and value of DER-encoded CRL.
+    ? 2 => CRLId ;crlId: identifier of the CRL
+}
+
+CRLId = {
+    1 => bstr, ;issuer: the DER-encoded issuer of the CRL
+    2 => #6.0 (tstr), ;issueTime: the date and time of issuance
+    ? 3 => uint, ;number: the issuance number
+    ? 4 => #6.32 (tstr) ;uri: an URI pointing to the CRL (hint)
+}
+
+OCSPRef = {
+    1 => DigAlgVal, ;digAlgVal: digest algorithm and value of the OCSP response
+    2 => OCSPId ;ocspId: identifier of the OCSP response
+}
+
+OCSPId = {
+    1 => ResponderIdChoice, ;responderChoice: a choice for identifying the responder
+    2 => #6.0 (tstr),  ;producedAt: same time as the time indicated by the ProducedAt
+                       ;field of the referenced OCSP response
+    ? 3 => #6.32 (tstr) ;uri: an URI pointing to the OCSP response (hint)
+}
+
+ResponderIdChoice = (
+    1 => bstr // ;responderIdByName: the name of the responder wrapped in a CBOR byte string
+    2 => bstr ;responderIdByKey: the key of the responder wrapped in a CBOR byte string
+)
+
+sigRTst = tstContainer
+
+rfsTst = tstContainer
+
+; RFC 9360 COSE : Header Parameters for Carrying and Referencing X.509 Certificates
+
+COSE_X509 = bstr / [ 2*certs: bstr ]
+COSE_CertHash = [ hashAlg: (int / tstr), hashValue: bstr ]
+
+
+; RFC 9338 COSE : Countersignatures
+
+COSE_Countersignature_start = COSE_Countersignature_Tagged / COSE_Countersignature_Internal_Types
+
+COSE_Countersignature_Internal_Types = COSE_Countersignature / COSE_Countersignature0
+
+COSE_Countersignature_Tagged = #6.19(COSE_Countersignature)
+COSE_Countersignature = COSE_Signature
+
+COSE_Countersignature0 = bstr
+
+
+; RFC 8392 CWT
+
+iat_header = (
+  ? 6 => COSE_Countersignature0
+)
+
+; RFC 9597 CWT : Claims in COSE Headers
+
+CWT-Claims = {
+ ? 1 ^=> tstr, ; iss
+ ? 2 ^=> tstr, ; sub
+ ? 3 ^=> tstr, ; aud
+ ? 4 ^=> int / float, ; exp
+ ? 5 ^=> int / float, ; nbf
+ ? 6 ^=> int / float, ; iat
+ ? 7 ^=> bstr, ; jti
+ * Claim-Label => any
+}
+
+Claim-Label = int / text
+

@@ -41,7 +41,7 @@ class MdocDeviceResponseUtilsTest {
 
         List<String> errors = mdocDeviceResponseUtils.validateAgainstSchema(is);
         assertFalse(errors.isEmpty());
-        assertEquals(2, errors.size());
+        assertEquals(2, errors.size(), errors.toString());
         assertTrue(errors.stream().anyMatch(m -> m.contains("version")));
         assertTrue(errors.stream().anyMatch(m -> m.contains("{deviceSignature: DeviceSignature} / {deviceMac: DeviceMac}")));
     }

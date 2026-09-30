@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.cbades;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.enumerations.COSESignatureType;
 
 /**
@@ -41,5 +42,12 @@ public interface COSEStructure {
      * @return {@link COSESignatureType}
      */
     COSESignatureType getContext();
+
+    /**
+     * Serialized the current COSE counter signature structure to a CBOR Value
+     *
+     * @return {@link eu.europa.ec.digit.cddl4j.cbor.CBORValue}
+     */
+    CBORValue toCBORValue();
 
 }

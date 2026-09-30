@@ -144,12 +144,17 @@ public class COSESignature implements COSEStructure {
 
     @Override
     public byte[] serialize() {
+        return CBORUtils.serializeCbor(toCBORValue());
+    }
+
+    @Override
+    public CBORValue toCBORValue() {
         CBORValue cborValue = CBOR.array(3)
                 .add(protectedHeader.asByteString())
                 .add(unprotectedHeader.getValue())
                 .add(signature)
                 .value();
-        return CBORUtils.serializeCbor(cborValue);
+        return cborValue;
     }
 
     @Override

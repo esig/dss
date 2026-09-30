@@ -1190,6 +1190,15 @@ public class CBAdESSignature extends DefaultAdvancedSignature {
     }
 
     @Override
+    protected List<String> validateStructure() {
+        List<String> validationErrors = CBAdESUtils.validateAgainstCBAdESSchema(cose);
+        if (Utils.isCollectionNotEmpty(validationErrors)) {
+            LOG.warn("Error(s) occurred during the CDDL schema validation : {}", validationErrors);
+        }
+        return validationErrors;
+    }
+
+    @Override
     public String getDAIdentifier() {
         // not applicable for CB-AdES
         return null;
