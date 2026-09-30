@@ -186,10 +186,8 @@ public class ReferenceProcessor {
                 }
                 String uri = dssReference.getUri();
                 if (uri != null) {
-                    if (isDocumentNameReference(dssReference)) {
-                        uri = DSSUtils.encodeDocumentName(uri);
-                    } else if (!DSSXMLUtils.isSameDocumentReference(uri)) {
-                        uri = DSSUtils.encodeURI(uri);
+                    if (!DSSXMLUtils.isSameDocumentReference(uri)) {
+                        uri = dssReference.isEncodeDocumentName() ? DSSUtils.encodeDocumentName(uri) : DSSUtils.encodeURI(uri);
                     }
                     referenceDom.setAttribute(XMLDSigAttribute.URI.getAttributeName(), uri);
                 }
@@ -207,18 +205,6 @@ public class ReferenceProcessor {
                 DSSXMLUtils.incorporateDigestValue(referenceDom, base64EncodedDigestBytes, namespace);
             }
         }
-    }
-
-    /**
-     * Checks whether the reference URI is defined by the name of the referenced document (e.g. a detached file),
-     * in which case the URI shall be encoded as a filename and not as a URI reference (e.g. '#' is not a fragment)
-     *
-     * @param dssReference {@link DSSReference} to check
-     * @return TRUE if the URI represents a name of the referenced document, FALSE otherwise
-     */
-    private boolean isDocumentNameReference(DSSReference dssReference) {
-        DSSDocument contents = dssReference.getContents();
-        return contents != null && Utils.isStringNotEmpty(contents.getName()) && contents.getName().equals(dssReference.getUri());
     }
 
 }

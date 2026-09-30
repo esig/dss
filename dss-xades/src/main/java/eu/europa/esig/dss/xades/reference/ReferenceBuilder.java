@@ -240,6 +240,8 @@ public class ReferenceBuilder {
 		reference.setId(referenceIdProvider.getReferenceId());
 		if (Utils.isStringNotEmpty(document.getName())) {
 			reference.setUri(document.getName());
+			// the URI is a document name, therefore all special characters (e.g. '#') are a part of the name
+			reference.setEncodeDocumentName(true);
 		}
 		reference.setContents(document);
 		reference.setDigestMethodAlgorithm(digestAlgorithm);
