@@ -29,6 +29,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,6 +39,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -121,6 +123,32 @@ class CBAdESCoseSignNestedCounterSignatureArrayTest extends AbstractCBAdESTestVa
         assertTrue(rootSignatureFound);
         assertTrue(counterSignatureFound);
         assertTrue(nestedCounterSignatureFound);
+    }
+
+    @Override
+    protected void checkStructureValidation(DiagnosticData diagnosticData) {
+        List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+        assertEquals(4, signatures.size());
+
+        int masterSigCounter = 0;
+        int counterSigCounter = 0;
+        for (SignatureWrapper signatureWrapper : signatures) {
+            if (!signatureWrapper.isCounterSignature()) {
+                assertFalse(signatureWrapper.isStructuralValidationValid());
+                assertFalse(Utils.isCollectionEmpty(signatureWrapper.getStructuralValidationMessages()));
+                assertEquals(1, Utils.collectionSize(signatureWrapper.getStructuralValidationMessages()));
+                assertTrue(signatureWrapper.getStructuralValidationMessages().get(0).contains("/1/268/0/.cbor"));
+                assertTrue(signatureWrapper.getStructuralValidationMessages().get(0).contains("'7'"));
+                ++masterSigCounter;
+
+            } else {
+                assertTrue(signatureWrapper.isStructuralValidationValid());
+                assertTrue(Utils.isCollectionEmpty(signatureWrapper.getStructuralValidationMessages()));
+                ++counterSigCounter;
+            }
+        }
+        assertEquals(1, masterSigCounter);
+        assertEquals(3, counterSigCounter);
     }
 
     @Override

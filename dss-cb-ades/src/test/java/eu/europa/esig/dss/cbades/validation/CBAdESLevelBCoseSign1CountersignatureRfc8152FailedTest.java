@@ -27,6 +27,7 @@ import eu.europa.esig.dss.enumerations.COSESignatureType;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
 
 import java.util.List;
@@ -45,7 +46,23 @@ class CBAdESLevelBCoseSign1CountersignatureRfc8152FailedTest extends AbstractCBA
     @Override
     protected void checkNumberOfSignatures(DiagnosticData diagnosticData) {
         super.checkNumberOfSignatures(diagnosticData);
-        assertEquals(2, diagnosticData.getSignatures().size());
+
+        List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+        assertEquals(2, signatures.size());
+
+        boolean masterSigFound = false;
+        boolean counterSigFound = false;
+        for (SignatureWrapper signatureWrapper : signatures) {
+            if (!signatureWrapper.isCounterSignature()) {
+                assertEquals(COSESignatureType.COSE_SIGN1, signatureWrapper.getCOSESignatureType());
+                masterSigFound = true;
+            } else {
+                assertEquals(COSESignatureType.COSE_COUNTER_SIGNATURE, signatureWrapper.getCOSESignatureType());
+                counterSigFound = true;
+            }
+        }
+        assertTrue(masterSigFound);
+        assertTrue(counterSigFound);
     }
 
     @Override
@@ -95,8 +112,6 @@ class CBAdESLevelBCoseSign1CountersignatureRfc8152FailedTest extends AbstractCBA
 
     @Override
     protected void checkStructureValidation(DiagnosticData diagnosticData) {
-        super.checkStructureValidation(diagnosticData);
-
         List<SignatureWrapper> signatures = diagnosticData.getSignatures();
         assertEquals(2, signatures.size());
 
@@ -104,10 +119,19 @@ class CBAdESLevelBCoseSign1CountersignatureRfc8152FailedTest extends AbstractCBA
         boolean counterSigFound = false;
         for (SignatureWrapper signatureWrapper : signatures) {
             if (!signatureWrapper.isCounterSignature()) {
-                assertEquals(COSESignatureType.COSE_SIGN1, signatureWrapper.getCOSESignatureType());
+                assertFalse(signatureWrapper.isStructuralValidationValid());
+                assertFalse(Utils.isCollectionEmpty(signatureWrapper.getStructuralValidationMessages()));
+                assertEquals(1, Utils.collectionSize(signatureWrapper.getStructuralValidationMessages()));
+                assertTrue(signatureWrapper.getStructuralValidationMessages().get(0).contains("/1/268/0/.cbor"));
+                assertTrue(signatureWrapper.getStructuralValidationMessages().get(0).contains("'7'"));
                 masterSigFound = true;
+
             } else {
-                assertEquals(COSESignatureType.COSE_COUNTER_SIGNATURE, signatureWrapper.getCOSESignatureType());
+                assertFalse(signatureWrapper.isStructuralValidationValid());
+                assertFalse(Utils.isCollectionEmpty(signatureWrapper.getStructuralValidationMessages()));
+                assertEquals(1, Utils.collectionSize(signatureWrapper.getStructuralValidationMessages()));
+                assertTrue(signatureWrapper.getStructuralValidationMessages().get(0).contains("/0/.cbor/262/0/1/1"));
+                assertTrue(signatureWrapper.getStructuralValidationMessages().get(0).contains("#6.32"));
                 counterSigFound = true;
             }
         }

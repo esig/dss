@@ -21,15 +21,20 @@
 package eu.europa.esig.dss.cbades.extension;
 
 import eu.europa.esig.dss.alert.SilentOnStatusAlert;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CBAdESExtensionTClearUHeadersToTTest extends AbstractCBAdESTestExtension {
 
@@ -60,6 +65,15 @@ class CBAdESExtensionTClearUHeadersToTTest extends AbstractCBAdESTestExtension {
     public void extendAndVerify() {
         Exception exception = assertThrows(IllegalInputException.class, super::extendAndVerify);
         assertEquals("Extension is not possible! The members of 'uHeaders' component shall be represented by CBOR byte strings.", exception.getMessage());
+    }
+
+    @Override
+    protected void checkStructureValidation(DiagnosticData diagnosticData) {
+        SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+        assertFalse(signature.isStructuralValidationValid());
+        assertFalse(Utils.isCollectionEmpty(signature.getStructuralValidationMessages()));
+        assertEquals(1, signature.getStructuralValidationMessages().size());
+        assertTrue(signature.getStructuralValidationMessages().get(0).contains("bstr"));
     }
 
 }

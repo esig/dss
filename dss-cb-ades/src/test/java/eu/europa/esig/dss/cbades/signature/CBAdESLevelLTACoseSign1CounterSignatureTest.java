@@ -40,6 +40,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -142,13 +143,10 @@ class CBAdESLevelLTACoseSign1CounterSignatureTest extends AbstractCBAdESCounterS
             if (counterSig != null) {
                 ++counterSigCounter;
 
-                assertTrue(counterSig.isTag());
+                assertFalse(counterSig.isTag());
+                assertTrue(counterSig.isArray());
 
-                CBORValue counterSignatureV2Value = counterSig.getTaggedValue();
-                assertNotNull(counterSignatureV2Value);
-                assertTrue(counterSignatureV2Value.isArray());
-
-                assertEquals(3, counterSignatureV2Value.size());
+                assertEquals(3, counterSig.size());
             }
         }
 

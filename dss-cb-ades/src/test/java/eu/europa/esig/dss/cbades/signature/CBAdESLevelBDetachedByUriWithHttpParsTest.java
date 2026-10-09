@@ -49,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class CBAdESLevelBDetachedByUryWithHttpParsTest extends AbstractCBAdESMultipleDocumentSignatureTest {
+class CBAdESLevelBDetachedByUriWithHttpParsTest extends AbstractCBAdESMultipleDocumentSignatureTest {
 
     private static final String DOC_ONE_NAME = "https://nowina.lu/pub/CBAdES/ObjectIdByURIHash-1.html";
     private static final String DOC_TWO_NAME = "https://nowina.lu/pub/CBAdES/ObjectIdByURIHash-2.html";
@@ -99,9 +99,12 @@ class CBAdESLevelBDetachedByUryWithHttpParsTest extends AbstractCBAdESMultipleDo
         CBORValue sigD = protectedHeader.getValue().getAsMapOrNull(COSEHeaderParameter.SIG_D.cbor());
         assertNotNull(sigD);
 
-        String mId = sigD.getAsStringOrNull(COSEHeaderParameter.SIG_D_MID.cbor());
+        CBORValue mId = sigD.get(COSEHeaderParameter.SIG_D_MID.cbor());
         assertNotNull(mId);
-        assertEquals(SigDMechanism.OBJECT_ID_BY_URI.getCBAdESUri(), mId);
+        assertTrue(mId.isTag());
+        assertEquals(32, mId.getTag().longValue());
+        assertNotNull(mId.getTaggedValue());
+        assertEquals(SigDMechanism.OBJECT_ID_BY_URI.getCBAdESUri(), mId.getTaggedValue().asString());
 
         BigInteger hashM = sigD.getAsIntegerOrNull(COSEHeaderParameter.SIG_D_HASH_M.cbor());
         assertNull(hashM);

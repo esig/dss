@@ -153,13 +153,10 @@ class CBAdESLevelBDetachedCoseSign1WithCounterSignatureTest extends AbstractCBAd
 
         CBORValue counterSignatureV2Object = countersignatureComponent.get(COSEHeaderParameter.COUNTER_SIGNATURE_V2.cbor());
         assertNotNull(counterSignatureV2Object);
-        assertTrue(counterSignatureV2Object.isTag());
+        assertFalse(counterSignatureV2Object.isTag());
+        assertTrue(counterSignatureV2Object.isArray());
 
-        CBORValue counterSignatureV2Value = counterSignatureV2Object.getTaggedValue();
-        assertNotNull(counterSignatureV2Value);
-        assertTrue(counterSignatureV2Value.isArray());
-
-        COSECounterSignStructure coseCounterSignStructure = COSECounterSignatureParser.fromCBORValue(counterSignatureV2Value)
+        COSECounterSignStructure coseCounterSignStructure = COSECounterSignatureParser.fromCBORValue(counterSignatureV2Object)
                 .setContext(COSESignatureType.COSE_COUNTER_SIGNATURE_V2)
                 .setMasterSignature(coseSign1)
                 .parse();

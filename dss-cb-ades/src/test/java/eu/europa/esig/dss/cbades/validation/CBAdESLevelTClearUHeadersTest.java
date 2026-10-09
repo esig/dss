@@ -21,11 +21,17 @@
 package eu.europa.esig.dss.cbades.validation;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.utils.Utils;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CBAdESLevelTClearUHeadersTest extends AbstractCBAdESTestValidation {
 
@@ -39,6 +45,19 @@ class CBAdESLevelTClearUHeadersTest extends AbstractCBAdESTestValidation {
         super.checkSignatureLevel(diagnosticData);
         // signature timestamp is skipped because of (wrong) clear encapsulation
         assertEquals(SignatureLevel.CB_AdES_BASELINE_B, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+    }
+
+    @Override
+    protected void checkStructureValidation(DiagnosticData diagnosticData) {
+        List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+        assertEquals(1, signatures.size());
+
+        SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+        assertFalse(signature.isStructuralValidationValid());
+        assertFalse(Utils.isCollectionEmpty(signature.getStructuralValidationMessages()));
+        assertEquals(1, Utils.collectionSize(signature.getStructuralValidationMessages()));
+        assertTrue(signature.getStructuralValidationMessages().get(0).contains("/1/268/0"));
+        assertTrue(signature.getStructuralValidationMessages().get(0).contains("bstr"));
     }
 
 }

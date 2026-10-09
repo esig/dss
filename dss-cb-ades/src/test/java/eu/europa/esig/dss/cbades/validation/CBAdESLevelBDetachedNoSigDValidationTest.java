@@ -27,7 +27,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import java.util.Collections;
 import java.util.List;
 
-class CBAdESLevelBDetachedNoSigDTest extends AbstractCBAdESTestValidation {
+class CBAdESLevelBDetachedNoSigDValidationTest extends AbstractCBAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

@@ -26,12 +26,15 @@ import eu.europa.esig.dss.enumerations.COSESignatureType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CBAdESLevelBCoseSignCountersignatureInArrayRfc8152Test extends AbstractCBAdESTestValidation {
 
@@ -41,8 +44,8 @@ class CBAdESLevelBCoseSignCountersignatureInArrayRfc8152Test extends AbstractCBA
     }
 
     @Override
-    protected void checkStructureValidation(DiagnosticData diagnosticData) {
-        super.checkStructureValidation(diagnosticData);
+    protected void checkNumberOfSignatures(DiagnosticData diagnosticData) {
+        super.checkNumberOfSignatures(diagnosticData);
 
         List<SignatureWrapper> signatures = diagnosticData.getSignatures();
         assertEquals(3, signatures.size());
@@ -55,6 +58,32 @@ class CBAdESLevelBCoseSignCountersignatureInArrayRfc8152Test extends AbstractCBA
                 ++masterSigCounter;
             } else {
                 assertEquals(COSESignatureType.COSE_COUNTER_SIGNATURE, signatureWrapper.getCOSESignatureType());
+                ++counterSigCounter;
+            }
+        }
+        assertEquals(1, masterSigCounter);
+        assertEquals(2, counterSigCounter);
+    }
+
+    @Override
+    protected void checkStructureValidation(DiagnosticData diagnosticData) {
+        List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+        assertEquals(3, signatures.size());
+
+        int masterSigCounter = 0;
+        int counterSigCounter = 0;
+        for (SignatureWrapper signatureWrapper : signatures) {
+            if (!signatureWrapper.isCounterSignature()) {
+                assertFalse(signatureWrapper.isStructuralValidationValid());
+                assertFalse(Utils.isCollectionEmpty(signatureWrapper.getStructuralValidationMessages()));
+                assertEquals(1, Utils.collectionSize(signatureWrapper.getStructuralValidationMessages()));
+                assertTrue(signatureWrapper.getStructuralValidationMessages().get(0).contains("/1/268/0/.cbor"));
+                assertTrue(signatureWrapper.getStructuralValidationMessages().get(0).contains("'7'"));
+                ++masterSigCounter;
+
+            } else {
+                assertTrue(signatureWrapper.isStructuralValidationValid());
+                assertTrue(Utils.isCollectionEmpty(signatureWrapper.getStructuralValidationMessages()));
                 ++counterSigCounter;
             }
         }

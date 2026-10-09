@@ -47,6 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CBAdESLevelBDetachedTest extends AbstractCBAdESTestSignature {
 
@@ -97,9 +98,12 @@ class CBAdESLevelBDetachedTest extends AbstractCBAdESTestSignature {
         CBORValue sigD = protectedHeader.getValue().getAsMapOrNull(COSEHeaderParameter.SIG_D.cbor());
         assertNotNull(sigD);
 
-        String mId = sigD.getAsStringOrNull(COSEHeaderParameter.SIG_D_MID.cbor());
+        CBORValue mId = sigD.get(COSEHeaderParameter.SIG_D_MID.cbor());
         assertNotNull(mId);
-        assertEquals(SigDMechanism.OBJECT_ID_BY_URI_HASH.getCBAdESUri(), mId);
+        assertTrue(mId.isTag());
+        assertEquals(32, mId.getTag().longValue());
+        assertNotNull(mId.getTaggedValue());
+        assertEquals(SigDMechanism.OBJECT_ID_BY_URI_HASH.getCBAdESUri(), mId.getTaggedValue().asString());
 
         BigInteger hashM = sigD.getAsIntegerOrNull(COSEHeaderParameter.SIG_D_HASH_M.cbor());
         assertNotNull(hashM);
