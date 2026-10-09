@@ -227,21 +227,19 @@ public class CBAdESLevelBaselineB {
         DigestAlgorithm digestAlgorithm = parameters.getSigningCertificateDigestMethod();
         if (parameters.isIncludeCertificateChainThumbprints()) {
             List<CertificateToken> certificateTokens = getBaselineBCertificates();
-            if (Utils.isCollectionNotEmpty(certificateTokens)) {
+            if (Utils.collectionSize(certificateTokens) > 1) {
                 CBORValue.CBORArrayEditor x5ts = CBOR.array(certificateTokens.size());
                 for (CertificateToken certificateToken : certificateTokens) {
                     x5ts.add(getCoseCertHash(certificateToken, digestAlgorithm));
                 }
-                addHeader(COSEHeaderParameter.X5TS.cbor(), x5ts.value()); // [+x5t : COSE_CertHash]
-            } else {
-                LOG.debug("No certificate chain found to be incorporated within 'x5ts' signed header");
+                addHeader(COSEHeaderParameter.X5TS.cbor(), x5ts.value()); // [2*x5t: COSE_CertHash]
+                return;
             }
 
-        } else {
-            // incorporate 'x5t'
-            CBORValue x5t = getCoseCertHash(signingCertificate, digestAlgorithm);
-            addHeader(COSEHeaderParameter.X5T.cbor(), x5t); // [ hashAlg: (int / tstr), hashValue: bstr ]
         }
+        // incorporate 'x5t'
+        CBORValue x5t = getCoseCertHash(signingCertificate, digestAlgorithm);
+        addHeader(COSEHeaderParameter.X5T.cbor(), x5t); // [ hashAlg: (int / tstr), hashValue: bstr ]
     }
 
     private List<CertificateToken> getBaselineBCertificates() {
