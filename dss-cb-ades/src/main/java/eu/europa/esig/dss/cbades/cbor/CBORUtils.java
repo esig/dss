@@ -527,7 +527,27 @@ public final class CBORUtils {
             }
             return null;
         }
+    }
 
+    /**
+     * Obtains a String extracted from a uri encoded CBOR tagged value #6.32(tstr)
+     *
+     * @param cborValue {@link CBORValue}
+     * @return {@link String}
+     */
+    public static String fromUri(CBORValue cborValue) {
+        if (cborValue == null) {
+            return null;
+        }
+        if (cborValue.isTag() && cborValue.getTag().longValue() == 32) {
+            return cborValue.getTaggedValue().asString();
+
+        } else if (cborValue.isTextString()) {
+            LOG.warn("uri encoded (#6.32(tstr)) CBOR value is expected. Obtained String : {}", cborValue);
+            return cborValue.asString(); // TODO : legacy handling (6.5.1, 6.6). Remove ?
+        }
+        LOG.warn("uri encoded (#6.32(tstr)) CBOR value is expected. Obtained value : {}", cborValue);
+        return null;
     }
 
 }

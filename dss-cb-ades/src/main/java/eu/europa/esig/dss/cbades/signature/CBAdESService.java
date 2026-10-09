@@ -320,6 +320,11 @@ public class CBAdESService extends AbstractSignatureService<CBAdESSignatureParam
                     parameters.getSigDMechanism()));
         }
 
+        if (Utils.isTrue(parameters.isTagged())) {
+            throw new IllegalArgumentException("Counter Signature cannot be tagged inside a CBAdES signature!");
+        }
+        parameters.setTagged(false);
+
         assertSignatureParameters(parameters);
     }
 

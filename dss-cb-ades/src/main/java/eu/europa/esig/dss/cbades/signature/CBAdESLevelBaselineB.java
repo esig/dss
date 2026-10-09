@@ -22,6 +22,7 @@ package eu.europa.esig.dss.cbades.signature;
 
 import eu.europa.ec.digit.cddl4j.cbor.CBOR;
 import eu.europa.ec.digit.cddl4j.cbor.CBORDecodeException;
+import eu.europa.ec.digit.cddl4j.cbor.CBORTags;
 import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.CBAdESUtils;
 import eu.europa.esig.dss.cbades.COSEHeaderParameter;
@@ -210,7 +211,7 @@ public class CBAdESLevelBaselineB {
     protected void incorporateSigningCertificateUri() {
         String x509Url = parameters.getX509Url();
         if (Utils.isStringNotEmpty(x509Url)) {
-            addHeader(COSEHeaderParameter.X5U.cbor(), x509Url);
+            addHeader(COSEHeaderParameter.X5U.cbor(), CBORTags.uri(x509Url));
         }
     }
 
@@ -628,7 +629,7 @@ public class CBAdESLevelBaselineB {
 
         final String spuri = signaturePolicy.getSpuri();
         if (Utils.isStringNotEmpty(spuri)) {
-            sigPQualifiers.add(getQualifier(COSEHeaderParameter.SIG_P_QUAL_SP_URI.cbor(), spuri));
+            sigPQualifiers.add(getQualifier(COSEHeaderParameter.SIG_P_QUAL_SP_URI.cbor(), CBORTags.uri(spuri)));
         }
 
         final UserNotice userNotice = signaturePolicy.getUserNotice();
@@ -756,7 +757,7 @@ public class CBAdESLevelBaselineB {
 
     private CBORValue getSigDForObjectIdByUriMechanism(List<DSSDocument> detachedContents) {
         return CBOR.map()
-                .put(COSEHeaderParameter.SIG_D_MID.cbor(), SigDMechanism.OBJECT_ID_BY_URI.getCBAdESUri())
+                .put(COSEHeaderParameter.SIG_D_MID.cbor(), CBORTags.uri(SigDMechanism.OBJECT_ID_BY_URI.getCBAdESUri()))
                 .put(COSEHeaderParameter.SIG_D_PARS.cbor(), getSignedDataReferences(detachedContents))
                 .put(COSEHeaderParameter.SIG_D_CTYS.cbor(), getSignedDataMimeTypesIfPresent(detachedContents))
                 .value();
@@ -766,7 +767,7 @@ public class CBAdESLevelBaselineB {
         DigestAlgorithm digestAlgorithm = getReferenceDigestAlgorithmOrDefault();
 
         return CBOR.map()
-                .put(COSEHeaderParameter.SIG_D_MID.cbor(), SigDMechanism.OBJECT_ID_BY_URI_HASH.getCBAdESUri())
+                .put(COSEHeaderParameter.SIG_D_MID.cbor(), CBORTags.uri(SigDMechanism.OBJECT_ID_BY_URI_HASH.getCBAdESUri()))
                 .put(COSEHeaderParameter.SIG_D_PARS.cbor(), getSignedDataReferences(detachedContents))
                 .put(COSEHeaderParameter.SIG_D_HASH_M.cbor(), digestAlgorithm.getCoseId())
                 .put(COSEHeaderParameter.SIG_D_HASH_V.cbor(), getSignedDataDigests(detachedContents, digestAlgorithm))

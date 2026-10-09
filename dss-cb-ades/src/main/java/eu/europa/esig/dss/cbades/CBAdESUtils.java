@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.cbades;
 
 import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORTags;
 import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.cbades.CBAdESSchemaUtils;
 import eu.europa.esig.dss.cbades.cbor.CBORArray;
@@ -99,12 +100,16 @@ public class CBAdESUtils {
         Objects.requireNonNull(uri, "uri must be defined!");
 
         CBORValue.CBORMapEditor oidParams = CBOR.map();
-        oidParams.put(COSEHeaderParameter.OID_ID.cbor(), uri);
+        oidParams.put(COSEHeaderParameter.OID_ID.cbor(), CBORTags.uri(uri));
         if (Utils.isStringNotEmpty(desc)) {
             oidParams.put(COSEHeaderParameter.OID_DESC.cbor(), desc);
         }
         if (Utils.isArrayNotEmpty(docRefs)) {
-            oidParams.put(COSEHeaderParameter.OID_DOC_REFS.cbor(), CBOR.array(docRefs).value());
+            CBORValue[] cborDocRefs = new CBORValue[docRefs.length];
+            for (int i = 0; i < docRefs.length; i++) {
+                cborDocRefs[i] = CBORTags.uri(docRefs[i]);
+            }
+            oidParams.put(COSEHeaderParameter.OID_DOC_REFS.cbor(), CBOR.array(cborDocRefs).value());
         }
 
         return oidParams.value();
@@ -618,7 +623,7 @@ public class CBAdESUtils {
      * @return a list of errors if validation fails, empty list if succeeds
      */
     public static List<String> validateAgainstCBAdESSchema(CBORSignature cose) {
-        COSEStructure coseStructure = cose.getCoseSignStructure() != null ? cose.getCoseSignStructure() : cose.getSignerSignature();
+        COSEStructure coseStructure = cose.getSignerSignature() != null ? cose.getSignerSignature() : cose.getCoseSignStructure();
         if (cose.getContext().isCounterSignature() || cose.getContext().isCounterSignatureV2()) {
             return CBAdESSchemaUtils.getInstance().validateAgainstSchema(coseStructure.toCBORValue(), CBAdESSchemaUtils.COSE_COUNTER_SIGNATURE);
         }

@@ -322,18 +322,18 @@ public class CBAdESSignature extends DefaultAdvancedSignature {
                 if (srCm.size() != 0) {
                     CBORValue commId = srCm.getAsMapOrNull(COSEHeaderParameter.SR_CM_COMM_ID.cbor());
                     if (commId != null && commId.size() != 0) {
-                        String oid = commId.getAsStringOrNull(COSEHeaderParameter.OID_ID.cbor());
+                        String oid = CBORUtils.fromUri(commId.get(COSEHeaderParameter.OID_ID.cbor()));
                         oid = DSSUtils.getObjectIdentifierValue(oid);
                         if (Utils.isStringNotBlank(oid)) {
                             CommitmentTypeIndication commitmentTypeIndication = new CommitmentTypeIndication(oid);
                             String desc = commId.getAsStringOrNull(COSEHeaderParameter.OID_DESC.cbor());
                             commitmentTypeIndication.setDescription(desc);
                             CBORValue docRefs = commId.getAsArrayOrNull(COSEHeaderParameter.OID_DOC_REFS.cbor());
-                            commitmentTypeIndication.setDocumentReferences(toListOfStrings(docRefs));
+                            commitmentTypeIndication.setDocumentReferences(toListOfUriStrings(docRefs));
                             result.add(commitmentTypeIndication);
 
                         } else {
-                            LOG.warn("Id parameter in the OID with the value '{}' is not conformant! The entry is skipped.", oid);
+                            LOG.warn("Id parameter in the OID is not conformant! The entry is skipped.");
                         }
                     }
                 }
@@ -471,14 +471,14 @@ public class CBAdESSignature extends DefaultAdvancedSignature {
         if (sigPId != null && sigPId.size() != 0) {
             CBORValue sigPOid = sigPId.getAsMapOrNull(COSEHeaderParameter.SIG_P_ID_ID.cbor());
             if (sigPOid != null && sigPOid.size() != 0) {
-                String oid = sigPOid.getAsStringOrNull(COSEHeaderParameter.OID_ID.cbor());
+                String oid = CBORUtils.fromUri(sigPOid.get(COSEHeaderParameter.OID_ID.cbor()));
                 oid = DSSUtils.getObjectIdentifierValue(oid);
                 if (Utils.isStringNotBlank(oid)) {
                     signaturePolicy = new SignaturePolicy(oid);
                     String desc = sigPOid.getAsStringOrNull(COSEHeaderParameter.OID_DESC.cbor());
                     signaturePolicy.setDescription(desc);
                     CBORValue docRefs = sigPOid.getAsArrayOrNull(COSEHeaderParameter.OID_DOC_REFS.cbor());
-                    signaturePolicy.setDocumentationReferences(toListOfStrings(docRefs));
+                    signaturePolicy.setDocumentationReferences(toListOfUriStrings(docRefs));
 
                 } else {
                     LOG.warn("Id parameter in the OID with the value '{}' is not conformant! " +
@@ -519,6 +519,20 @@ public class CBAdESSignature extends DefaultAdvancedSignature {
         return Collections.emptyList();
     }
 
+    private List<String> toListOfUriStrings(CBORValue cborArray) {
+        if (cborArray != null && cborArray.size() != 0) {
+            final List<String> computedList = new ArrayList<>();
+            for (CBORValue arrayItem : cborArray.getElements()) {
+                String uri = CBORUtils.fromUri(arrayItem);
+                if (Utils.isStringNotEmpty(uri)) {
+                    computedList.add(uri);
+                }
+            }
+            return computedList;
+        }
+        return Collections.emptyList();
+    }
+
     private String getSPUri(CBORValue qualifiers) {
         String spUri = null;
         for (CBORValue qualifier : qualifiers.getElements()) {
@@ -527,7 +541,7 @@ public class CBAdESSignature extends DefaultAdvancedSignature {
                 continue;
             }
             if (qualifier.size() != 0) {
-                String spUriStr = qualifier.getAsStringOrNull(COSEHeaderParameter.SIG_P_QUAL_SP_URI.cbor());
+                String spUriStr = CBORUtils.fromUri(qualifier.get(COSEHeaderParameter.SIG_P_QUAL_SP_URI.cbor()));
                 if (Utils.isStringNotEmpty(spUriStr)) {
                     if (spUri == null) {
                         spUri = spUriStr;
@@ -603,7 +617,7 @@ public class CBAdESSignature extends DefaultAdvancedSignature {
                     continue;
                 }
 
-                String oid = spDSpec.getAsStringOrNull(COSEHeaderParameter.OID_ID.cbor());
+                String oid = CBORUtils.fromUri(spDSpec.get(COSEHeaderParameter.OID_ID.cbor()));
                 oid = DSSUtils.getObjectIdentifierValue(oid);
                 if (Utils.isStringNotBlank(oid)) {
                     spDocSpecification = new SpDocSpecification();
@@ -611,7 +625,7 @@ public class CBAdESSignature extends DefaultAdvancedSignature {
                     String desc = spDSpec.getAsStringOrNull(COSEHeaderParameter.OID_DESC.cbor());
                     spDocSpecification.setDescription(desc);
                     CBORValue docRefs = spDSpec.getAsArrayOrNull(COSEHeaderParameter.OID_DOC_REFS.cbor());
-                    spDocSpecification.setDocumentationReferences(toListOfStrings(docRefs).toArray(new String[] {}));
+                    spDocSpecification.setDocumentationReferences(toListOfUriStrings(docRefs).toArray(new String[] {}));
 
                 } else {
                     LOG.warn("Id parameter in the OID with the value '{}' is not conformant! " +
@@ -640,7 +654,7 @@ public class CBAdESSignature extends DefaultAdvancedSignature {
     public SigDMechanism getSigDMechanism() {
         CBORValue sigD = cose.getProtectedHeaderValueAsMap(COSEHeaderParameter.SIG_D.cbor());
         if (sigD != null && sigD.size() != 0) {
-            String mechanismUri = sigD.getAsStringOrNull(COSEHeaderParameter.SIG_D_MID.cbor());
+            String mechanismUri = CBORUtils.fromUri(sigD.get(COSEHeaderParameter.SIG_D_MID.cbor()));
             if (Utils.isStringNotEmpty(mechanismUri)) {
                 SigDMechanism sigDMechanism = SigDMechanism.forCBAdESUri(mechanismUri);
                 if (sigDMechanism == null) {
