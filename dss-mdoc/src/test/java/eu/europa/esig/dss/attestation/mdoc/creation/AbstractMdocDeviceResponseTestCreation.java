@@ -109,7 +109,7 @@ public abstract class AbstractMdocDeviceResponseTestCreation extends AbstractAtt
         SignedDocumentValidator validator = super.getValidator(signedDocument);
         MdocDeviceResponseDocumentValidator mdocValidator = assertInstanceOf(MdocDeviceResponseDocumentValidator.class, validator);
         MdocValidationParameters mdocValidationParameters = new MdocValidationParameters();
-        mdocValidationParameters.setSessionTranscript(buildSessionTranscript());
+        mdocValidationParameters.setSessionTranscript(getSessionTranscript());
         mdocValidator.setAttestationValidationParameters(mdocValidationParameters);
         return validator;
     }
@@ -532,7 +532,7 @@ public abstract class AbstractMdocDeviceResponseTestCreation extends AbstractAtt
         }
     }
 
-    protected DSSDocument buildSessionTranscript() {
+    protected DSSDocument getSessionTranscript() {
         byte[] select = new byte[]{0x01, 0x02};
         byte[] request = new byte[]{0x03, 0x04};
         SessionTranscriptBuilder builder =
