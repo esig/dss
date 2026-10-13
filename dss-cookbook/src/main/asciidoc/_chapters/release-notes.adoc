@@ -11,6 +11,17 @@
 |===
 |Version           |Release date             |Features
 
+|v6.5.1            |October 2026            a|Main new features / improvements :
+
+                                            * Dependencies update (BouncyCastle v1.86, HttpClient5, jose4j, json-sKema, etc.).
+
+Bug fixes :
+
+                                            * CB-AdES : `sigD.mId` and some other elements miss a tag `#6.32(tstr)`;
+                                            * CB-AdES : `x5ts` protected header is created for a single certificate in the chain;
+                                            * CB-AdES : counter signatures shall be untagged.
+
+
 |v6.5              |August 2026             a|Main new features / improvements :
 
                                             * Attestation modules refactoring (`dss-sd-jwt`, `dss-mdoc`);
