@@ -28,7 +28,9 @@ import eu.europa.esig.dss.spi.validation.analyzer.attestation.AttestationDocumen
  * This class is used to parse and process attestations embedded
  * within an mdoc document structure as defined in ISO 18013-5.
  *
+ * @deprecated since DSS 6.5.1. Please use {@link MdocDocumentAnalyzerFactory} class instead.
  */
+@Deprecated
 public class MdococumentAnalyzerFactory implements AttestationDocumentAnalyzerFactory {
 
     /**
