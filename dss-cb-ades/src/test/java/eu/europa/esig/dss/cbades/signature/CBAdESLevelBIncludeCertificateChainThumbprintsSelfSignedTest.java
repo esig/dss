@@ -1,0 +1,165 @@
+package eu.europa.esig.dss.cbades.signature;
+
+import eu.europa.esig.dss.cbades.COSEConstants;
+import eu.europa.esig.dss.cbades.COSEHeaderParameter;
+import eu.europa.esig.dss.cbades.COSEProtectedHeader;
+import eu.europa.esig.dss.cbades.COSESign;
+import eu.europa.esig.dss.cbades.COSESignStructure;
+import eu.europa.esig.dss.cbades.cbor.CBORArray;
+import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.CertificateOrigin;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.x509.KidCertificateSource;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class CBAdESLevelBIncludeCertificateChainThumbprintsSelfSignedTest extends AbstractCBAdESTestSignature {
+
+    private DocumentSignatureService<CBAdESSignatureParameters, CBAdESTimestampParameters> service;
+    private DSSDocument documentToSign;
+    private CBAdESSignatureParameters signatureParameters;
+
+    @BeforeEach
+    void init() {
+        service = new CBAdESService(getCompleteCertificateVerifier());
+        documentToSign = new InMemoryDocument("Hello World!".getBytes(), "doc.txt");
+        signatureParameters = new CBAdESSignatureParameters();
+        signatureParameters.bLevel().setSigningDate(new Date());
+        signatureParameters.setSigningCertificate(getSigningCert());
+        signatureParameters.setCertificateChain(getCertificateChain());
+        signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+        signatureParameters.setSignatureLevel(SignatureLevel.CB_AdES_BASELINE_B);
+
+        signatureParameters.setIncludeCertificateChainThumbprints(true);
+    }
+
+    @Override
+    protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
+        SignedDocumentValidator validator = super.getValidator(signedDocument);
+        validator.setCertificateVerifier(getCompleteCertificateVerifier());
+        KidCertificateSource signingCertificateSource = new KidCertificateSource();
+        signingCertificateSource.addCertificate(getSigningCert());
+        validator.setSigningCertificateSource(signingCertificateSource);
+        return validator;
+    }
+
+    @Override
+    protected void checkCOSESignStructure(COSESignStructure coseSignStructure) {
+        super.checkCOSESignStructure(coseSignStructure);
+
+        assertInstanceOf(COSESign.class, coseSignStructure);
+        COSESign coseSign = (COSESign) coseSignStructure;
+        assertEquals(1, coseSign.getSignatures().size());
+
+        assertRequirementsValid(coseSign.getSignatures().get(0).getProtectedHeader());
+    }
+
+    private void assertRequirementsValid(COSEProtectedHeader protectedHeader) {
+        CBORArray x5t = protectedHeader.getAsArray(COSEHeaderParameter.X5T.cbor());
+        assertNotNull(x5t);
+
+        Long algId = x5t.getAsLong(COSEConstants.COSE_CERT_HASH_ALG);
+        assertNotNull(algId);
+        DigestAlgorithm digestAlgorithm = DigestAlgorithm.forCOSE(algId);
+        assertEquals(getSignatureParameters().getSigningCertificateDigestMethod(), digestAlgorithm);
+
+        byte[] hashValue = x5t.getAsBinaries(COSEConstants.COSE_CERT_HASH_VALUE);
+        assertNotNull(hashValue);
+        assertArrayEquals(DSSUtils.digest(digestAlgorithm, getSignatureParameters().getSigningCertificate().getEncoded()), hashValue);
+
+        CBORArray x5ts = protectedHeader.getAsArray(COSEHeaderParameter.X5TS.cbor());
+        assertNull(x5ts);
+
+        byte[] x5chain = protectedHeader.getAsBinaries(COSEHeaderParameter.X5CHAIN.cbor());
+        assertNotNull(x5chain);
+    }
+
+    @Override
+    protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures,
+                                                  DiagnosticData diagnosticData) {
+        AdvancedSignature advancedSignature = advancedSignatures.get(0);
+        assertEquals(1, advancedSignature.getCertificates().size());
+
+        SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+
+        List<RelatedCertificateWrapper> relatedCertificates = signatureWrapper.foundCertificates().getRelatedCertificates();
+        assertEquals(1, relatedCertificates.size());
+
+        RelatedCertificateWrapper signingCertificate = null;
+        for (RelatedCertificateWrapper certificateWrapper : relatedCertificates) {
+            assertTrue(Utils.isCollectionNotEmpty(certificateWrapper.getOrigins()));
+            assertEquals(CertificateOrigin.KEY_INFO, certificateWrapper.getOrigins().get(0));
+            if (signatureWrapper.getSigningCertificate().getId().equals(certificateWrapper.getId())) {
+                signingCertificate = certificateWrapper;
+                break;
+            }
+        }
+        assertNotNull(signingCertificate);
+
+        boolean signCertFound = false;
+        boolean keyIdentifierFound = false;
+        for (CertificateRefWrapper certificateRefWrapper : signingCertificate.getReferences()) {
+            if (CertificateRefOrigin.SIGNING_CERTIFICATE.equals(certificateRefWrapper.getOrigin())) {
+                signCertFound = true;
+            } else if (CertificateRefOrigin.KEY_IDENTIFIER.equals(certificateRefWrapper.getOrigin())) {
+                keyIdentifierFound = true;
+            }
+        }
+        assertTrue(signCertFound);
+        assertTrue(keyIdentifierFound);
+
+        assertEquals(1, signatureWrapper.foundCertificates().getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
+        assertEquals(1, signatureWrapper.foundCertificates().getRelatedCertificatesByRefOrigin(CertificateRefOrigin.KEY_IDENTIFIER).size());
+
+        assertNotNull(signatureWrapper.getSigningCertificate());
+        assertTrue(Utils.isCollectionNotEmpty(signatureWrapper.getCertificateChain()));
+    }
+
+    @Override
+    protected void checkNoDuplicateCompleteCertificates(DiagnosticData diagnosticData) {
+        // do nothing
+    }
+
+    @Override
+    protected CBAdESSignatureParameters getSignatureParameters() {
+        return signatureParameters;
+    }
+
+    @Override
+    protected DSSDocument getDocumentToSign() {
+        return documentToSign;
+    }
+
+    @Override
+    protected DocumentSignatureService<CBAdESSignatureParameters, CBAdESTimestampParameters> getService() {
+        return service;
+    }
+
+    @Override
+    protected String getSigningAlias() {
+        return SELF_SIGNED_USER;
+    }
+
+}

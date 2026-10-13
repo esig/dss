@@ -54,7 +54,7 @@ class CBAdESLevelBDetachedNoSigDTest extends AbstractCBAdESTestSignature {
     void init() throws Exception {
         service = new CBAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
-        documentToSign = new InMemoryDocument("Hello world!".getBytes());
+        documentToSign = new InMemoryDocument("Hello World!".getBytes());
         signingDate = new Date();
     }
 

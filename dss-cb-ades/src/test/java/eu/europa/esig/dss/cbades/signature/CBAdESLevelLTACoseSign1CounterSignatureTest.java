@@ -149,6 +149,9 @@ class CBAdESLevelLTACoseSign1CounterSignatureTest extends AbstractCBAdESCounterS
             if (counterSig != null) {
                 ++counterSigCounter;
 
+                assertFalse(counterSig.isTagged());
+                assertTrue(counterSig.isArray());
+
                 CBORArray counterSigArray = (CBORArray) counterSig;
                 assertEquals(3, counterSigArray.getSize());
             }
