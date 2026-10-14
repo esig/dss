@@ -13,6 +13,7 @@
 
 |v6.5.1            |October 2026            a|Main new features / improvements :
 
+                                            * Demos : Added a property to skip strict validation of ASN.1 UTCTime encoded fields;
                                             * Dependencies update (BouncyCastle v1.86, HttpClient5, jose4j, json-sKema, etc.).
 
 Bug fixes :
