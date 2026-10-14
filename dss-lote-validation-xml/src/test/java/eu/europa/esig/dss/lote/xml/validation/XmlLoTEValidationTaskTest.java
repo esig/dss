@@ -50,7 +50,7 @@ class XmlLoTEValidationTaskTest {
 
     static {
         PUBEAA_PROVIDERS = new FileDocument("src/test/resources/lote-pubeaa.xml");
-        PUBEAA_PROVIDERS_SIGNER = DSSUtils.loadCertificate(new File("src/test/resources/lote-signer.cer"));;
+        PUBEAA_PROVIDERS_SIGNER = DSSUtils.loadCertificate(new File("src/test/resources/lote-signer.cer"));
     }
 
     @Test
