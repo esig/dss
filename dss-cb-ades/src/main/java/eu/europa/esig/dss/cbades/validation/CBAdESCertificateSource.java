@@ -157,13 +157,15 @@ public class CBAdESCertificateSource extends SignatureCertificateSource {
     }
 
     private void extractProtectedHeaderX509Url() {
-        String x5u = cose.getProtectedHeaderValueAsString(COSEHeaderParameter.X5U.cbor());
-        extractX509Url(x5u, CertificateRefOrigin.X509_URL);
+        CBORObject x5u = cose.getProtectedHeaderValue(COSEHeaderParameter.X5U.cbor());
+        String uri = CBORUtils.fromUri(x5u);
+        extractX509Url(uri, CertificateRefOrigin.X509_URL);
     }
 
     private void extractUnprotectedHeaderX509Url() {
-        String x5u = cose.getUnprotectedHeaderValueAsString(COSEHeaderParameter.X5U.cbor());
-        extractX509Url(x5u, CertificateRefOrigin.UNPROTECTED_HEADER_REFS);
+        CBORObject x5u = cose.getUnprotectedHeaderValue(COSEHeaderParameter.X5U.cbor());
+        String uri = CBORUtils.fromUri(x5u);
+        extractX509Url(uri, CertificateRefOrigin.UNPROTECTED_HEADER_REFS);
     }
 
     private void extractX509Url(String x5u, CertificateRefOrigin certificateRefOrigin) {
@@ -468,16 +470,17 @@ public class CBAdESCertificateSource extends SignatureCertificateSource {
     }
 
     private Collection<CertificateToken> resolveByUri(CertificateSource signingCertificateSource) {
-        String x5uHeader = cose.getProtectedHeaderValueAsString(COSEHeaderParameter.X5U.cbor());
+        CBORObject x5uHeader = cose.getProtectedHeaderValue(COSEHeaderParameter.X5U.cbor());
         if (x5uHeader == null) {
-            x5uHeader = cose.getUnprotectedHeaderValueAsString(COSEHeaderParameter.X5U.cbor());
+            x5uHeader = cose.getUnprotectedHeaderValue(COSEHeaderParameter.X5U.cbor());
         }
-        if (Utils.isStringNotEmpty(x5uHeader)) {
+        String uri = CBORUtils.fromUri(x5uHeader);
+        if (Utils.isStringNotEmpty(uri)) {
             if (signingCertificateSource instanceof X509URLCertificateSource) {
                 X509URLCertificateSource x509URLCertificateSource = (X509URLCertificateSource) signingCertificateSource;
-                Collection<CertificateToken> certificatesByUri = x509URLCertificateSource.getCertificatesByUrl(x5uHeader);
+                Collection<CertificateToken> certificatesByUri = x509URLCertificateSource.getCertificatesByUrl(uri);
                 if (Utils.isCollectionNotEmpty(certificatesByUri)) {
-                    x509UrlMap.put(x5uHeader, certificatesByUri);
+                    x509UrlMap.put(uri, certificatesByUri);
                 }
                 return certificatesByUri;
             } else {

@@ -113,7 +113,16 @@ class CBAdESWithCommitmentTypeQualifierTest extends AbstractCBAdESTestSignature 
         CBORObject identifier = commitmentTypeMap.getHeader(COSEHeaderParameter.SR_CM_COMM_ID.cbor());
         assertNotNull(identifier);
         assertTrue(identifier.isMap());
-        assertEquals("urn:oid:" + CommitmentTypeEnum.ProofOfApproval.getOid(), ((CBORMap) identifier).getAsString(COSEHeaderParameter.OID_ID.cbor()));
+
+        CBORMap identifierMap = (CBORMap) identifier;
+
+        CBORObject oid = identifierMap.getHeader(COSEHeaderParameter.OID_ID.cbor());
+        assertNotNull(oid);
+        assertTrue(oid.isTagged());
+        assertEquals(32, oid.getTag().getValue());
+        assertTrue(oid.isUnicodeString());
+
+        assertEquals("urn:oid:" + CommitmentTypeEnum.ProofOfApproval.getOid(), oid.getValueAsString());
 
         CBORObject qualifiers = commitmentTypeMap.getHeader(COSEHeaderParameter.SR_CM_COMM_QUALS.cbor());
         assertNotNull(qualifiers);

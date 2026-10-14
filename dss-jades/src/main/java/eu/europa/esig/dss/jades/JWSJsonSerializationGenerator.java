@@ -86,7 +86,8 @@ public class JWSJsonSerializationGenerator {
 	}
 
 	private String buildJWSCompactSerialization() {
-		if (!JWSSerializationType.COMPACT_SERIALIZATION.equals(jwsJsonSerializationObject.getJWSSerializationType())) {
+		if (jwsJsonSerializationObject.getJWSSerializationType() != null &&
+				!JWSSerializationType.COMPACT_SERIALIZATION.equals(jwsJsonSerializationObject.getJWSSerializationType())) {
 			LOG.info("A '{}' signature will be transformed to a JWS Compact Serialization Format.", jwsJsonSerializationObject.getJWSSerializationType());
 		}
 
@@ -99,7 +100,8 @@ public class JWSJsonSerializationGenerator {
 	}
 
 	private String buildJWSJsonSerialization() {
-		if (!JWSSerializationType.JSON_SERIALIZATION.equals(jwsJsonSerializationObject.getJWSSerializationType())) {
+		if (jwsJsonSerializationObject.getJWSSerializationType() != null &&
+				!JWSSerializationType.JSON_SERIALIZATION.equals(jwsJsonSerializationObject.getJWSSerializationType())) {
 			LOG.info("A '{}' signature will be transformed to a JWS JSON Serialization Format.", jwsJsonSerializationObject.getJWSSerializationType());
 		}
 
@@ -121,7 +123,8 @@ public class JWSJsonSerializationGenerator {
 	}
 
 	private String buildFlattenedJwsJsonSerialization() {
-		if (!JWSSerializationType.FLATTENED_JSON_SERIALIZATION.equals(jwsJsonSerializationObject.getJWSSerializationType())) {
+		if (jwsJsonSerializationObject.getJWSSerializationType() != null &&
+				!JWSSerializationType.FLATTENED_JSON_SERIALIZATION.equals(jwsJsonSerializationObject.getJWSSerializationType())) {
 			LOG.info("A '{}' signature will be transformed to a JWS JSON Flattened Serialization Format.!", jwsJsonSerializationObject.getJWSSerializationType());
 		}
 

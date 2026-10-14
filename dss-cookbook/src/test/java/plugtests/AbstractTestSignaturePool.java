@@ -137,7 +137,7 @@ public abstract class AbstractTestSignaturePool extends AbstractDocumentTestVali
         fileCacheDataLoader.setDataLoader(new IgnoreDataLoader());
         tlValidationJob.setOfflineDataLoader(fileCacheDataLoader);
 
-        //tlValidationJob.offlineRefresh();
+        tlValidationJob.offlineRefresh();
 
         LOG.info("TrustedListsCertificateSource size : " + trustedCertSource.getNumberOfCertificates());
     }

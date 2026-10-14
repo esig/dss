@@ -55,8 +55,8 @@ class SignaturePoolTest extends AbstractTestSignaturePool {
 
 		String signaturePoolFolder = System.getProperty("signature.pool.folder", "src/test/resources/signature-pool");
 		File folder = new File(signaturePoolFolder);
-		Collection<File> listFiles = Utils.listFiles(folder, new String[] { "asice", "asics", "bdoc", "csig", "ddoc",
-				"ers", "es3", "json", "p7", "p7b", "p7m", "p7s", "pdf", "pkcs7", "sce", "scs", "xml", "xsig" }, true);
+		Collection<File> listFiles = Utils.listFiles(folder, new String[] { "asice", "asics", "bdoc", "cbor", "cose", "csig", "ddoc",
+				"ers", "es3", "jose", "json", "p7", "p7b", "p7m", "p7s", "pdf", "pkcs7", "sce", "scs", "xml", "xsig" }, true);
 		Collection<Arguments> dataToRun = new ArrayList<>();
 		for (File file : listFiles) {
 			if(!(file.getPath().toLowerCase().contains("attestation-pool"))) {

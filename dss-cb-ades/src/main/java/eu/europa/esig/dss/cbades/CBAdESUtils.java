@@ -96,12 +96,16 @@ public class CBAdESUtils {
         Objects.requireNonNull(uri, "uri must be defined!");
 
         CBORMap oidParams = new CBORMap();
-        oidParams.put(COSEHeaderParameter.OID_ID.cbor(), uri);
+        oidParams.put(COSEHeaderParameter.OID_ID.cbor(), CBORUtils.toCborUri(uri));
         if (Utils.isStringNotEmpty(desc)) {
             oidParams.put(COSEHeaderParameter.OID_DESC.cbor(), desc);
         }
         if (Utils.isArrayNotEmpty(docRefs)) {
-            oidParams.put(COSEHeaderParameter.OID_DOC_REFS.cbor(), new CBORArray(docRefs));
+            CBORArray cborDocRefs = new CBORArray(docRefs.length);
+            for (String docRef : docRefs) {
+                cborDocRefs.add(CBORUtils.toCborUri(docRef));
+            }
+            oidParams.put(COSEHeaderParameter.OID_DOC_REFS.cbor(), cborDocRefs);
         }
 
         return oidParams;
