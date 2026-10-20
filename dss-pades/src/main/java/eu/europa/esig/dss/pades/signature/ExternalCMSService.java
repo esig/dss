@@ -194,7 +194,7 @@ public class ExternalCMSService {
         CMSForCAdESBuilderHelper cmsBuilderHelper = initCMSBuilderHelper(messageDigest, parameters, customContentSigner);
         CMS cms = cmsBuilderHelper.createCMS();
 
-        if (!SignatureLevel.PAdES_BASELINE_B.equals(signatureLevel)) {
+        if (!SignatureLevel.PAdES_BASELINE_B.equals(signatureLevel) && !SignatureLevel.PKCS7_B.equals(signatureLevel)) {
             Objects.requireNonNull(tspSource, "TSPSource shall be provided for T-level creation!");
             DigestDocument digestDocument = DSSUtils.toDigestDocument(messageDigest);
             parameters.getContext().setDetachedContents(Collections.singletonList(digestDocument));
@@ -212,11 +212,13 @@ public class ExternalCMSService {
      * @param parameters {@link PAdESSignatureParameters} to be checked
      */
     protected void assertConfigurationValid(DSSMessageDigest messageDigest, PAdESSignatureParameters parameters) {
-        Objects.requireNonNull(parameters.getSignatureLevel(), "SignatureLevel shall be defined!");
+        Objects.requireNonNull(parameters.getSignatureLevel(), "SignatureLevel must be defined!");
 
         final SignatureLevel signatureLevel = parameters.getSignatureLevel();
-        if (!SignatureLevel.PAdES_BASELINE_B.equals(signatureLevel) &&
-                !SignatureLevel.PAdES_BASELINE_T.equals(signatureLevel)) {
+        if (!SignatureLevel.PAdES_BASELINE_B.equals(signatureLevel)
+                && !SignatureLevel.PKCS7_B.equals(signatureLevel)
+                && !SignatureLevel.PAdES_BASELINE_T.equals(signatureLevel)
+                && !SignatureLevel.PKCS7_T.equals(signatureLevel)) {
             throw new IllegalArgumentException(String.format(
                     "SignatureLevel '%s' is not supported within PAdESCMSGeneratorService!", signatureLevel));
         }

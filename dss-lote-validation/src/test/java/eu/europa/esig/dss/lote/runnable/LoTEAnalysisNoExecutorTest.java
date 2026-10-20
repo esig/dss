@@ -59,7 +59,7 @@ class LoTEAnalysisNoExecutorTest {
 
         LoTEAnalysis process = new LoTEAnalysis(loteSource, new LoTECacheAccessByKey(
                 new CacheKey("LU"), new DownloadCache(), new ParsingCache(), new ValidationCache()),
-                new FileCacheDataLoader(new MemoryDataLoader(memoryMap)), latch);
+                new FileCacheDataLoader(new MemoryDataLoader(memoryMap)), latch, null);
         assertNotNull(process);
 
         executorService.submit(process);

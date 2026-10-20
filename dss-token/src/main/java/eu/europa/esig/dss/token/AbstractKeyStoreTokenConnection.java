@@ -30,6 +30,7 @@ import java.security.KeyStore;
 import java.security.KeyStore.Entry;
 import java.security.KeyStore.PasswordProtection;
 import java.security.KeyStore.PrivateKeyEntry;
+import java.security.Provider;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -50,10 +51,21 @@ public abstract class AbstractKeyStoreTokenConnection extends AbstractSignatureT
 	private Predicate<DSSPrivateKeyEntry> keyEntryPredicate = new AllKeyEntryPredicate();
 
 	/**
-	 * Default constructor
+	 * Default constructor.
+	 * Uses the default security provider.
 	 */
 	protected AbstractKeyStoreTokenConnection() {
 		// empty
+	}
+
+	/**
+	 * Constructor with a custom security {@code Provider}.
+	 * Adds the provider in java.security.Security.
+	 *
+	 * @param provider {@link Provider}
+	 */
+	protected AbstractKeyStoreTokenConnection(Provider provider) {
+		super(provider);
 	}
 
 	/**

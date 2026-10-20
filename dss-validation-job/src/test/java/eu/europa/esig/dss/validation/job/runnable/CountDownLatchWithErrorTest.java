@@ -83,7 +83,7 @@ class CountDownLatchWithErrorTest extends AbstractTestRunnable {
          */
         public MockErrorRunnableAnalysis(DocumentSource source, CacheAccessByKey cacheAccess, DSSFileLoader dssFileLoader,
                                          CountDownLatch latch) {
-            super(source, cacheAccess, dssFileLoader, latch);
+            super(source, cacheAccess, dssFileLoader, latch, null);
         }
 
         @Override

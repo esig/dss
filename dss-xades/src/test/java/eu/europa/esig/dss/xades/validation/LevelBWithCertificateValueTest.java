@@ -20,15 +20,15 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class LevelBWithCertificateValueTest extends AbstractXAdESTestValidation {
 
@@ -45,7 +45,7 @@ class LevelBWithCertificateValueTest extends AbstractXAdESTestValidation {
 		assertEquals(1, signatureIdList.size());
 
 		SignatureLevel signatureFormat = simpleReport.getSignatureFormat(signatureIdList.get(0));
-		assertEquals(SignatureLevel.XAdES_BASELINE_B, signatureFormat);
+		assertEquals(SignatureLevel.XAdES_EPES, signatureFormat);
 	}
 	
 	@Override

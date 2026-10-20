@@ -22,6 +22,7 @@ package eu.europa.esig.dss.tsl.job;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.model.tsl.LOTLInfo;
 import eu.europa.esig.dss.model.tsl.TLInfo;
 import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
@@ -32,8 +33,10 @@ import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
+import eu.europa.esig.dss.tsl.validation.TLValidatorTask;
 import eu.europa.esig.dss.validation.job.cache.CacheCleaner;
 import eu.europa.esig.dss.validation.job.sync.SynchronizationStrategy;
+import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -49,6 +52,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LOTLChangesTest {
+
+	private static final String TRUSTED_LIST_V5_VALIDATION_POLICY_LOCATION = "/policy/tsl-v5-constraint.xml";
 
 	// Diff LOTL 248 / 250
 	// URL change for SI
@@ -66,6 +71,7 @@ class LOTLChangesTest {
 		job.setOfflineDataLoader(offlineFileLoader);
 		TrustedListsCertificateSource trustedListCertificateSource = new TrustedListsCertificateSource();
 		job.setTrustedListCertificateSource(trustedListCertificateSource);
+		job.setValidationPolicy(validationPolicy());
 
 		CacheCleaner cacheCleaner = new CacheCleaner();
 		cacheCleaner.setCleanFileSystem(true);
@@ -138,6 +144,7 @@ class LOTLChangesTest {
 		job.setOfflineDataLoader(offlineFileLoader);
 		TrustedListsCertificateSource trustedListCertificateSource = new TrustedListsCertificateSource();
 		job.setTrustedListCertificateSource(trustedListCertificateSource);
+		job.setValidationPolicy(validationPolicy());
 
 		job.offlineRefresh();
 
@@ -195,6 +202,7 @@ class LOTLChangesTest {
 		job.setOfflineDataLoader(offlineFileLoader);
 		TrustedListsCertificateSource trustedListCertificateSource = new TrustedListsCertificateSource();
 		job.setTrustedListCertificateSource(trustedListCertificateSource);
+		job.setValidationPolicy(validationPolicy());
 
 		CacheCleaner cacheCleaner = new CacheCleaner();
 		cacheCleaner.setCleanFileSystem(true);
@@ -320,6 +328,11 @@ class LOTLChangesTest {
 		urlMap.put(frURL, frTL);
 
 		return urlMap;
+	}
+
+	private ValidationPolicy validationPolicy() {
+		return ValidationPolicyLoader.fromValidationPolicy(
+				TLValidatorTask.class.getResourceAsStream(TRUSTED_LIST_V5_VALIDATION_POLICY_LOCATION)).create();
 	}
 
 }

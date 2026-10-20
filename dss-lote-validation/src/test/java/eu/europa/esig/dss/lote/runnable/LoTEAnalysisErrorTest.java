@@ -102,7 +102,7 @@ class LoTEAnalysisErrorTest {
          */
         public MockLoTEAnalysis(LoTESource source, CacheAccessByKey cacheAccess, DSSFileLoader dssFileLoader,
                               CountDownLatch latch) {
-            super(source, cacheAccess, dssFileLoader, latch);
+            super(source, cacheAccess, dssFileLoader, latch, null);
         }
 
         @Override

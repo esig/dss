@@ -255,6 +255,7 @@
                 <RevocationInfo>
                     <CertificateId>C-0E9B5C373AFEC1CED5723FCD9231F793BB330FFBF2B94BB8698301C90405B9BF</CertificateId>
                     <RevocationId>R-0e9b5c373afec1ced5723fcd9231f793bb330ffbf2b94bb8698301c90405b9bfcfa17dcb6fe2588a8209a374c1e685a7ecd2068f975bfe1d4ba9234a521e4e36</RevocationId>
+                    <ThisUpdate>2018-02-09T07:03:25Z</ThisUpdate>
                     <Reason>unspecified</Reason>
                     <RevocationDate>2014-12-30T13:28:24Z</RevocationDate>
                 </RevocationInfo>

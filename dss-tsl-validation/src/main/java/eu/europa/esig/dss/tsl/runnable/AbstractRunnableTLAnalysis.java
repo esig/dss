@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.tsl.runnable;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.tsl.download.XmlDownloadTask;
@@ -47,10 +48,28 @@ public abstract class AbstractRunnableTLAnalysis extends AbstractRunnableAnalysi
      * @param cacheAccess {@link CacheAccessByKey}
      * @param dssFileLoader {@link DSSFileLoader}
      * @param latch {@link CountDownLatch}
+     * @deprecated since DSS 6.6. Please use
+     *             {@link AbstractRunnableTLAnalysis(TLSource, CacheAccessByKey, DSSFileLoader dssFileLoader, CountDownLatch, ValidationPolicy)}
      */
+    @Deprecated
     protected AbstractRunnableTLAnalysis(final TLSource source, final CacheAccessByKey cacheAccess,
                                          final DSSFileLoader dssFileLoader, CountDownLatch latch) {
-        super(source, cacheAccess, dssFileLoader, latch);
+        this(source, cacheAccess, dssFileLoader, latch, null);
+    }
+
+    /**
+     * Default constructor
+     *
+     * @param source {@link DocumentSource} representing a TL or LOTL
+     * @param cacheAccess {@link CacheAccessByKey}
+     * @param dssFileLoader {@link DSSFileLoader}
+     * @param latch {@link CountDownLatch}
+     * @param validationPolicy {@link ValidationPolicy}
+     */
+    protected AbstractRunnableTLAnalysis(final TLSource source, final CacheAccessByKey cacheAccess,
+                                         final DSSFileLoader dssFileLoader, final CountDownLatch latch,
+                                         ValidationPolicy validationPolicy) {
+        super(source, cacheAccess, dssFileLoader, latch, validationPolicy);
     }
 
     @Override
@@ -60,7 +79,7 @@ public abstract class AbstractRunnableTLAnalysis extends AbstractRunnableAnalysi
 
     @Override
     protected ValidationTask getValidationTask(DSSDocument document, CertificateSource certificateSource) {
-        return new TLValidatorTask(document, certificateSource);
+        return new TLValidatorTask(document, certificateSource, getValidationPolicy());
     }
 
 }

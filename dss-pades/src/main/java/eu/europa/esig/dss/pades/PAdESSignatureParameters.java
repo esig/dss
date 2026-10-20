@@ -127,7 +127,8 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 
 	@Override
 	public void setSignatureLevel(SignatureLevel signatureLevel) {
-		if (signatureLevel == null || SignatureForm.PAdES != signatureLevel.getSignatureForm()) {
+		if (signatureLevel == null || (SignatureForm.PAdES != signatureLevel.getSignatureForm()
+				&& SignatureForm.PKCS7 != signatureLevel.getSignatureForm())) {
 			throw new IllegalArgumentException("Only PAdES form is allowed !");
 		}
 		super.setSignatureLevel(signatureLevel);

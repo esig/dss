@@ -84,7 +84,7 @@ public class JAdESCompactBuilder extends AbstractJAdESBuilder {
 	@Override
 	protected void assertConfigurationValidity(JAdESSignatureParameters signatureParameters) {
 		Objects.requireNonNull(signatureParameters.getSignaturePackaging(), "SignaturePackaging shall be defined!");
-		Objects.requireNonNull(signatureParameters.getSignatureLevel(), "SignatureLevel shall be defined!");
+		Objects.requireNonNull(signatureParameters.getSignatureLevel(), "SignatureLevel must be defined!");
 
 		SignaturePackaging packaging = signatureParameters.getSignaturePackaging();
 		if (!(SignaturePackaging.ENVELOPING.equals(packaging)) && !(SignaturePackaging.DETACHED.equals(packaging))) {

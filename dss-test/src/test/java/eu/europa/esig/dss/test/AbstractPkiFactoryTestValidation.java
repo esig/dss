@@ -701,6 +701,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 			case CAdES_X:
 			case JAdES_BASELINE_T:
 			case PAdES_BASELINE_T:
+			case PKCS7_T:
 			case CB_AdES_BASELINE_T:
 				return true;
 			default:
@@ -718,6 +719,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 			case CAdES_XL:
 			case JAdES_BASELINE_LT:
 			case PAdES_BASELINE_LT:
+			case PKCS7_LT:
 			case CB_AdES_BASELINE_LT:
 				return true;
 			default:
@@ -734,6 +736,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 			case JAdES_BASELINE_LTA:
 			case PAdES_BASELINE_LTA:
 			case PAdES_LTV:
+			case PKCS7_LTA:
 			case CB_AdES_BASELINE_LTA:
 				return true;
 			default:

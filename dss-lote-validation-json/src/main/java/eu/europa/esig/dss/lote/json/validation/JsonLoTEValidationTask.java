@@ -56,6 +56,7 @@ import java.util.Objects;
 public class JsonLoTEValidationTask implements ValidationTask {
 
     /** The path for a LoTE validation policy */
+    // TODO : to be removed after DSS 6.6.
     private static final String LoTE_VALIDATION_POLICY_LOCATION = "/policy/te-json-constraint.xml";
 
     /** The LoTE document to validate */
@@ -64,17 +65,39 @@ public class JsonLoTEValidationTask implements ValidationTask {
     /** The certificate source to use */
     private final CertificateSource signingCertificateSource;
 
+    /** Validation policy constraints */
+    private ValidationPolicy validationPolicy;
+
     /**
      * Constructor used to instantiate a validator for a LoTE
      *
      * @param loteDocument      the DSSDocument with a LoTE
      * @param signingCertificateSource a certificate source with the allowed certificates to sign this LoTE
+     * @deprecated since DSS 6.6. Please use
+     *             {@link JsonLoTEValidationTask(DSSDocument, CertificateSource, ValidationPolicy)} instead.
      */
+    @Deprecated
     public JsonLoTEValidationTask(DSSDocument loteDocument, CertificateSource signingCertificateSource) {
         Objects.requireNonNull(loteDocument, "The document is null");
         Objects.requireNonNull(signingCertificateSource, "The certificate source is null");
         this.loteDocument = loteDocument;
         this.signingCertificateSource = signingCertificateSource;
+    }
+
+    /**
+     * Constructor used to instantiate a validator for a LoTE
+     *
+     * @param loteDocument      the DSSDocument with a LoTE
+     * @param signingCertificateSource a certificate source with the allowed certificates to sign this LoTE
+     * @param validationPolicy         validation policy constraint for LoTE validation
+     */
+    public JsonLoTEValidationTask(DSSDocument loteDocument, CertificateSource signingCertificateSource,
+                                  ValidationPolicy validationPolicy) {
+        Objects.requireNonNull(loteDocument, "The document is null");
+        Objects.requireNonNull(signingCertificateSource, "The certificate source is null");
+        this.loteDocument = loteDocument;
+        this.signingCertificateSource = signingCertificateSource;
+        this.validationPolicy = validationPolicy;
     }
 
     @Override
@@ -127,12 +150,16 @@ public class JsonLoTEValidationTask implements ValidationTask {
     }
 
     private ValidationPolicy getValidationPolicy() {
-        try {
-            return ValidationPolicyLoader.fromValidationPolicy(
-                    JsonLoTEValidationTask.class.getResourceAsStream(LoTE_VALIDATION_POLICY_LOCATION)).create();
-        } catch (Exception e) {
-            throw new DSSException("Unable to load the validation policy for LoTE", e);
+        // TODO : after DSS 6.6, remove default instantiation
+        if (validationPolicy == null) {
+            try {
+                validationPolicy = ValidationPolicyLoader.fromValidationPolicy(
+                        JsonLoTEValidationTask.class.getResourceAsStream(LoTE_VALIDATION_POLICY_LOCATION)).create();
+            } catch (Exception e) {
+                throw new DSSException("Unable to load the validation policy for LoTE", e);
+            }
         }
+        return validationPolicy;
     }
 
 }

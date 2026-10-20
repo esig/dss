@@ -93,7 +93,7 @@ class JAdESServiceTest extends PKIFactoryAccess {
         signatureParameters.setGenerateTBSWithoutCertificate(true);
 
         exception = assertThrows(NullPointerException.class, () -> signAndValidate(documentToSign, signatureParameters));
-        assertEquals("SignatureLevel shall be defined!", exception.getMessage());
+        assertEquals("SignatureLevel must be defined!", exception.getMessage());
         signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
 
         signatureParameters.setGenerateTBSWithoutCertificate(false);
@@ -197,7 +197,7 @@ class JAdESServiceTest extends PKIFactoryAccess {
 
         signatureParameters.setSigningCertificate(getSigningCert());
         exception = assertThrows(NullPointerException.class, () -> signAndValidate(documents, signatureParameters));
-        assertEquals("SignatureLevel shall be defined!", exception.getMessage());
+        assertEquals("SignatureLevel must be defined!", exception.getMessage());
 
         signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
         exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documents, signatureParameters));

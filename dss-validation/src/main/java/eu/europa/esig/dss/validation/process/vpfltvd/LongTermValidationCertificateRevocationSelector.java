@@ -91,9 +91,9 @@ public class LongTermValidationCertificateRevocationSelector extends Certificate
      * @param tokenId          {@link String} id of a token being validated
      * @param validationPolicy {@link ValidationPolicy}
      */
-    protected LongTermValidationCertificateRevocationSelector(I18nProvider i18nProvider, CertificateWrapper certificate,
-                                                           Date currentTime, Map<String, XmlBasicBuildingBlocks> bbbs,
-                                                           String tokenId, ValidationPolicy validationPolicy) {
+    public LongTermValidationCertificateRevocationSelector(I18nProvider i18nProvider, CertificateWrapper certificate,
+                                                              Date currentTime, Map<String, XmlBasicBuildingBlocks> bbbs,
+                                                              String tokenId, ValidationPolicy validationPolicy) {
         this(i18nProvider, certificate, currentTime, null, bbbs, tokenId, validationPolicy);
     }
 

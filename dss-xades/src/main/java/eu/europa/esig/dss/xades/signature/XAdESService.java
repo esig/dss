@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.SigningOperation;
 import eu.europa.esig.dss.evidencerecord.EvidenceRecordIncorporationService;
@@ -103,10 +104,8 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 	public ToBeSigned getDataToSign(List<DSSDocument> toSignDocuments, XAdESSignatureParameters parameters) {
 		Objects.requireNonNull(toSignDocuments, "toSignDocuments cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
-		
-		assertSigningCertificateValid(parameters);
-		assertMultiDocumentsAllowed(toSignDocuments, parameters);
-		assertDocumentsValid(toSignDocuments);
+
+		assertSignaturePossible(toSignDocuments, parameters);
 
 		final XAdESLevelBaselineB levelBaselineB = new XAdESLevelBaselineB(certificateVerifier);
 		final byte[] dataToSign = levelBaselineB.getDataToSign(toSignDocuments, parameters);
@@ -131,10 +130,8 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		Objects.requireNonNull(parameters.getSignatureLevel(), "SignatureLevel must be defined!");
 		Objects.requireNonNull(signatureValue, "SignatureValue cannot be null!");
-		
-		assertSigningCertificateValid(parameters);
-		assertMultiDocumentsAllowed(toSignDocuments, parameters);
-		assertDocumentsValid(toSignDocuments);
+
+		assertSignaturePossible(toSignDocuments, parameters);
 
 		parameters.getContext().setOperationKind(SigningOperation.SIGN);
 		XAdESSignatureProfile profile;
@@ -191,39 +188,42 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 	 */
 	private SignatureExtension<XAdESSignatureParameters> getExtensionProfile(final XAdESSignatureParameters parameters) {
 		switch (parameters.getSignatureLevel()) {
-		case XAdES_BASELINE_B:
-			return null;
-		case XAdES_BASELINE_T:
-			final XAdESLevelBaselineT extensionT = new XAdESLevelBaselineT(certificateVerifier);
-			extensionT.setTspSource(tspSource);
-			return extensionT;
-		case XAdES_C:
-			final XAdESLevelC extensionC = new XAdESLevelC(certificateVerifier);
-			extensionC.setTspSource(tspSource);
-			return extensionC;
-		case XAdES_X:
-			final XAdESLevelX extensionX = new XAdESLevelX(certificateVerifier);
-			extensionX.setTspSource(tspSource);
-			return extensionX;
-		case XAdES_XL:
-			final XAdESLevelXL extensionXL = new XAdESLevelXL(certificateVerifier);
-			extensionXL.setTspSource(tspSource);
-			return extensionXL;
-		case XAdES_A:
-			final XAdESLevelA extensionA = new XAdESLevelA(certificateVerifier);
-			extensionA.setTspSource(tspSource);
-			return extensionA;
-		case XAdES_BASELINE_LT:
-			final XAdESLevelBaselineLT extensionLT = new XAdESLevelBaselineLT(certificateVerifier);
-			extensionLT.setTspSource(tspSource);
-			return extensionLT;
-		case XAdES_BASELINE_LTA:
-			final XAdESLevelBaselineLTA extensionLTA = new XAdESLevelBaselineLTA(certificateVerifier);
-			extensionLTA.setTspSource(tspSource);
-			return extensionLTA;
-		default:
-			throw new UnsupportedOperationException(
-					String.format("Unsupported signature format '%s' for extension.", parameters.getSignatureLevel()));
+			case XAdES_BASELINE_B:
+            case XAdES_BES:
+				return null;
+			case XAdES_BASELINE_T:
+            case XAdES_T:
+				final XAdESLevelBaselineT extensionT = new XAdESLevelBaselineT(certificateVerifier);
+				extensionT.setTspSource(tspSource);
+				return extensionT;
+			case XAdES_C:
+				final XAdESLevelC extensionC = new XAdESLevelC(certificateVerifier);
+				extensionC.setTspSource(tspSource);
+				return extensionC;
+			case XAdES_X:
+				final XAdESLevelX extensionX = new XAdESLevelX(certificateVerifier);
+				extensionX.setTspSource(tspSource);
+				return extensionX;
+			case XAdES_XL:
+				final XAdESLevelXL extensionXL = new XAdESLevelXL(certificateVerifier);
+				extensionXL.setTspSource(tspSource);
+				return extensionXL;
+			case XAdES_A:
+				final XAdESLevelA extensionA = new XAdESLevelA(certificateVerifier);
+				extensionA.setTspSource(tspSource);
+				return extensionA;
+			case XAdES_BASELINE_LT:
+            case XAdES_LT:
+				final XAdESLevelBaselineLT extensionLT = new XAdESLevelBaselineLT(certificateVerifier);
+				extensionLT.setTspSource(tspSource);
+				return extensionLT;
+			case XAdES_BASELINE_LTA:
+				final XAdESLevelBaselineLTA extensionLTA = new XAdESLevelBaselineLTA(certificateVerifier);
+				extensionLTA.setTspSource(tspSource);
+				return extensionLTA;
+			default:
+				throw new UnsupportedOperationException(
+						String.format("Unsupported signature format '%s' for extension.", parameters.getSignatureLevel()));
 		}
 	}
 
@@ -286,7 +286,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 	public ToBeSigned getDataToBeCounterSigned(DSSDocument signatureDocument, XAdESCounterSignatureParameters parameters) {
 		Objects.requireNonNull(signatureDocument, "signatureDocument cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
-		verifyAndSetCounterSignatureParameters(parameters);
+		assertCounterSignatureParameters(parameters);
 		
 		CounterSignatureBuilder counterSignatureBuilder = new CounterSignatureBuilder(certificateVerifier);
 		final DSSDocument signatureValue = counterSignatureBuilder.getCanonicalizedSignatureValue(signatureDocument, parameters);
@@ -303,7 +303,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		Objects.requireNonNull(signatureDocument, "signatureDocument cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		Objects.requireNonNull(signatureValue, "signatureValue cannot be null!");
-		verifyAndSetCounterSignatureParameters(parameters);
+		assertCounterSignatureParameters(parameters);
 
 		CounterSignatureBuilder counterSignatureBuilder = new CounterSignatureBuilder(certificateVerifier);
 		final DSSDocument signatureValueToSign = counterSignatureBuilder.getCanonicalizedSignatureValue(signatureDocument, parameters);
@@ -335,12 +335,75 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		return signatureWithEvidenceRecord;
 	}
 	
-	private void verifyAndSetCounterSignatureParameters(XAdESCounterSignatureParameters parameters) {
+	private void assertCounterSignatureParameters(XAdESCounterSignatureParameters parameters) {
+		assertSigningCertificateValid(parameters);
+		assertSignatureLevel(parameters);
 		if (parameters.getSignaturePackaging() == null) {
 			parameters.setSignaturePackaging(SignaturePackaging.DETACHED);
 		} else if (!SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging())) {
 			throw new IllegalArgumentException(String.format("The SignaturePackaging '%s' is not supported by XAdES Counter Signature!", 
 					parameters.getSignaturePackaging()));
+		}
+	}
+
+	/**
+	 * Asserts whether signature creation is possible.
+	 * If a validation condition fails, a corresponding exception is thrown.
+	 *
+	 * @param toSignDocuments a list of {@link DSSDocument}s to sign
+	 * @param parameters {@link XAdESSignatureParameters}
+	 */
+	protected void assertSignaturePossible(List<DSSDocument> toSignDocuments, XAdESSignatureParameters parameters) {
+		assertSigningCertificateValid(parameters);
+		assertMultiDocumentsAllowed(toSignDocuments, parameters);
+		assertDocumentsValid(toSignDocuments);
+		assertSignatureLevel(parameters);
+	}
+
+	/**
+	 * Verifies the provided signature level. Logs a warning in case of a conflict with signature parameters.
+	 *
+	 * @param parameters {@link XAdESSignatureParameters}
+	 */
+	protected void assertSignatureLevel(XAdESSignatureParameters parameters) {
+		Objects.requireNonNull(parameters.getSignatureLevel(), "SignatureLevel must be defined!");
+		switch (parameters.getSignatureLevel()) {
+			case XAdES_BASELINE_B:
+			case XAdES_BASELINE_T:
+			case XAdES_BASELINE_LT:
+			case XAdES_BASELINE_LTA:
+			case XAdES_BES:
+			case XAdES_T:
+			case XAdES_LT:
+			case XAdES_C:
+			case XAdES_X:
+			case XAdES_XL:
+			case XAdES_A:
+				break;
+			default:
+				throw new UnsupportedOperationException(
+						String.format("Unsupported signature format '%s'.", parameters.getSignatureLevel()));
+		}
+		if (parameters.isEn319132()) {
+			if (!isBaseline(parameters.getSignatureLevel())) {
+				LOG.warn("EN 319312 constraint is set while using a non-baseline signature level '{}'", parameters.getSignatureLevel());
+			}
+		} else {
+			if (isBaseline(parameters.getSignatureLevel())) {
+				LOG.warn("EN 319312 constraint is disabled while using a baseline signature level '{}'", parameters.getSignatureLevel());
+			}
+		}
+	}
+
+	private boolean isBaseline(SignatureLevel signatureLevel) {
+		switch (signatureLevel) {
+			case XAdES_BASELINE_B:
+			case XAdES_BASELINE_T:
+			case XAdES_BASELINE_LT:
+			case XAdES_BASELINE_LTA:
+				return true;
+			default:
+				return false;
 		}
 	}
 

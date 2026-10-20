@@ -27,6 +27,7 @@ import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.job.DownloadInfoRecord;
 import eu.europa.esig.dss.model.job.ParsingInfoRecord;
 import eu.europa.esig.dss.model.job.ValidationInfoRecord;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.model.tsl.LOTLInfo;
 import eu.europa.esig.dss.model.tsl.PivotInfo;
 import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
@@ -35,6 +36,8 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
+import eu.europa.esig.dss.tsl.validation.TLValidatorTask;
+import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -52,6 +55,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LOTLWithPivotsRefreshTest {
 
+	private static final String TRUSTED_LIST_V5_VALIDATION_POLICY_LOCATION = "/policy/tsl-v5-constraint.xml";
+
 	@TempDir
 	File cacheDirectory;
 
@@ -63,6 +68,7 @@ class LOTLWithPivotsRefreshTest {
 		TLValidationJob job = new TLValidationJob();
 		job.setListOfTrustedListSources(getLOTLSource());
 		job.setOfflineDataLoader(offlineFileLoader);
+		job.setValidationPolicy(validationPolicy());
 
 		job.offlineRefresh();
 
@@ -81,6 +87,7 @@ class LOTLWithPivotsRefreshTest {
 		TLValidationJob job = new TLValidationJob();
 		job.setListOfTrustedListSources(getLOTLSource());
 		job.setOfflineDataLoader(offlineFileLoader);
+		job.setValidationPolicy(validationPolicy());
 
 		job.offlineRefresh();
 
@@ -106,6 +113,7 @@ class LOTLWithPivotsRefreshTest {
 		lotlSource.setCertificateSource(new CommonCertificateSource());
 		job.setListOfTrustedListSources(lotlSource);
 		job.setOfflineDataLoader(offlineFileLoader);
+		job.setValidationPolicy(validationPolicy());
 
 		job.offlineRefresh();
 
@@ -128,6 +136,7 @@ class LOTLWithPivotsRefreshTest {
 		lotlSource.setPivotSupport(true);
 		job.setListOfTrustedListSources(lotlSource);
 		job.setOfflineDataLoader(offlineFileLoader);
+		job.setValidationPolicy(validationPolicy());
 
 		job.offlineRefresh();
 
@@ -157,6 +166,7 @@ class LOTLWithPivotsRefreshTest {
 		lotlSource.setCertificateSource(certificateSource);
 		job.setListOfTrustedListSources(lotlSource);
 		job.setOfflineDataLoader(offlineFileLoader);
+		job.setValidationPolicy(validationPolicy());
 
 		job.offlineRefresh();
 
@@ -250,6 +260,11 @@ class LOTLWithPivotsRefreshTest {
 				"MIID/DCCAuSgAwIBAgIQEAAAAAAAWgS4SGkJJUcHdzANBgkqhkiG9w0BAQUFADAzMQswCQYDVQQGEwJCRTETMBEGA1UEAxMKQ2l0aXplbiBDQTEPMA0GA1UEBRMGMjAxMzA2MB4XDTEzMDcxNzE3NDQwOFoXDTE4MDcxMzIzNTk1OVowbjELMAkGA1UEBhMCQkUxITAfBgNVBAMTGFBpZXJyZSBEYW1hcyAoU2lnbmF0dXJlKTEOMAwGA1UEBBMFRGFtYXMxFjAUBgNVBCoMDVBpZXJyZSBBbmRyw6kxFDASBgNVBAUTCzYwMDIxMjExOTE5MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCMv+7DvhzLwG3prirUDGaYRS2+jBZtN2cYXuloKSqAc5Q58FEmk0gsZRF+/4dkt8hgCvbBcpmG6FcvTfNxQbxPX88yYwpBYsWnJ3aD5P4QrN2+fZxwxfXxRRcX+t30IBpr+WYFv/GhJhoFo0LWUehC4eyvnMfP4J/MR4TGlQRrcwIDAQABo4IBUzCCAU8wHwYDVR0jBBgwFoAUww/Dck0/3rI43jkuR2RQ//KP88cwbgYIKwYBBQUHAQEEYjBgMDYGCCsGAQUFBzAChipodHRwOi8vY2VydHMuZWlkLmJlbGdpdW0uYmUvYmVsZ2l1bXJzMi5jcnQwJgYIKwYBBQUHMAGGGmh0dHA6Ly9vY3NwLmVpZC5iZWxnaXVtLmJlMEQGA1UdIAQ9MDswOQYHYDgJAQECATAuMCwGCCsGAQUFBwIBFiBodHRwOi8vcmVwb3NpdG9yeS5laWQuYmVsZ2l1bS5iZTA5BgNVHR8EMjAwMC6gLKAqhihodHRwOi8vY3JsLmVpZC5iZWxnaXVtLmJlL2VpZGMyMDEzMDYuY3JsMA4GA1UdDwEB/wQEAwIGQDARBglghkgBhvhCAQEEBAMCBSAwGAYIKwYBBQUHAQMEDDAKMAgGBgQAjkYBATANBgkqhkiG9w0BAQUFAAOCAQEAEE3KGmLX5XXqArQwIZQmQEE6orKSu3a1z8ey1txsZC4rMk1vpvC6MtsfDaU4N6ooprhcM/WAlcIGOPCNhvxV+xcY7gUBwa6myiClnK0CMSiGYHqWcJG8ns13B9f0+5PJqsoziPoksXb2A9VXkr5aEdEmBYLjh7wG7GwAuDgDT0v87qtphN02/MAlJcNqT3JUUAotD7yfEybmK245jKo+pTYeCHGh7r1HzVWhbUDcQ/e1PpQXjVqBmr4k1ACtuu4H19t6K1P5kf7ta5JFEJPFgy3Hxt6YqzoY07WTVEpS4gJqtleIdX1Fhse7jq83ltcCzlfysBRqY/okUzipo1rbQw=="));
 		lotl.setCertificateSource(certificateSource);
 		return lotl;
+	}
+
+	private ValidationPolicy validationPolicy() {
+		return ValidationPolicyLoader.fromValidationPolicy(
+				TLValidatorTask.class.getResourceAsStream(TRUSTED_LIST_V5_VALIDATION_POLICY_LOCATION)).create();
 	}
 
 }

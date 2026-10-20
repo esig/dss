@@ -26,6 +26,7 @@ import eu.europa.esig.dss.model.job.DocumentInfo;
 import eu.europa.esig.dss.model.job.DocumentListInfo;
 import eu.europa.esig.dss.model.job.ParsingInfoRecord;
 import eu.europa.esig.dss.model.job.ValidationJobSummary;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.job.alerts.ValidationJobAlerter;
@@ -123,6 +124,11 @@ public abstract class ValidationJob<D extends DocumentInfo, L extends DocumentLi
      * List of document info alerts
      */
     private List<Alert<D>> documentAlerts;
+
+	/**
+	 * Validation policy containing constraints for downloaded documents validation
+	 */
+	private ValidationPolicy validationPolicy;
 
 	/**
 	 * Default constructor instantiating object with null configuration
@@ -262,6 +268,35 @@ public abstract class ValidationJob<D extends DocumentInfo, L extends DocumentLi
 	 */
 	public void setDocumentAlerts(List<Alert<D>> documentAlerts) {
 	    this.documentAlerts = documentAlerts;
+	}
+
+	/**
+	 * Gets the validation policy to perform the document validation task.
+	 * If not provided, loads the default policy.
+	 *
+	 * @return {@link ValidationPolicy}
+	 */
+	public ValidationPolicy getValidationPolicy() {
+		if (validationPolicy == null) {
+			validationPolicy = loadDefaultValidationPolicy();
+		}
+		return validationPolicy;
+	}
+
+	/**
+	 * Loads the default validation policy for the given document type
+	 *
+	 * @return {@link ValidationPolicy}
+	 */
+	protected abstract ValidationPolicy loadDefaultValidationPolicy();
+
+	/**
+	 * Sets a validation policy to be used on document validation
+	 *
+	 * @param validationPolicy {@link ValidationPolicy}
+	 */
+	public void setValidationPolicy(ValidationPolicy validationPolicy) {
+		this.validationPolicy = validationPolicy;
 	}
 
 	/**

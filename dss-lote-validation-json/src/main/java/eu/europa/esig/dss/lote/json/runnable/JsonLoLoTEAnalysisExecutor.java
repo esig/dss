@@ -27,6 +27,7 @@ import eu.europa.esig.dss.lote.json.validation.JsonLoTEValidationTask;
 import eu.europa.esig.dss.lote.runnable.LoLoTEAnalysisExecutor;
 import eu.europa.esig.dss.lote.source.LoLoTESource;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.validation.job.download.DownloadTask;
 import eu.europa.esig.dss.validation.job.parsing.ParsingTask;
@@ -64,8 +65,14 @@ public class JsonLoLoTEAnalysisExecutor implements LoLoTEAnalysisExecutor {
     }
 
     @Override
+    @Deprecated
     public ValidationTask getValidationTask(DSSDocument document, CertificateSource signingCertificateSource) {
-        return new JsonLoTEValidationTask(document, signingCertificateSource);
+        return getValidationTask(document, signingCertificateSource, null);
+    }
+
+    @Override
+    public ValidationTask getValidationTask(DSSDocument document, CertificateSource signingCertificateSource, ValidationPolicy validationPolicy) {
+        return new JsonLoTEValidationTask(document, signingCertificateSource, validationPolicy);
     }
 
 }

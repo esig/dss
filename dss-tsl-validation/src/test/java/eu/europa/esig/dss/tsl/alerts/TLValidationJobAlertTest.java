@@ -26,6 +26,7 @@ import eu.europa.esig.dss.alert.handler.AlertHandler;
 import eu.europa.esig.dss.alert.handler.CompositeAlertHandler;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -51,6 +52,8 @@ import eu.europa.esig.dss.tsl.job.MockDataLoader;
 import eu.europa.esig.dss.tsl.job.TLValidationJob;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
+import eu.europa.esig.dss.tsl.validation.TLValidatorTask;
+import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -66,6 +69,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 class TLValidationJobAlertTest {
+
+	private static final String TRUSTED_LIST_V5_VALIDATION_POLICY_LOCATION = "/policy/tsl-v5-constraint.xml";
 
 	@TempDir
 	File cacheDirectory;
@@ -91,6 +96,7 @@ class TLValidationJobAlertTest {
 		TLValidationJob job = new TLValidationJob();
 		job.setTrustedListSources(getTLSource(url));
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ_BROKEN_SIG, url));
+		job.setValidationPolicy(validationPolicy());
 
 		List<Alert<TLInfo>> alerts = new ArrayList<>();
 		TLSignatureErrorDetection signingDetection = new TLSignatureErrorDetection();
@@ -115,6 +121,7 @@ class TLValidationJobAlertTest {
 		TLValidationJob job = new TLValidationJob();
 		job.setTrustedListSources(getTLSource(url));
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ, url));
+		job.setValidationPolicy(validationPolicy());
 
 		List<Alert<TLInfo>> alerts = new ArrayList<>();
 		TLSignatureErrorDetection signingDetection = new TLSignatureErrorDetection();
@@ -138,6 +145,7 @@ class TLValidationJobAlertTest {
 		TLValidationJob job = new TLValidationJob();
 		job.setTrustedListSources(getTLSource(url));
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ_NOT_PARSABLE, url));
+		job.setValidationPolicy(validationPolicy());
 
 		List<Alert<TLInfo>> alerts = new ArrayList<>();
 		TLParsingErrorDetection signingDetection = new TLParsingErrorDetection();
@@ -161,6 +169,7 @@ class TLValidationJobAlertTest {
 		TLValidationJob job = new TLValidationJob();
 		job.setTrustedListSources(getTLSource(url));
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ_NOT_COMPLIANT, url));
+		job.setValidationPolicy(validationPolicy());
 
 		List<Alert<TLInfo>> alerts = new ArrayList<>();
 		TLParsingErrorDetection signingDetection = new TLParsingErrorDetection();
@@ -184,6 +193,7 @@ class TLValidationJobAlertTest {
 		TLValidationJob job = new TLValidationJob();
 		job.setTrustedListSources(getTLSource(url));
 		job.setOnlineDataLoader(getOnlineDataLoader(EXPIRED_LOTL, url));
+		job.setValidationPolicy(validationPolicy());
 
 		List<Alert<TLInfo>> alerts = new ArrayList<>();
 		TLExpirationDetection expirationDetection = new TLExpirationDetection();
@@ -209,6 +219,7 @@ class TLValidationJobAlertTest {
 
 		job.setTrustedListCertificateSource(new TrustedListsCertificateSource());
 		job.setOnlineDataLoader(getOnlineDataLoader(LOTL, LOTL_URL));
+		job.setValidationPolicy(validationPolicy());
 
 		LOTLSource lotlSource = new LOTLSource();
 
@@ -245,6 +256,7 @@ class TLValidationJobAlertTest {
 
 		job.setTrustedListCertificateSource(new TrustedListsCertificateSource());
 		job.setOnlineDataLoader(getOnlineDataLoader(LOTL, OLD_LOTL_URL));
+		job.setValidationPolicy(validationPolicy());
 
 		LOTLSource lotlSource = new LOTLSource();
 
@@ -287,6 +299,11 @@ class TLValidationJobAlertTest {
 		onlineFileLoader.setDataLoader(new MockDataLoader(onlineMap));
 		onlineFileLoader.setFileCacheDirectory(cacheDirectory);
 		return onlineFileLoader;
+	}
+
+	private ValidationPolicy validationPolicy() {
+		return ValidationPolicyLoader.fromValidationPolicy(
+				TLValidatorTask.class.getResourceAsStream(TRUSTED_LIST_V5_VALIDATION_POLICY_LOCATION)).create();
 	}
 
 }

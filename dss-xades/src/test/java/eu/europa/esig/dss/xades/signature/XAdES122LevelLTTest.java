@@ -20,19 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
-import javax.xml.transform.stream.StreamSource;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -44,6 +31,17 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.definition.XAdESNamespace;
 import eu.europa.esig.xades.XAdES111Utils;
+import org.junit.jupiter.api.BeforeEach;
+
+import javax.xml.transform.stream.StreamSource;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class XAdES122LevelLTTest extends AbstractXAdESTestSignature {
 
@@ -59,7 +57,7 @@ class XAdES122LevelLTTest extends AbstractXAdESTestSignature {
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_LT);
 		signatureParameters.setXadesNamespace(XAdESNamespace.XADES_122);
 		signatureParameters.setEn319132(false);
 

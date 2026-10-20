@@ -24,10 +24,12 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.validation.job.validation.ValidationResult;
+import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -37,6 +39,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 class DKCertificateTest {
+
+	private static final String TRUSTED_LIST_V5_VALIDATION_POLICY_LOCATION = "/policy/tsl-v5-constraint.xml";
 
 	private static final DSSDocument DOC = new FileDocument(new File("src/test/resources/dk_tl-sn21.xml"));
 
@@ -52,7 +56,7 @@ class DKCertificateTest {
 	void dkPreviousSigCert() {
 		CommonTrustedCertificateSource certificateSource = new CommonTrustedCertificateSource();
 		certificateSource.addCertificate(PREVIOUS_SIG_CERT);
-		TLValidatorTask task = new TLValidatorTask(DOC, certificateSource);
+		TLValidatorTask task = new TLValidatorTask(DOC, certificateSource, validationPolicy());
 
 		ValidationResult result = task.get();
 		assertNotNull(result);
@@ -69,7 +73,7 @@ class DKCertificateTest {
 	void dkTestOther() {
 		CommonTrustedCertificateSource certificateSource = new CommonTrustedCertificateSource();
 		certificateSource.addCertificate(WRONG);
-		TLValidatorTask task = new TLValidatorTask(DOC, certificateSource);
+		TLValidatorTask task = new TLValidatorTask(DOC, certificateSource, validationPolicy());
 
 		ValidationResult result = task.get();
 		assertNotNull(result);
@@ -86,7 +90,7 @@ class DKCertificateTest {
 	void dkTestExpected() {
 		CommonTrustedCertificateSource certificateSource = new CommonTrustedCertificateSource();
 		certificateSource.addCertificate(EXPECTED_SIG_CERT);
-		TLValidatorTask task = new TLValidatorTask(DOC, certificateSource);
+		TLValidatorTask task = new TLValidatorTask(DOC, certificateSource, validationPolicy());
 
 		ValidationResult result = task.get();
 		assertNotNull(result);
@@ -102,7 +106,7 @@ class DKCertificateTest {
 	@Test
 	void dkTestNone() {
 		CommonTrustedCertificateSource certificateSource = new CommonTrustedCertificateSource();
-		TLValidatorTask task = new TLValidatorTask(DOC, certificateSource);
+		TLValidatorTask task = new TLValidatorTask(DOC, certificateSource, validationPolicy());
 
 		ValidationResult result = task.get();
 		assertNotNull(result);
@@ -112,6 +116,11 @@ class DKCertificateTest {
 
 		assertEquals(PREVIOUS_SIG_CERT, result.getSigningCertificate());
 		assertEquals(0, result.getPotentialSigners().size());
+	}
+
+	private ValidationPolicy validationPolicy() {
+		return ValidationPolicyLoader.fromValidationPolicy(
+				TLValidatorTask.class.getResourceAsStream(TRUSTED_LIST_V5_VALIDATION_POLICY_LOCATION)).create();
 	}
 
 }

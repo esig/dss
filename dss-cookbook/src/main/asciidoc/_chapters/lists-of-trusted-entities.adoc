@@ -67,6 +67,10 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/LoTEValida
 
 Please see <<DSSFileLoader>> from the <<TrustedLists>> section.
 
+==== LoTE Validation Policy
+
+Please see <<TLValidationPolicy>> from the <<TrustedLists>> section.
+
 ==== SynchronizationStrategy
 
 Please see <<SynchronizationStrategy>> from the <<TrustedLists>> section.

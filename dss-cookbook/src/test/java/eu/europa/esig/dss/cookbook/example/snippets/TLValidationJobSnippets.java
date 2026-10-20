@@ -68,6 +68,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.job.cache.CacheCleaner;
 import eu.europa.esig.dss.validation.job.sync.AcceptAllStrategy;
 import eu.europa.esig.dss.validation.job.sync.SynchronizationStrategy;
+import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import eu.europa.esig.trustedlist.jaxb.tsl.InternationalNamesType;
 import eu.europa.esig.trustedlist.jaxb.tsl.MultiLangNormStringType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPInformationType;
@@ -173,6 +174,19 @@ public class TLValidationJobSnippets {
 		return onlineFileLoader;
 	}
 	// end::job-loaders[]
+
+
+	public void validationPolicy() {
+		TLValidationJob tlValidationJob = new TLValidationJob();
+
+		// tag::custom-policy[]
+		// import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
+
+		tlValidationJob.setValidationPolicy(
+				ValidationPolicyLoader.fromValidationPolicy("path/to/policy").create());
+		// end::custom-policy[]
+
+	}
 
 	public void synchronizationStrategyConfiguration() {
 		// tag::synchronization-strategy[]

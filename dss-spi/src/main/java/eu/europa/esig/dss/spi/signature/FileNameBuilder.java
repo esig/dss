@@ -254,6 +254,7 @@ public class FileNameBuilder {
                     }
                     break; // return empty
                 case PAdES:
+                case PKCS7:
                     return MimeTypeEnum.PDF.getExtension();
                 case JAdES:
                     return MimeTypeEnum.JSON.getExtension();

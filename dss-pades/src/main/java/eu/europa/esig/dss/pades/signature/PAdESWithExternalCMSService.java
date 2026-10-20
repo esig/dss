@@ -173,7 +173,7 @@ public class PAdESWithExternalCMSService implements Serializable {
                                     DSSDocument cmsDocument) {
         Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
         Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
-        Objects.requireNonNull(parameters.getSignatureLevel(), "SignatureLevel shall be defined within parameters!");
+        Objects.requireNonNull(parameters.getSignatureLevel(), "SignatureLevel must be defined within parameters!");
         Objects.requireNonNull(cmsDocument, "CMSDocument cannot be null!");
         PAdESUtils.assertPdfDocument(toSignDocument);
         assertNotDigestDocument(cmsDocument);
@@ -184,7 +184,9 @@ public class PAdESWithExternalCMSService implements Serializable {
         final PDFSignatureService pdfSignatureService = getPAdESSignatureService();
         DSSDocument signatureDocument = pdfSignatureService.sign(toSignDocument, derEncodedCMS, parameters);
 
-        if (SignatureLevel.PAdES_BASELINE_B != parameters.getSignatureLevel() && isExtensionRequired(cmsSignedData, parameters)) {
+        if (SignatureLevel.PAdES_BASELINE_B != parameters.getSignatureLevel()
+                && SignatureLevel.PKCS7_B != parameters.getSignatureLevel()
+                && isExtensionRequired(cmsSignedData, parameters)) {
             parameters.getContext().setDetachedContents(Collections.singletonList(toSignDocument));
             PAdESService padesService = getPAdESService();
             signatureDocument = padesService.extendDocument(signatureDocument, parameters);
@@ -247,7 +249,8 @@ public class PAdESWithExternalCMSService implements Serializable {
     }
 
     private boolean isExtensionRequired(CMSSignedData cmsSignedData, PAdESSignatureParameters parameters) {
-        if (SignatureLevel.PAdES_BASELINE_T.equals(parameters.getSignatureLevel())) {
+        if (SignatureLevel.PAdES_BASELINE_T.equals(parameters.getSignatureLevel())
+                || SignatureLevel.PKCS7_T.equals(parameters.getSignatureLevel())) {
             // only first SignerInformation is considered.
             SignerInformation signerInformation = cmsSignedData.getSignerInfos().iterator().next();
             CAdESUnsignedAttributes unsignedAttributes = CAdESUnsignedAttributes.build(signerInformation);

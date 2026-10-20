@@ -20,21 +20,23 @@
  */
 package eu.europa.esig.dss.token;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.io.IOException;
-import java.security.KeyStore.PasswordProtection;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyStore.PasswordProtection;
+import java.security.Provider;
+import java.security.Security;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class Pkcs12SignatureTokenTest {
 
@@ -58,7 +60,7 @@ class Pkcs12SignatureTokenTest {
 			assertNotNull(entry.getCertificateChain());
 			assertNotNull(entry.getEncryptionAlgorithm());
 
-			ToBeSigned toBeSigned = new ToBeSigned("Hello world".getBytes("UTF-8"));
+			ToBeSigned toBeSigned = new ToBeSigned("Hello world".getBytes(StandardCharsets.UTF_8));
 			SignatureValue signValue = signatureToken.sign(toBeSigned, DigestAlgorithm.SHA256, entry);
 			assertNotNull(signValue);
 			assertNotNull(signValue.getAlgorithm());
@@ -67,11 +69,48 @@ class Pkcs12SignatureTokenTest {
 	}
 
 	@Test
+	void testPkcs12WithSunProvider() throws IOException {
+		Provider provider = Security.getProvider("Sun");
+		try (Pkcs12SignatureToken signatureToken = new Pkcs12SignatureToken("src/test/resources/user_a_rsa.p12",
+				new PasswordProtection("password".toCharArray()), provider)) {
+			assertNotNull(signatureToken);
+
+			List<DSSPrivateKeyEntry> keys = signatureToken.getKeys();
+			assertFalse(keys.isEmpty());
+
+			KSPrivateKeyEntry dssPrivateKeyEntry = (KSPrivateKeyEntry) keys.get(0);
+			assertNotNull(dssPrivateKeyEntry);
+			assertNotNull(dssPrivateKeyEntry.getAlias());
+
+			DSSPrivateKeyEntry entry = signatureToken.getKey(dssPrivateKeyEntry.getAlias(),
+					new PasswordProtection("password".toCharArray()));
+			assertNotNull(entry);
+			assertNotNull(entry.getCertificate());
+			assertNotNull(entry.getCertificateChain());
+			assertNotNull(entry.getEncryptionAlgorithm());
+
+			ToBeSigned toBeSigned = new ToBeSigned("Hello world".getBytes(StandardCharsets.UTF_8));
+			SignatureValue signValue = signatureToken.sign(toBeSigned, DigestAlgorithm.SHA256, entry);
+			assertNotNull(signValue);
+			assertNotNull(signValue.getAlgorithm());
+			assertNotNull(signValue.getValue());
+		}
+	}
+
+	@Test
+	void testPkcs12WithWrongProvider() {
+		Provider provider = Security.getProvider("SunJCE");
+		Exception exception = assertThrows(DSSException.class, () ->
+				new Pkcs12SignatureToken("src/test/resources/user_a_rsa.p12", new PasswordProtection("password".toCharArray()), provider));
+		assertEquals("Unable to instantiate KeyStoreSignatureTokenConnection : PKCS12 not found", exception.getMessage());
+	}
+
+	@Test
 	void wrongPassword() throws IOException {
 		PasswordProtection passwordProtection = new PasswordProtection("wrong password".toCharArray());
 		Exception exception = assertThrows(DSSException.class,
 				() -> new Pkcs12SignatureToken("src/test/resources/user_a_rsa.p12", passwordProtection));
-		assertEquals("Unable to instantiate KeyStoreSignatureTokenConnection", exception.getMessage());
+		assertEquals("Unable to instantiate KeyStoreSignatureTokenConnection : keystore password was incorrect", exception.getMessage());
 	}
 
 }

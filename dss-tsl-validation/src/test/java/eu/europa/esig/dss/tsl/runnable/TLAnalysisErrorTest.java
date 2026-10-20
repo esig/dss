@@ -89,7 +89,7 @@ class TLAnalysisErrorTest {
          */
         public MockTLAnalysis(TLSource source, CacheAccessByKey cacheAccess, DSSFileLoader dssFileLoader,
                               CountDownLatch latch) {
-            super(source, cacheAccess, dssFileLoader, latch);
+            super(source, cacheAccess, dssFileLoader, latch, null);
         }
 
         @Override

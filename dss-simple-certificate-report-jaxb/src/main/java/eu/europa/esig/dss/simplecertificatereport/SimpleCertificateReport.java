@@ -375,6 +375,24 @@ public class SimpleCertificateReport {
 	}
 
 	/**
+	 * This method returns the revocation's thisUpdate for the given certificate
+	 *
+	 * @param certificateId
+	 *            the certificate id
+	 * @return the revocation thisUpdate or null
+	 */
+	public Date getCertificateRevocationThisUpdate(String certificateId) {
+		XmlChainItem cert = getCertificate(certificateId);
+		if (cert != null) {
+			XmlRevocation revocation = cert.getRevocation();
+			if (revocation != null) {
+				return revocation.getThisUpdate();
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * This method returns the revocation date for a given certificate
 	 * 
 	 * @param certificateId

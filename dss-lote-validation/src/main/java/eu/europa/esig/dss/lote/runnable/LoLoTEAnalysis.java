@@ -22,6 +22,7 @@ package eu.europa.esig.dss.lote.runnable;
 
 import eu.europa.esig.dss.lote.source.LoLoTESource;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.validation.job.cache.access.CacheAccessByKey;
 
@@ -42,10 +43,26 @@ public class LoLoTEAnalysis extends AbstractRunnableLoTEAnalysis<LoLoTESource> {
      * @param cacheAccess {@link CacheAccessByKey}
      * @param dssFileLoader {@link DSSFileLoader}
      * @param latch {@link CountDownLatch}
+     * @deprecated since DSS 6.6. Please use
+     *             {@link LoLoTEAnalysis(LoLoTESource, CacheAccessByKey, DSSFileLoader, CountDownLatch, ValidationPolicy)} instead
      */
+    @Deprecated
     public LoLoTEAnalysis(LoLoTESource source, CacheAccessByKey cacheAccess, DSSFileLoader dssFileLoader,
                         CountDownLatch latch) {
-        super(source, cacheAccess, dssFileLoader, latch);
+        this(source, cacheAccess, dssFileLoader, latch, null);
+    }
+
+    /**
+     * Default constructor
+     *
+     * @param source {@link LoLoTESource}
+     * @param cacheAccess {@link CacheAccessByKey}
+     * @param dssFileLoader {@link DSSFileLoader}
+     * @param latch {@link CountDownLatch}
+     */
+    public LoLoTEAnalysis(LoLoTESource source, CacheAccessByKey cacheAccess, DSSFileLoader dssFileLoader,
+                          CountDownLatch latch, ValidationPolicy validationPolicy) {
+        super(source, cacheAccess, dssFileLoader, latch, validationPolicy);
     }
 
     @Override

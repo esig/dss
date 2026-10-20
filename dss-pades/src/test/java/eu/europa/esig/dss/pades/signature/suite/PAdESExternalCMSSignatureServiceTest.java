@@ -157,7 +157,7 @@ class PAdESExternalCMSSignatureServiceTest extends PKIFactoryAccess {
 
         exception = assertThrows(NullPointerException.class, () ->
                 service.signDocument(digestDocument, parameters, null));
-        assertEquals("SignatureLevel shall be defined within parameters!", exception.getMessage());
+        assertEquals("SignatureLevel must be defined within parameters!", exception.getMessage());
 
         parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
         exception = assertThrows(NullPointerException.class, () ->

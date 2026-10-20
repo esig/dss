@@ -72,7 +72,7 @@ class CMSForPAdESGenerationServiceTest extends PKIFactoryAccess {
 
         exception = assertThrows(NullPointerException.class, () ->
                 service.getDataToSign(messageDigest, parameters));
-        assertEquals("SignatureLevel shall be defined!", exception.getMessage());
+        assertEquals("SignatureLevel must be defined!", exception.getMessage());
 
         parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LT);
         exception = assertThrows(IllegalArgumentException.class, () ->

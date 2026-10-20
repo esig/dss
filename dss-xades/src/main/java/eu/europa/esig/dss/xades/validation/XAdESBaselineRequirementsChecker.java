@@ -111,9 +111,14 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             LOG.warn("SigningTime shall be present for XAdES-BASELINE-B signature (cardinality == 1)!");
             return false;
         }
-        // SigningCertificate/SigningCertificateV2 (Cardinality == 1)
-        if (!isSigningCertificatePresent(signatureElement, xadesPaths)) {
-            LOG.warn("SigningCertificate(V2) shall be present for XAdES-BASELINE-B signature (cardinality == 1)!");
+        // SigningCertificateV2 (Cardinality == 1)
+        if (getNumberOfOccurrences(signatureElement, xadesPaths.getSigningCertificateV2Path()) != 1) {
+            LOG.warn("SigningCertificateV2 shall be present for XAdES-BASELINE-B signature (cardinality == 1)!");
+            return false;
+        }
+        // SigningCertificate (Cardinality == 0)
+        if (getNumberOfOccurrences(signatureElement, xadesPaths.getSigningCertificatePath()) > 0) {
+            LOG.warn("SigningCertificate shall not be present for XAdES-BASELINE-B signature (cardinality == 0)!");
             return false;
         }
         // DataObjectFormat (Cardinality >= 0)
@@ -125,17 +130,25 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
                 return false;
             }
         }
-        // SignerRole/SignerRoleV2 (Cardinality 0 or 1)
-        if (getNumberOfOccurrences(signatureElement, xadesPaths.getSignerRolePath()) +
-                getNumberOfOccurrences(signatureElement, xadesPaths.getSignerRoleV2Path()) > 1) {
-            LOG.warn("Only one SignerRole(V2) may be present for XAdES-BASELINE-B signature (cardinality 0 or 1)!");
+        // SignerRoleV2 (Cardinality 0 or 1)
+        if (getNumberOfOccurrences(signatureElement, xadesPaths.getSignerRoleV2Path()) > 1) {
+            LOG.warn("Only one SignerRoleV2 may be present for XAdES-BASELINE-B signature (cardinality 0 or 1)!");
+            return false;
+        }
+        // SignerRole (Cardinality 0)
+        if (getNumberOfOccurrences(signatureElement, xadesPaths.getSignerRolePath()) > 0) {
+            LOG.warn("SignerRole shall not be present for XAdES-BASELINE-B signature (cardinality 0)!");
             return false;
         }
         // CommitmentTypeIndication  (Cardinality >= 0)
-        // SignatureProductionPlace/SignatureProductionPlaceV2 (Cardinality 0 or 1)
-        if (getNumberOfOccurrences(signatureElement, xadesPaths.getSignatureProductionPlacePath()) +
-                getNumberOfOccurrences(signatureElement, xadesPaths.getSignatureProductionPlaceV2Path()) > 1) {
-            LOG.warn("Only one SignatureProductionPlace(V2) may be present for XAdES-BASELINE-B signature (cardinality 0 or 1)!");
+        // SignatureProductionPlaceV2 (Cardinality 0 or 1)
+        if (getNumberOfOccurrences(signatureElement, xadesPaths.getSignatureProductionPlaceV2Path()) > 1) {
+            LOG.warn("Only one SignatureProductionPlaceV2 may be present for XAdES-BASELINE-B signature (cardinality 0 or 1)!");
+            return false;
+        }
+        // SignatureProductionPlace (Cardinality)
+        if (getNumberOfOccurrences(signatureElement, xadesPaths.getSignatureProductionPlacePath()) > 0) {
+            LOG.warn("SignatureProductionPlace shall not be present for XAdES-BASELINE-B signature (cardinality 0)!");
             return false;
         }
         // CounterSignature (Cardinality >= 0)
@@ -156,17 +169,30 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             LOG.warn("Only one SignaturePolicyIdentifier may be present for XAdES-BASELINE-B signature (cardinality 0 or 1)!");
             return false;
         }
-        // ArchiveTimeStamp (defined in namespace whose URI is "http://uri.etsi.org/01903/v1.3.2#") (Cardinality == 0)
-        XPathQuery archiveTimestampPath = xadesPaths.getArchiveTimestampPath();
-        if (archiveTimestampPath != null) {
-            NodeList archiveTimeStampList = XPathUtils.getNodeList(signatureElement, archiveTimestampPath);
-            for (int ii = 0; ii < archiveTimeStampList.getLength(); ii++) {
-                Node archiveTimeStamp = archiveTimeStampList.item(ii);
-                if (XAdESNamespace.XADES_132.getUri().equals(archiveTimeStamp.getNamespaceURI())) {
-                    LOG.warn("xades132:ArchiveTimeStamp shall not be present for XAdES-BASELINE-B signature (cardinality == 0)!");
-                    return false;
-                }
-            }
+        // CompleteCertificateRefs (Cardinality == 0)
+        if (getNumberOfOccurrences(signatureElement, xadesPaths.getCompleteCertificateRefsPath()) > 0) {
+            LOG.warn("CompleteCertificateRefs shall not be present for XAdES-BASELINE-B signature (cardinality == 0)!");
+            return false;
+        }
+        // SigAndRefsTimeStamp (Cardinality == 0)
+        if (getNumberOfOccurrences(signatureElement, xadesPaths.getSigAndRefsTimestampPath()) > 0) {
+            LOG.warn("SigAndRefsTimeStamp shall not be present for XAdES-BASELINE-B signature (cardinality == 0)!");
+            return false;
+        }
+        // AttributeCertificateRefs (Cardinality == 0)
+        if (getNumberOfOccurrences(signatureElement, xadesPaths.getAttributeCertificateRefsPath()) > 0) {
+            LOG.warn("AttributeCertificateRefs shall not be present for XAdES-BASELINE-B signature (cardinality == 0)!");
+            return false;
+        }
+        // RefsOnlyTimeStamp (Cardinality == 0)
+        if (getNumberOfOccurrences(signatureElement, xadesPaths.getRefsOnlyTimestampPath()) > 0) {
+            LOG.warn("RefsOnlyTimeStamp shall not be present for XAdES-BASELINE-B signature (cardinality == 0)!");
+            return false;
+        }
+        // ArchiveTimeStamp (defined in namespace whose URI is "http://uri.etsi.org/01903/v1.3.2#") (Cardinality = 0)
+        if (getNumberOfOccurrences(signatureElement, xadesPaths.getArchiveTimestampPath(), XAdESNamespace.XADES_132.getUri()) > 0) {
+            LOG.trace("ArchiveTimeStamp (http://uri.etsi.org/01903/v1.3.2#) shall not be present for XAdES-BASELINE-B signature (cardinality == 0)!");
+            return false;
         }
         // Additional requirement (a)
         if (!containsSigningCertificate(signature.getCertificateSource().getKeyInfoCertificates())) {
@@ -272,15 +298,19 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             LOG.warn("Only one CertificateValues element may be present for XAdES-BASELINE-LT signature (cardinality 0 or 1)!");
             return false;
         }
-        // CompleteCertificateRefs/CompleteCertificateRefsV2 (Cardinality == 0)
-        if (getNumberOfOccurrences(signatureElement, xadesPaths.getCompleteCertificateRefsPath()) +
-                getNumberOfOccurrences(signatureElement, xadesPaths.getCompleteCertificateRefsV2Path()) > 0) {
-            LOG.warn("CompleteCertificateRefs(V2) shall not be present for XAdES-BASELINE-LT signature (cardinality == 0)!");
+        // CompleteCertificateRefsV2 (Cardinality == 0)
+        if (getNumberOfOccurrences(signatureElement, xadesPaths.getCompleteCertificateRefsV2Path()) > 0) {
+            LOG.warn("CompleteCertificateRefsV2 shall not be present for XAdES-BASELINE-LT signature (cardinality == 0)!");
             return false;
         }
         // AttrAuthoritiesCertValues (Cardinality 0 or 1)
         if (getNumberOfOccurrences(signatureElement, xadesPaths.getAttrAuthoritiesCertValuesPath()) > 1) {
             LOG.warn("Only one AttrAuthoritiesCertValues element may be present for XAdES-BASELINE-LT signature (cardinality 0 or 1)!");
+            return false;
+        }
+        // AttributeCertificateRefsV2 (Cardinality == 0)
+        if (getNumberOfOccurrences(signatureElement, xadesPaths.getAttributeCertificateRefsV2Path()) > 0) {
+            LOG.warn("AttributeCertificateRefsV2 shall not be present for XAdES-BASELINE-LT signature (cardinality == 0)!");
             return false;
         }
         // RevocationValues (Cardinality 0 or 1)
@@ -298,15 +328,18 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             LOG.warn("AttributeRevocationValues shall not be present for XAdES-BASELINE-LT signature (cardinality 0 or 1)!");
             return false;
         }
-        // SigAndRefsTimeStamp/SigAndRefsTimeStampV2 (Cardinality == 0)
-        if (getNumberOfOccurrences(signatureElement, xadesPaths.getSigAndRefsTimestampPath()) +
-                getNumberOfOccurrences(signatureElement, xadesPaths.getSigAndRefsTimestampV2Path()) > 0) {
+        // AttributeRevocationRefs (Cardinality == 0)
+        if (getNumberOfOccurrences(signatureElement, xadesPaths.getAttributeRevocationRefsPath()) > 0) {
+            LOG.warn("AttributeRevocationRefs shall not be present for XAdES-BASELINE-LT signature (cardinality == 0)!");
+            return false;
+        }
+        // SigAndRefsTimeStampV2 (Cardinality == 0)
+        if (getNumberOfOccurrences(signatureElement, xadesPaths.getSigAndRefsTimestampV2Path()) > 0) {
             LOG.warn("SigAndRefsTimeStamp(V2) shall not be present for XAdES-BASELINE-LT signature (cardinality == 0)!");
             return false;
         }
-        // RefsOnlyTimeStamp/RefsOnlyTimeStampV2 (Cardinality == 0)
-        if (getNumberOfOccurrences(signatureElement, xadesPaths.getRefsOnlyTimestampPath()) +
-                getNumberOfOccurrences(signatureElement, xadesPaths.getRefsOnlyTimestampV2Path()) > 0) {
+        // RefsOnlyTimeStampV2 (Cardinality == 0)
+        if (getNumberOfOccurrences(signatureElement, xadesPaths.getRefsOnlyTimestampV2Path()) > 0) {
             LOG.warn("RefsOnlyTimeStampV2 shall not be present for XAdES-BASELINE-LT signature (cardinality == 0)!");
             return false;
         }
@@ -335,7 +368,14 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
 
     @Override
     public boolean hasBaselineLTAProfile() {
-        return minimalLTARequirement();
+        Element signatureElement = signature.getSignatureElement();
+        XAdESPath xadesPaths = signature.getXAdESPaths();
+        // ArchiveTimeStamp (defined in namespace whose URI is "http://uri.etsi.org/01903/v1.4.1#") (Cardinality >= 1)
+        if (getNumberOfOccurrences(signatureElement, xadesPaths.getArchiveTimestampPath(), XAdESNamespace.XADES_141.getUri()) == 0) {
+            LOG.trace("ArchiveTimeStamp (http://uri.etsi.org/01903/v1.4.1#) shall be present for XAdES-BASELINE-LTA signature (cardinality >= 1)!");
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -647,6 +687,23 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
     private int getNumberOfOccurrences(Element element, XPathQuery xPath) {
         if (element != null && xPath != null) {
             return XPathUtils.getNodesAmount(element, xPath);
+        }
+        return 0;
+    }
+
+    private int getNumberOfOccurrences(Element element, XPathQuery xPath, String namespace) {
+        if (element != null && xPath != null) {
+            NodeList nodeList = XPathUtils.getNodeList(element, xPath);
+            if (nodeList != null && nodeList.getLength() > 0) {
+                int count = 0;
+                for (int i = 0; i < nodeList.getLength(); i++) {
+                    Node node = nodeList.item(i);
+                    if (namespace.equals(node.getNamespaceURI())) {
+                        ++count;
+                    }
+                }
+                return count;
+            }
         }
         return 0;
     }

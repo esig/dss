@@ -65,7 +65,7 @@ class XAdES111LevelBWithSigPolicyTest extends AbstractXAdESTestSignature {
         signatureParameters.setSigningCertificate(getSigningCert());
         signatureParameters.setCertificateChain(getCertificateChain());
         signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-        signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+        signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BES);
         signatureParameters.setXadesNamespace(XAdESNamespace.XADES_111);
         signatureParameters.setEn319132(false);
 
@@ -102,6 +102,11 @@ class XAdES111LevelBWithSigPolicyTest extends AbstractXAdESTestSignature {
         assertEquals(SIGNATURE_POLICY_DESCRIPTION, signature.getPolicyDescription());
         assertEquals(SIGNATURE_POLICY_DOCUMENTATION, signature.getPolicyDocumentationReferences().get(0));
         assertEquals(Utils.EMPTY_STRING, signature.getPolicyDocumentationReferences().get(1));
+    }
+
+    @Override
+    protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+        assertEquals(SignatureLevel.XAdES_EPES, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
     }
 
     @Override

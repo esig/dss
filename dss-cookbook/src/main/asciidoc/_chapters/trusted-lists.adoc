@@ -90,6 +90,19 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidati
 
 NOTE: `Sha2FileCacheDataLoader` is meant to be used for downloading of Trusted Lists implementing the ETSI TS 119 612 standard (cf. <<R11>>). There is no guarantee the class will work as intended in any other scope. Thus, it is use is not recommended outside of `TLValidationJob`. If needed, please use `FileCacheDataLoader` instead.
 
+[[TLValidationPolicy]]
+==== TL Validation policy
+
+When a custom validation policy is required, it is possible to configure the used validation policy on Trusted Lists validation using the corresponding property (available since DSS `6.6`), as shown below:
+
+[source,java,indent=0]
+.Example of a custom ValidationPolicy
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=custom-policy]
+----
+
+NOTE: The use of a custom validation policy can be useful for validation of Trusted Lists version 5 or before, signed with a legacy XAdES signature profiles, e.g. `XAdES-BES` or `XAdES-EPES`.
+
 [[SynchronizationStrategy]]
 ==== SynchronizationStrategy
 
@@ -103,7 +116,7 @@ DSS provides two implementations within the framework:
 The use of the strategies is demonstrated within the example below:
 
 [source,java,indent=0]
-.Example of a custom  SynchronizationStrategy
+.SynchronizationStrategy configuration
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=synchronization-strategy]
 ----

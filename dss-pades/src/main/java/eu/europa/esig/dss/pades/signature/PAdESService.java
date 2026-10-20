@@ -37,6 +37,7 @@ import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.timestamp.PAdESTimestampService;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
+import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
@@ -100,12 +101,16 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		Objects.requireNonNull(signatureLevel, "SignatureLevel must be defined!");
 		switch (signatureLevel) {
 			case PAdES_BASELINE_B:
+            case PKCS7_B:
 				return null;
 			case PAdES_BASELINE_T:
+			case PKCS7_T:
 				return new PAdESLevelBaselineT(tspSource, certificateVerifier, pdfObjFactory);
 			case PAdES_BASELINE_LT:
+			case PKCS7_LT:
 				return new PAdESLevelBaselineLT(tspSource, certificateVerifier, pdfObjFactory);
 			case PAdES_BASELINE_LTA:
+			case PKCS7_LTA:
 				return new PAdESLevelBaselineLTA(tspSource, certificateVerifier, pdfObjFactory);
 			default:
 				throw new UnsupportedOperationException(
@@ -174,8 +179,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 
-		PAdESUtils.assertPdfDocument(toSignDocument);
-		assertSigningCertificateValid(parameters);
+		assertSignaturePossible(toSignDocument, parameters);
 
 		final DSSMessageDigest messageDigest = computeDocumentDigest(toSignDocument, parameters);
 		return cmsForPAdESGenerationService.buildToBeSignedData(messageDigest, parameters);
@@ -199,8 +203,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 
-		PAdESUtils.assertPdfDocument(toSignDocument);
-		assertSigningCertificateValid(parameters);
+		assertSignaturePossible(toSignDocument, parameters);
 		signatureValue = ensureSignatureValue(parameters.getSignatureAlgorithm(), signatureValue);
 
 		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
@@ -210,7 +213,10 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		DSSDocument signature = pdfSignatureService.sign(toSignDocument, cmsSignedData, parameters);
 
 		final SignatureExtension<PAdESSignatureParameters> extension = getExtensionProfile(signatureLevel);
-		if ((signatureLevel != SignatureLevel.PAdES_BASELINE_B) && (signatureLevel != SignatureLevel.PAdES_BASELINE_T) && (extension != null)) {
+		if (extension != null && signatureLevel != SignatureLevel.PAdES_BASELINE_B
+				&& signatureLevel != SignatureLevel.PKCS7_B
+				&& signatureLevel != SignatureLevel.PAdES_BASELINE_T
+				&& signatureLevel != SignatureLevel.PKCS7_T) {
 			signature = extension.extendSignatures(signature, parameters);
 		}
 
@@ -257,7 +263,8 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	}
 
 	private void assertExtensionParametersValid(PAdESSignatureParameters parameters) {
-		if (SignatureLevel.PAdES_BASELINE_B.equals(parameters.getSignatureLevel())) {
+		if (SignatureLevel.PAdES_BASELINE_B.equals(parameters.getSignatureLevel())
+				|| SignatureLevel.PKCS7_B.equals(parameters.getSignatureLevel())) {
 			throw new UnsupportedOperationException(
 					String.format("Unsupported signature format '%s' for extension.", parameters.getSignatureLevel()));
 		}
@@ -365,6 +372,51 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	 */
 	protected PDFSignatureService getSignatureTimestampService() {
 		return pdfObjFactory.newSignatureTimestampService();
+	}
+
+	/**
+	 * Asserts whether signature creation is possible.
+	 * If a validation condition fails, a corresponding exception is thrown.
+	 *
+	 * @param toSignDocument {@link DSSDocument} to sign
+	 * @param parameters {@link PAdESSignatureParameters}
+	 */
+	protected void assertSignaturePossible(DSSDocument toSignDocument, PAdESSignatureParameters parameters) {
+		PAdESUtils.assertPdfDocument(toSignDocument);
+		assertSigningCertificateValid(parameters);
+		assertSignatureLevel(parameters);
+	}
+
+	private void assertSignatureLevel(PAdESSignatureParameters parameters) {
+		Objects.requireNonNull(parameters.getSignatureLevel(), "SignatureLevel must be defined!");
+		switch (parameters.getSignatureLevel()) {
+			case PKCS7_B:
+			case PKCS7_T:
+			case PKCS7_LT:
+			case PKCS7_LTA:
+				if (!isPkcs7Signature(parameters.getSubFilter())) {
+					LOG.warn("The subFilter '{}' is not known to be used for PKCS7 signatures. Defined level '{}'",
+							parameters.getSubFilter(), parameters.getSignatureLevel());
+				}
+				return;
+			case PAdES_BASELINE_B:
+			case PAdES_BASELINE_T:
+			case PAdES_BASELINE_LT:
+			case PAdES_BASELINE_LTA:
+				if (isPkcs7Signature(parameters.getSubFilter())) {
+					LOG.warn("The subFilter '{}' for PKCS7 signatures is selected while using a baseline signature level '{}'",
+							parameters.getSubFilter(), parameters.getSignatureLevel());
+				}
+				return;
+			default:
+				throw new UnsupportedOperationException(
+						String.format("Unsupported signature format '%s'.", parameters.getSignatureLevel()));
+		}
+	}
+
+	private boolean isPkcs7Signature(String subFilter) {
+		return PAdESConstants.SIGNATURE_PKCS7_SUBFILTER.equals(subFilter)
+				|| PAdESConstants.SIGNATURE_PKCS7_SHA1_SUBFILTER.equals(subFilter);
 	}
 
 }

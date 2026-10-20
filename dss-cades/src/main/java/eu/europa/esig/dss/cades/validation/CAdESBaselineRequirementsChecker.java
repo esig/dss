@@ -143,6 +143,11 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             LOG.warn("signature-policy-identifier attribute shall not be present multiple times for {}-BASELINE-B signature (cardinality == 0 or 1)!", signatureForm);
             return false;
         }
+        // cms-algorithm-protection (Cardinality == 0 or 1)
+        if (Utils.arraySize(CAdESUtils.getSignedAttributes(signerInformation, PKCSObjectIdentifiers.id_aa_cmsAlgorithmProtect)) > 1) {
+            LOG.warn("cms-algorithm-protection attribute shall not be present multiple times for {}-BASELINE-B signature (cardinality == 0 or 1)!", signatureForm);
+            return false;
+        }
         // Additional requirement (a)
         if (!containsSigningCertificate(signature.getCertificateSource().getSignedDataCertificates())) {
             LOG.warn("Signing certificate shall be present in SignedData.certificates " +
@@ -229,10 +234,26 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
                     "for CAdES-BASELINE-LT signature (cardinality == 0)!");
             return false;
         }
+        // attribute-certificate-references (Cardinality == 0)
+        if (Utils.isArrayNotEmpty(CAdESUtils.getUnsignedAttributes(signerInformation, OID.attributeCertificateRefsOid))) {
+            LOG.warn("attribute-certificate-references attribute shall not be present " +
+                    "for CAdES-BASELINE-LT signature (cardinality == 0)!");
+            return false;
+        }
+        // attribute-revocation-references (Cardinality == 0)
+        if (Utils.isArrayNotEmpty(CAdESUtils.getUnsignedAttributes(signerInformation, OID.attributeRevocationRefsOid))) {
+            LOG.warn("attribute-revocation-references attribute shall not be present " +
+                    "for CAdES-BASELINE-LT signature (cardinality == 0)!");
+            return false;
+        }
+        // CAdES-C-timestamp (Cardinality == 0)
+        if (Utils.isArrayNotEmpty(CAdESUtils.getUnsignedAttributes(signerInformation, PKCSObjectIdentifiers.id_aa_ets_escTimeStamp))) {
+            LOG.warn("CAdES-C-timestamp attribute shall not be present for CAdES-BASELINE-LT signature (cardinality == 0)!");
+            return false;
+        }
         // time-stamped-certs-crls-references (Cardinality == 0)
         if (Utils.isArrayNotEmpty(CAdESUtils.getUnsignedAttributes(signerInformation, PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp))) {
-            LOG.warn("time-stamped-certs-crls-references attribute shall not be present " +
-                    "for CAdES-BASELINE-LT signature (cardinality == 0)!");
+            LOG.warn("time-stamped-certs-crls-references attribute shall not be present for CAdES-BASELINE-LT signature (cardinality == 0)!");
             return false;
         }
         return true;

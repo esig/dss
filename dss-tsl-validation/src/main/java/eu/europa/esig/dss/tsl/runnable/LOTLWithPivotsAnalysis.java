@@ -22,6 +22,7 @@ package eu.europa.esig.dss.tsl.runnable;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
@@ -74,10 +75,29 @@ public class LOTLWithPivotsAnalysis extends LOTLAnalysis {
 	 * @param cacheAccessFactory {@link AbstractCacheAccessFactory}
 	 * @param dssFileLoader      {@link DSSFileLoader}
 	 * @param latch              {@link CountDownLatch}
+	 * @deprecated since DSS 6.6. Please use
+	 *             {@link LOTLWithPivotsAnalysis(LOTLSource, CacheAccessByKey, DSSFileLoader, TLCacheAccessFactory, CountDownLatch, ValidationPolicy)}
 	 */
+	@Deprecated
 	public LOTLWithPivotsAnalysis(final LOTLSource source, final CacheAccessByKey cacheAccess,
 	                              final DSSFileLoader dssFileLoader, final TLCacheAccessFactory cacheAccessFactory, final CountDownLatch latch) {
-		super(source, cacheAccess, dssFileLoader, latch);
+		this(source, cacheAccess, dssFileLoader, cacheAccessFactory, latch, null);
+	}
+
+	/**
+	 * Default constructor
+	 *
+	 * @param source             {@link LOTLSource}
+	 * @param cacheAccess        {@link CacheAccessByKey}
+	 * @param cacheAccessFactory {@link AbstractCacheAccessFactory}
+	 * @param dssFileLoader      {@link DSSFileLoader}
+	 * @param latch              {@link CountDownLatch}
+	 * @param validationPolicy   {@link ValidationPolicy}
+	 */
+	public LOTLWithPivotsAnalysis(final LOTLSource source, final CacheAccessByKey cacheAccess,
+								  final DSSFileLoader dssFileLoader, final TLCacheAccessFactory cacheAccessFactory,
+								  final CountDownLatch latch, ValidationPolicy validationPolicy) {
+		super(source, cacheAccess, dssFileLoader, latch, validationPolicy);
 		this.cacheAccessFactory = cacheAccessFactory;
 		this.dssFileLoader = dssFileLoader;
 	}
@@ -154,7 +174,7 @@ public class LOTLWithPivotsAnalysis extends LOTLAnalysis {
 		if (pivotCacheAccess.isValidationRefreshNeeded()) {
 			try {
 				LOG.debug("Validating the Pivot LOTL with cache key '{}'...", pivotCacheAccess.getCacheKey().getKey());
-				TLValidatorTask validationTask = new TLValidatorTask(document, certificateSource);
+				TLValidatorTask validationTask = new TLValidatorTask(document, certificateSource, getValidationPolicy());
 				pivotCacheAccess.update(validationTask.get());
 			} catch (Exception e) {
 				LOG.warn("Cannot validate the Pivot LOTL with the cache key '{}' : {}", pivotCacheAccess.getCacheKey().getKey(), e.getMessage());
@@ -202,7 +222,7 @@ public class LOTLWithPivotsAnalysis extends LOTLAnalysis {
 				DSSFileLoader dataLoader = dssFileLoader instanceof Sha2FileCacheDataLoader ?
 						((Sha2FileCacheDataLoader) dssFileLoader).getDataLoader() : dssFileLoader;
 				pivotProcessingMap.put(pivotUrl, new PivotProcessing(pivotSource, pivotCacheAccess, lotlCacheAccessByKey,
-						new ArrayList<>(pivotCacheAccessByKeyList), dataLoader));
+						new ArrayList<>(pivotCacheAccessByKeyList), dataLoader, getValidationPolicy()));
 
 			} else {
 				// if exists and no update is required

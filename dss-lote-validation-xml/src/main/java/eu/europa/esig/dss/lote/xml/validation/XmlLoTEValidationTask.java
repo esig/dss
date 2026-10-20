@@ -58,6 +58,7 @@ import java.util.Objects;
 public class XmlLoTEValidationTask implements ValidationTask {
 
     /** The path for a LoTE validation policy */
+    // TODO : to be removed after DSS 6.6.
     private static final String LoTE_VALIDATION_POLICY_LOCATION = "/policy/te-xml-constraint.xml";
 
     /** The LoTE document to validate */
@@ -66,17 +67,36 @@ public class XmlLoTEValidationTask implements ValidationTask {
     /** The certificate source to use */
     private final CertificateSource signingCertificateSource;
 
+    /** Validation policy constraints */
+    private ValidationPolicy validationPolicy;
+
     /**
      * Constructor used to instantiate a validator for a LoTE
      *
      * @param loteDocument      the DSSDocument with a LoTE
      * @param signingCertificateSource a certificate source with the allowed certificates to sign this LoTE
+     * @deprecated since DSS 6.6. Please use
+     *             {@link XmlLoTEValidationTask(DSSDocument, CertificateSource, ValidationPolicy)} instead.
      */
+    @Deprecated
     public XmlLoTEValidationTask(DSSDocument loteDocument, CertificateSource signingCertificateSource) {
+        this(loteDocument, signingCertificateSource, null);
+    }
+
+    /**
+     * Constructor used to instantiate a validator for a LoTE
+     *
+     * @param loteDocument             the DSSDocument with a LoTE
+     * @param signingCertificateSource a certificate source with the allowed certificates to sign this LoTE
+     * @param validationPolicy         validation policy constraint for LoTE validation
+     */
+    public XmlLoTEValidationTask(DSSDocument loteDocument, CertificateSource signingCertificateSource,
+                                 ValidationPolicy validationPolicy) {
         Objects.requireNonNull(loteDocument, "The document is null");
         Objects.requireNonNull(signingCertificateSource, "The certificate source is null");
         this.loteDocument = loteDocument;
         this.signingCertificateSource = signingCertificateSource;
+        this.validationPolicy = validationPolicy;
     }
 
     @Override
@@ -130,12 +150,16 @@ public class XmlLoTEValidationTask implements ValidationTask {
     }
 
     private ValidationPolicy getValidationPolicy() {
-        try {
-            return ValidationPolicyLoader.fromValidationPolicy(
-                    XmlLoTEValidationTask.class.getResourceAsStream(LoTE_VALIDATION_POLICY_LOCATION)).create();
-        } catch (Exception e) {
-            throw new DSSException("Unable to load the validation policy for LoTE", e);
+        // TODO : after DSS 6.6, remove default instantiation
+        if (validationPolicy == null) {
+            try {
+                validationPolicy = ValidationPolicyLoader.fromValidationPolicy(
+                        XmlLoTEValidationTask.class.getResourceAsStream(LoTE_VALIDATION_POLICY_LOCATION)).create();
+            } catch (Exception e) {
+                throw new DSSException("Unable to load the validation policy for LoTE", e);
+            }
         }
+        return validationPolicy;
     }
 
 }

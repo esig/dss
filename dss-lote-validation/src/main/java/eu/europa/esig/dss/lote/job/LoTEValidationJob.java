@@ -29,16 +29,19 @@ import eu.europa.esig.dss.lote.source.LoLoTESource;
 import eu.europa.esig.dss.lote.source.LoTESource;
 import eu.europa.esig.dss.lote.summary.LoTEValidationJobSummaryBuilder;
 import eu.europa.esig.dss.lote.sync.LoTECertificateSourceSynchronizer;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.job.ParsingInfoRecord;
 import eu.europa.esig.dss.model.lote.LoLoTEInfo;
 import eu.europa.esig.dss.model.lote.LoTEInfo;
 import eu.europa.esig.dss.model.lote.LoTEValidationJobSummary;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.spi.lote.TrustedEntitiesCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.job.ValidationJob;
 import eu.europa.esig.dss.validation.job.cache.CacheKey;
 import eu.europa.esig.dss.validation.job.source.DocumentSource;
+import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,6 +60,9 @@ import java.util.stream.Collectors;
 public class LoTEValidationJob extends ValidationJob<LoTEInfo, LoLoTEInfo, LoTECacheAccessFactory> {
 
     private static final Logger LOG = LoggerFactory.getLogger(LoTEValidationJob.class);
+
+    /** The path for a LoTE validation policy */
+    private static final String LoTE_VALIDATION_POLICY_LOCATION = "/policy/te-constraint.xml";
 
     /**
      * The certificate source to be synchronized
@@ -109,6 +115,16 @@ public class LoTEValidationJob extends ValidationJob<LoTEInfo, LoLoTEInfo, LoTEC
         this.trustedEntitiesCertificateSource = trustPropertiesCertificateSource;
     }
 
+    @Override
+    protected ValidationPolicy loadDefaultValidationPolicy() {
+        try {
+            return ValidationPolicyLoader.fromValidationPolicy(
+                    LoTEValidationJob.class.getResourceAsStream(LoTE_VALIDATION_POLICY_LOCATION)).create();
+        } catch (Exception e) {
+            throw new DSSException("Unable to load the validation policy for LoTE", e);
+        }
+    }
+
     /**
      * Returns validation job summary for all processed List of Lists or Lists
      *
@@ -131,7 +147,7 @@ public class LoTEValidationJob extends ValidationJob<LoTEInfo, LoLoTEInfo, LoTEC
         }
         LoTESource loteSource = (LoTESource) documentSource;
         final LoTECacheAccessByKey cacheAccess = getCacheAccessFactory().getCacheAccess(loteSource.getCacheKey());
-        return new LoTEAnalysis(loteSource, cacheAccess, dssFileLoader, latch);
+        return new LoTEAnalysis(loteSource, cacheAccess, dssFileLoader, latch, getValidationPolicy());
     }
 
     @Override
@@ -141,7 +157,7 @@ public class LoTEValidationJob extends ValidationJob<LoTEInfo, LoLoTEInfo, LoTEC
         }
         LoLoTESource loloteSource = (LoLoTESource) documentSource;
         final LoTECacheAccessByKey cacheAccess = getCacheAccessFactory().getCacheAccess(loloteSource.getCacheKey());
-        return new LoLoTEAnalysis(loloteSource, cacheAccess, dssFileLoader, latch);
+        return new LoLoTEAnalysis(loloteSource, cacheAccess, dssFileLoader, latch, getValidationPolicy());
     }
 
     @Override

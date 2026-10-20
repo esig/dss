@@ -22,6 +22,7 @@ package eu.europa.esig.dss.lote.runnable;
 
 import eu.europa.esig.dss.lote.source.LoTESource;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.validation.job.cache.access.CacheAccessByKey;
@@ -58,6 +59,25 @@ public abstract class AbstractRunnableLoTEAnalysis<S extends LoTESource> impleme
     /** The tasks counter */
     private final CountDownLatch latch;
 
+    /** Validation policy constraints */
+    private final ValidationPolicy validationPolicy;
+
+    /**
+     * Default constructor
+     *
+     * @param source {@link LoTESource} representing a List to be processed
+     * @param cacheAccess {@link CacheAccessByKey}
+     * @param dssFileLoader {@link DSSFileLoader}
+     * @param latch {@link CountDownLatch}
+     * @deprecated since DSS 6.6. Please use
+     *             {@link AbstractRunnableLoTEAnalysis(S, CacheAccessByKey, DSSFileLoader, CountDownLatch, ValidationPolicy)} instead
+     */
+    @Deprecated
+    protected AbstractRunnableLoTEAnalysis(final S source, final CacheAccessByKey cacheAccess,
+                                           final DSSFileLoader dssFileLoader, final CountDownLatch latch) {
+        this(source, cacheAccess, dssFileLoader, latch, null);
+    }
+
     /**
      * Default constructor
      *
@@ -67,7 +87,8 @@ public abstract class AbstractRunnableLoTEAnalysis<S extends LoTESource> impleme
      * @param latch {@link CountDownLatch}
      */
     protected AbstractRunnableLoTEAnalysis(final S source, final CacheAccessByKey cacheAccess,
-                                           final DSSFileLoader dssFileLoader, final CountDownLatch latch) {
+                                           final DSSFileLoader dssFileLoader, final CountDownLatch latch,
+                                           ValidationPolicy validationPolicy) {
         Objects.requireNonNull(source, "Source cannot be null");
         Objects.requireNonNull(cacheAccess, "CacheAccessByKey cannot be null");
         Objects.requireNonNull(dssFileLoader, "DSSFileLoader cannot be null");
@@ -77,6 +98,7 @@ public abstract class AbstractRunnableLoTEAnalysis<S extends LoTESource> impleme
         this.cacheAccess = cacheAccess;
         this.dssFileLoader = dssFileLoader;
         this.latch = latch;
+        this.validationPolicy = validationPolicy;
     }
 
     /**
@@ -188,7 +210,7 @@ public abstract class AbstractRunnableLoTEAnalysis<S extends LoTESource> impleme
         if (cacheAccess.isValidationRefreshNeeded()) {
             try {
                 LOG.debug("Validating the LoTE/LoLoTE with cache key '{}'...", cacheAccess.getCacheKey().getKey());
-                ValidationTask validationTask = analysisExecutor.getValidationTask(document, getCurrentCertificateSource());
+                ValidationTask validationTask = analysisExecutor.getValidationTask(document, getCurrentCertificateSource(), validationPolicy);
                 cacheAccess.update(validationTask.get());
             } catch (Exception e) {
                 LOG.warn("Cannot validate the LoTE/LoLoTE with the cache key '{}' : {}", cacheAccess.getCacheKey().getKey(), e.getMessage());

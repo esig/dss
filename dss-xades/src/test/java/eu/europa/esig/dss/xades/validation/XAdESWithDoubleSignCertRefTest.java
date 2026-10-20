@@ -52,7 +52,7 @@ class XAdESWithDoubleSignCertRefTest extends AbstractXAdESTestValidation {
 
     @Override
     protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-        assertEquals(SignatureLevel.XAdES_BASELINE_B, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+        assertEquals(SignatureLevel.XAdES_EPES, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
     }
 
 }
