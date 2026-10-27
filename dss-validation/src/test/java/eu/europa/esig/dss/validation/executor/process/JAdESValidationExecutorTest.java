@@ -697,4 +697,121 @@ class JAdESValidationExecutorTest extends AbstractProcessExecutorTest {
         assertTrue(typPresentCheckFound);
     }
 
+    @Test
+    void checkNoSignCertReferencesTest() throws Exception {
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+                new File("src/test/resources/diag-data/diag_data_jades_valid.xml"));
+        assertNotNull(diagnosticData);
+
+        XmlFoundCertificates foundCertificates = diagnosticData.getSignatures().get(0).getFoundCertificates();
+        for (XmlRelatedCertificate xmlRelatedCertificate : foundCertificates.getRelatedCertificates()) {
+            xmlRelatedCertificate.getCertificateRefs().clear();
+        }
+
+        LevelConstraint levelConstraint = new LevelConstraint();
+        levelConstraint.setLevel(Level.FAIL);
+
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
+        SignedAttributesConstraints signedAttributes = validationPolicy.getSignatureConstraints().getSignedAttributes();
+        signedAttributes.setSigningCertificatePresent(levelConstraint);
+        signedAttributes.setSigningCertificateRefersCertificateChain(levelConstraint);
+
+        DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+        executor.setDiagnosticData(diagnosticData);
+        executor.setValidationPolicy(validationPolicy);
+        executor.setCurrentTime(diagnosticData.getValidationDate());
+
+        Reports reports = executor.execute();
+        assertNotNull(reports);
+
+        SimpleReport simpleReport = reports.getSimpleReport();
+        assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+        DetailedReport detailedReport = reports.getDetailedReport();
+        XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+        assertNotNull(signatureBBB);
+
+        XmlSAV sav = signatureBBB.getSAV();
+        assertNotNull(sav);
+        assertEquals(Indication.PASSED, sav.getConclusion().getIndication());
+
+        boolean signCertCheckFound = false;
+        boolean signCertRefCertChainFound = false;
+        for (XmlConstraint constraint : sav.getConstraint()) {
+            if (MessageTag.BBB_ICS_ISASCP.getId().equals(constraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, constraint.getStatus());
+                signCertCheckFound = true;
+            } else if (MessageTag.BBB_SAV_DSCACRCC.getId().equals(constraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, constraint.getStatus());
+                signCertRefCertChainFound = true;
+            }
+        }
+        assertTrue(signCertCheckFound);
+        assertTrue(signCertRefCertChainFound);
+    }
+
+    @Test
+    void checkNoSignCertReferencesWithAllCertsPresentCheckTest() throws Exception {
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+                new File("src/test/resources/diag-data/diag_data_jades_valid.xml"));
+        assertNotNull(diagnosticData);
+
+        XmlFoundCertificates foundCertificates = diagnosticData.getSignatures().get(0).getFoundCertificates();
+        for (XmlRelatedCertificate xmlRelatedCertificate : foundCertificates.getRelatedCertificates()) {
+            xmlRelatedCertificate.getCertificateRefs().clear();
+        }
+
+        LevelConstraint levelConstraint = new LevelConstraint();
+        levelConstraint.setLevel(Level.FAIL);
+
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
+        SignedAttributesConstraints signedAttributes = validationPolicy.getSignatureConstraints().getSignedAttributes();
+        signedAttributes.setSigningCertificatePresent(levelConstraint);
+        signedAttributes.setSigningCertificateRefersCertificateChain(levelConstraint);
+        signedAttributes.setReferencesToAllCertificateChainPresent(levelConstraint);
+
+        DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+        executor.setDiagnosticData(diagnosticData);
+        executor.setValidationPolicy(validationPolicy);
+        executor.setCurrentTime(diagnosticData.getValidationDate());
+
+        Reports reports = executor.execute();
+        assertNotNull(reports);
+
+        SimpleReport simpleReport = reports.getSimpleReport();
+        assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+        assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+        assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+                i18nProvider.getMessage(MessageTag.BBB_SAV_ACPCCRSCA_ANS)));
+
+        DetailedReport detailedReport = reports.getDetailedReport();
+        XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+        assertNotNull(signatureBBB);
+
+        XmlSAV sav = signatureBBB.getSAV();
+        assertNotNull(sav);
+        assertEquals(Indication.INDETERMINATE, sav.getConclusion().getIndication());
+        assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, sav.getConclusion().getSubIndication());
+
+        boolean signCertCheckFound = false;
+        boolean signCertRefCertChainFound = false;
+        boolean allCertsReferencedCheckFound = false;
+        for (XmlConstraint constraint : sav.getConstraint()) {
+            if (MessageTag.BBB_ICS_ISASCP.getId().equals(constraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, constraint.getStatus());
+                signCertCheckFound = true;
+            } else if (MessageTag.BBB_SAV_DSCACRCC.getId().equals(constraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, constraint.getStatus());
+                signCertRefCertChainFound = true;
+            } else if (MessageTag.BBB_SAV_ACPCCRSCA.getId().equals(constraint.getName().getKey())) {
+                assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+                assertEquals(MessageTag.BBB_SAV_ACPCCRSCA_ANS.getId(), constraint.getError().getKey());
+                allCertsReferencedCheckFound = true;
+            }
+        }
+        assertTrue(signCertCheckFound);
+        assertTrue(signCertRefCertChainFound);
+        assertTrue(allCertsReferencedCheckFound);
+    }
+
 }

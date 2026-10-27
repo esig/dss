@@ -24,6 +24,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
+import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -95,6 +96,20 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public boolean isCertificateChainPresent() {
+		final List<CertificateWrapper> certificateChain = new ArrayList<>();
+		certificateChain.addAll(foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO));
+		certificateChain.addAll(foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA));
+		if (!certificateChain.isEmpty()) {
+			return true;
+		}
+		final List<OrphanCertificateWrapper> orphanCertificateChain = new ArrayList<>();
+		orphanCertificateChain.addAll(foundCertificates().getOrphanCertificatesByOrigin(CertificateOrigin.KEY_INFO));
+		orphanCertificateChain.addAll(foundCertificates().getOrphanCertificatesByOrigin(CertificateOrigin.SIGNED_DATA));
+		return !orphanCertificateChain.isEmpty();
 	}
 
 	@Override

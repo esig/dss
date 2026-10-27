@@ -24,10 +24,15 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
+import eu.europa.esig.dss.diagnostic.OrphanCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
+import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SignatureForm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
@@ -84,6 +89,29 @@ public class SigningCertificateReferencesValidityCheck extends ChainItem<XmlSAV>
 			if (!certificateChainIds.contains(signingCertificate.getId())) {
 				// a certificate referenced by a SigningCertificate reference is not included into the certificate chain
 				return false;
+			}
+		}
+
+		if (token instanceof SignatureWrapper) {
+			SignatureWrapper signatureWrapper = (SignatureWrapper) token;
+			SignatureLevel signatureFormat = signatureWrapper.getSignatureFormat();
+			if (signatureFormat == null) {
+				return false;
+			}
+			SignatureForm signatureForm = signatureFormat.getSignatureForm();
+			if (SignatureForm.JAdES == signatureForm || SignatureForm.CBAdES == signatureForm) {
+				List<OrphanCertificateWrapper> orphanCerts = token.foundCertificates().getOrphanCertificatesByOrigin(CertificateOrigin.KEY_INFO);
+				if (Utils.isCollectionNotEmpty(orphanCerts)) {
+					return false;
+				}
+
+				List<RelatedCertificateWrapper> certificateChain = token.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO);
+				for (RelatedCertificateWrapper signingCertificate : certificateChain) {
+					if (!certificateChainIds.contains(signingCertificate.getId())) {
+						// a certificate referenced by a certificate chain is not included into the actual certificate chain
+						return false;
+					}
+				}
 			}
 		}
 		

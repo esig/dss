@@ -30,8 +30,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificates;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
+import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
@@ -47,6 +49,7 @@ class AllCertificatesInPathReferencedCheckTest extends AbstractTestCheck {
 	@Test
 	void certificatePathCheckTest() {
 		XmlSignature sig = new XmlSignature();
+		sig.setSignatureFormat(SignatureLevel.XAdES_BASELINE_B);
 		sig.setFoundCertificates(new XmlFoundCertificates());
 		
 		sig.getCertificateChain().add(getXmlChainItem("C-Id-1"));
@@ -79,6 +82,7 @@ class AllCertificatesInPathReferencedCheckTest extends AbstractTestCheck {
 	@Test
 	void failedCertificatePathCheckTest() {
 		XmlSignature sig = new XmlSignature();
+		sig.setSignatureFormat(SignatureLevel.XAdES_BASELINE_B);
 		sig.setFoundCertificates(new XmlFoundCertificates());
 		
 		sig.getCertificateChain().add(getXmlChainItem("C-Id-1"));
@@ -111,6 +115,7 @@ class AllCertificatesInPathReferencedCheckTest extends AbstractTestCheck {
 	@Test
 	void additionalReferenceCertificatePathCheckTest() {
 		XmlSignature sig = new XmlSignature();
+		sig.setSignatureFormat(SignatureLevel.XAdES_BASELINE_B);
 		sig.setFoundCertificates(new XmlFoundCertificates());
 		
 		sig.getCertificateChain().add(getXmlChainItem("C-Id-1"));
@@ -146,6 +151,7 @@ class AllCertificatesInPathReferencedCheckTest extends AbstractTestCheck {
 	@Test
 	void additionalCertificateCertificatePathCheckTest() {
 		XmlSignature sig = new XmlSignature();
+		sig.setSignatureFormat(SignatureLevel.XAdES_BASELINE_B);
 		sig.setFoundCertificates(new XmlFoundCertificates());
 		
 		sig.getCertificateChain().add(getXmlChainItem("C-Id-1"));
@@ -179,6 +185,7 @@ class AllCertificatesInPathReferencedCheckTest extends AbstractTestCheck {
 	@Test
 	void oneReferenceTest() {
 		XmlSignature sig = new XmlSignature();
+		sig.setSignatureFormat(SignatureLevel.XAdES_BASELINE_B);
 		sig.setFoundCertificates(new XmlFoundCertificates());
 
 		sig.getCertificateChain().add(getXmlChainItem("C-Id-1"));
@@ -190,6 +197,201 @@ class AllCertificatesInPathReferencedCheckTest extends AbstractTestCheck {
 		xmlRelatedCertificateOne.getCertificateRefs().add(getSigningCertificateRef());
 
 		sig.getFoundCertificates().getRelatedCertificates().add(xmlRelatedCertificateOne);
+
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
+
+		XmlSAV result = new XmlSAV();
+		AllCertificatesInPathReferencedCheck scrc = new AllCertificatesInPathReferencedCheck(i18nProvider, result, new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
+		scrc.execute();
+
+		List<XmlConstraint> constraints = result.getConstraint();
+		assertEquals(1, constraints.size());
+		assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
+	}
+
+	@Test
+	void noSigningCertificateReferenceCheckTest() {
+		XmlSignature sig = new XmlSignature();
+		sig.setFoundCertificates(new XmlFoundCertificates());
+
+		sig.getCertificateChain().add(getXmlChainItem("C-Id-1"));
+		sig.getCertificateChain().add(getXmlChainItem("C-Id-2"));
+		sig.getCertificateChain().add(getXmlChainItem("C-Id-3"));
+
+		XmlRelatedCertificate xmlRelatedCertificateOne = getXmlRelatedCertificate("C-Id-1");
+		XmlRelatedCertificate xmlRelatedCertificateTwo = getXmlRelatedCertificate("C-Id-2");
+		XmlRelatedCertificate xmlRelatedCertificateThree = getXmlRelatedCertificate("C-Id-3");
+
+		sig.getFoundCertificates().getRelatedCertificates().add(xmlRelatedCertificateOne);
+		sig.getFoundCertificates().getRelatedCertificates().add(xmlRelatedCertificateTwo);
+		sig.getFoundCertificates().getRelatedCertificates().add(xmlRelatedCertificateThree);
+
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
+
+		XmlSAV result = new XmlSAV();
+		AllCertificatesInPathReferencedCheck scrc = new AllCertificatesInPathReferencedCheck(i18nProvider, result, new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
+		scrc.execute();
+
+		List<XmlConstraint> constraints = result.getConstraint();
+		assertEquals(1, constraints.size());
+		assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
+	}
+
+	@Test
+	void jadesKeyInfoCertificateChainCheckTest() {
+		XmlSignature sig = new XmlSignature();
+		sig.setSignatureFormat(SignatureLevel.JAdES_BASELINE_B);
+		sig.setFoundCertificates(new XmlFoundCertificates());
+
+		sig.getCertificateChain().add(getXmlChainItem("C-Id-1"));
+		sig.getCertificateChain().add(getXmlChainItem("C-Id-2"));
+		sig.getCertificateChain().add(getXmlChainItem("C-Id-3"));
+
+		XmlRelatedCertificate xmlRelatedCertificateOne = getXmlRelatedCertificate("C-Id-1");
+		xmlRelatedCertificateOne.getOrigins().add(CertificateOrigin.KEY_INFO);
+		XmlRelatedCertificate xmlRelatedCertificateTwo = getXmlRelatedCertificate("C-Id-2");
+		xmlRelatedCertificateTwo.getOrigins().add(CertificateOrigin.KEY_INFO);
+		XmlRelatedCertificate xmlRelatedCertificateThree = getXmlRelatedCertificate("C-Id-3");
+		xmlRelatedCertificateThree.getOrigins().add(CertificateOrigin.KEY_INFO);
+
+		sig.getFoundCertificates().getRelatedCertificates().add(xmlRelatedCertificateOne);
+		sig.getFoundCertificates().getRelatedCertificates().add(xmlRelatedCertificateTwo);
+		sig.getFoundCertificates().getRelatedCertificates().add(xmlRelatedCertificateThree);
+
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
+
+		XmlSAV result = new XmlSAV();
+		AllCertificatesInPathReferencedCheck scrc = new AllCertificatesInPathReferencedCheck(i18nProvider, result, new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
+		scrc.execute();
+
+		List<XmlConstraint> constraints = result.getConstraint();
+		assertEquals(1, constraints.size());
+		assertEquals(XmlStatus.OK, constraints.get(0).getStatus());
+	}
+
+	@Test
+	void cbadesKeyInfoCertificateChainCheckTest() {
+		XmlSignature sig = new XmlSignature();
+		sig.setSignatureFormat(SignatureLevel.CB_AdES_BASELINE_B);
+		sig.setFoundCertificates(new XmlFoundCertificates());
+
+		sig.getCertificateChain().add(getXmlChainItem("C-Id-1"));
+		sig.getCertificateChain().add(getXmlChainItem("C-Id-2"));
+		sig.getCertificateChain().add(getXmlChainItem("C-Id-3"));
+
+		XmlRelatedCertificate xmlRelatedCertificateOne = getXmlRelatedCertificate("C-Id-1");
+		xmlRelatedCertificateOne.getOrigins().add(CertificateOrigin.KEY_INFO);
+		XmlRelatedCertificate xmlRelatedCertificateTwo = getXmlRelatedCertificate("C-Id-2");
+		xmlRelatedCertificateTwo.getOrigins().add(CertificateOrigin.KEY_INFO);
+		XmlRelatedCertificate xmlRelatedCertificateThree = getXmlRelatedCertificate("C-Id-3");
+		xmlRelatedCertificateThree.getOrigins().add(CertificateOrigin.KEY_INFO);
+
+		sig.getFoundCertificates().getRelatedCertificates().add(xmlRelatedCertificateOne);
+		sig.getFoundCertificates().getRelatedCertificates().add(xmlRelatedCertificateTwo);
+		sig.getFoundCertificates().getRelatedCertificates().add(xmlRelatedCertificateThree);
+
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
+
+		XmlSAV result = new XmlSAV();
+		AllCertificatesInPathReferencedCheck scrc = new AllCertificatesInPathReferencedCheck(i18nProvider, result, new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
+		scrc.execute();
+
+		List<XmlConstraint> constraints = result.getConstraint();
+		assertEquals(1, constraints.size());
+		assertEquals(XmlStatus.OK, constraints.get(0).getStatus());
+	}
+
+	@Test
+	void xadesKeyInfoCertificateChainCheckTest() {
+		XmlSignature sig = new XmlSignature();
+		sig.setSignatureFormat(SignatureLevel.XAdES_BASELINE_B);
+		sig.setFoundCertificates(new XmlFoundCertificates());
+
+		sig.getCertificateChain().add(getXmlChainItem("C-Id-1"));
+		sig.getCertificateChain().add(getXmlChainItem("C-Id-2"));
+		sig.getCertificateChain().add(getXmlChainItem("C-Id-3"));
+
+		XmlRelatedCertificate xmlRelatedCertificateOne = getXmlRelatedCertificate("C-Id-1");
+		xmlRelatedCertificateOne.getOrigins().add(CertificateOrigin.KEY_INFO);
+		XmlRelatedCertificate xmlRelatedCertificateTwo = getXmlRelatedCertificate("C-Id-2");
+		xmlRelatedCertificateTwo.getOrigins().add(CertificateOrigin.KEY_INFO);
+		XmlRelatedCertificate xmlRelatedCertificateThree = getXmlRelatedCertificate("C-Id-4");
+		xmlRelatedCertificateThree.getOrigins().add(CertificateOrigin.KEY_INFO);
+
+		sig.getFoundCertificates().getRelatedCertificates().add(xmlRelatedCertificateOne);
+		sig.getFoundCertificates().getRelatedCertificates().add(xmlRelatedCertificateTwo);
+		sig.getFoundCertificates().getRelatedCertificates().add(xmlRelatedCertificateThree);
+
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
+
+		XmlSAV result = new XmlSAV();
+		AllCertificatesInPathReferencedCheck scrc = new AllCertificatesInPathReferencedCheck(i18nProvider, result, new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
+		scrc.execute();
+
+		List<XmlConstraint> constraints = result.getConstraint();
+		assertEquals(1, constraints.size());
+		assertEquals(XmlStatus.OK, constraints.get(0).getStatus());
+	}
+
+	@Test
+	void jadesKeyInfoCertificateChainCheckDiffCertTest() {
+		XmlSignature sig = new XmlSignature();
+		sig.setSignatureFormat(SignatureLevel.JAdES_BASELINE_B);
+		sig.setFoundCertificates(new XmlFoundCertificates());
+
+		sig.getCertificateChain().add(getXmlChainItem("C-Id-1"));
+		sig.getCertificateChain().add(getXmlChainItem("C-Id-2"));
+		sig.getCertificateChain().add(getXmlChainItem("C-Id-3"));
+
+		XmlRelatedCertificate xmlRelatedCertificateOne = getXmlRelatedCertificate("C-Id-1");
+		xmlRelatedCertificateOne.getOrigins().add(CertificateOrigin.KEY_INFO);
+		XmlRelatedCertificate xmlRelatedCertificateTwo = getXmlRelatedCertificate("C-Id-2");
+		xmlRelatedCertificateTwo.getOrigins().add(CertificateOrigin.KEY_INFO);
+		XmlRelatedCertificate xmlRelatedCertificateThree = getXmlRelatedCertificate("C-Id-4");
+		xmlRelatedCertificateThree.getOrigins().add(CertificateOrigin.KEY_INFO);
+
+		sig.getFoundCertificates().getRelatedCertificates().add(xmlRelatedCertificateOne);
+		sig.getFoundCertificates().getRelatedCertificates().add(xmlRelatedCertificateTwo);
+		sig.getFoundCertificates().getRelatedCertificates().add(xmlRelatedCertificateThree);
+
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
+
+		XmlSAV result = new XmlSAV();
+		AllCertificatesInPathReferencedCheck scrc = new AllCertificatesInPathReferencedCheck(i18nProvider, result, new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
+		scrc.execute();
+
+		List<XmlConstraint> constraints = result.getConstraint();
+		assertEquals(1, constraints.size());
+		assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
+	}
+
+	@Test
+	void jadesCertValuesCertificateChainCheckTest() {
+		XmlSignature sig = new XmlSignature();
+		sig.setSignatureFormat(SignatureLevel.JAdES_BASELINE_B);
+		sig.setFoundCertificates(new XmlFoundCertificates());
+
+		sig.getCertificateChain().add(getXmlChainItem("C-Id-1"));
+		sig.getCertificateChain().add(getXmlChainItem("C-Id-2"));
+		sig.getCertificateChain().add(getXmlChainItem("C-Id-3"));
+
+		// no x5c -> proceed
+		XmlRelatedCertificate xmlRelatedCertificateOne = getXmlRelatedCertificate("C-Id-1");
+		xmlRelatedCertificateOne.getOrigins().add(CertificateOrigin.CERTIFICATE_VALUES);
+		XmlRelatedCertificate xmlRelatedCertificateTwo = getXmlRelatedCertificate("C-Id-2");
+		xmlRelatedCertificateTwo.getOrigins().add(CertificateOrigin.CERTIFICATE_VALUES);
+		XmlRelatedCertificate xmlRelatedCertificateThree = getXmlRelatedCertificate("C-Id-3");
+		xmlRelatedCertificateThree.getOrigins().add(CertificateOrigin.CERTIFICATE_VALUES);
+
+		sig.getFoundCertificates().getRelatedCertificates().add(xmlRelatedCertificateOne);
+		sig.getFoundCertificates().getRelatedCertificates().add(xmlRelatedCertificateTwo);
+		sig.getFoundCertificates().getRelatedCertificates().add(xmlRelatedCertificateThree);
 
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);

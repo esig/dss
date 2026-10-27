@@ -133,6 +133,13 @@ public interface TokenProxy {
 	List<CertificateWrapper> getCertificateChain();
 
 	/**
+	 * Returns if binaries of the signing-certificate and/or certificate chain are present in the token
+	 *
+	 * @return TRUE if a certificate chain is present within the token, FALSE otherwise
+	 */
+	boolean isCertificateChainPresent();
+
+	/**
 	 * Returns of the certificate chain is trusted
 	 *
 	 * @return TRUE if the certificate chain is trusted, FALSE otherwise

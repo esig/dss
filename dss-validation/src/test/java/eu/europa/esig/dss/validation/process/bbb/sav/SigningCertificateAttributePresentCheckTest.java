@@ -24,13 +24,17 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRef;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificates;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
+import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
@@ -98,4 +102,158 @@ class SigningCertificateAttributePresentCheckTest extends AbstractTestCheck {
 		assertEquals(1, constraints.size());
 		assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
 	}
+
+	@Test
+	void noSigningCertificateAttributeCheck() {
+		XmlRelatedCertificate xmlRelatedCertificate = new XmlRelatedCertificate();
+		xmlRelatedCertificate.setCertificate(new XmlCertificate());
+
+		XmlFoundCertificates xmlFoundCertificates = new XmlFoundCertificates();
+		xmlFoundCertificates.getRelatedCertificates().add(xmlRelatedCertificate);
+
+		XmlSignature sig = new XmlSignature();
+		sig.setFoundCertificates(xmlFoundCertificates);
+
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
+
+		XmlSAV result = new XmlSAV();
+		SigningCertificateAttributePresentCheck scapc = new SigningCertificateAttributePresentCheck(i18nProvider, result,
+				new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
+		scapc.execute();
+
+		List<XmlConstraint> constraints = result.getConstraint();
+		assertEquals(1, constraints.size());
+		assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
+	}
+
+	@Test
+	void jadesKeyInfoSigningCertificateAttributeCheck() {
+		XmlRelatedCertificate xmlRelatedCertificate = new XmlRelatedCertificate();
+		xmlRelatedCertificate.setCertificate(new XmlCertificate());
+		xmlRelatedCertificate.getOrigins().add(CertificateOrigin.KEY_INFO);
+
+		XmlFoundCertificates xmlFoundCertificates = new XmlFoundCertificates();
+		xmlFoundCertificates.getRelatedCertificates().add(xmlRelatedCertificate);
+
+		XmlSignature sig = new XmlSignature();
+		sig.setFoundCertificates(xmlFoundCertificates);
+		sig.setSignatureFormat(SignatureLevel.JAdES_BASELINE_B);
+
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
+
+		XmlSAV result = new XmlSAV();
+		SigningCertificateAttributePresentCheck scapc = new SigningCertificateAttributePresentCheck(i18nProvider, result,
+				new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
+		scapc.execute();
+
+		List<XmlConstraint> constraints = result.getConstraint();
+		assertEquals(1, constraints.size());
+		assertEquals(XmlStatus.OK, constraints.get(0).getStatus());
+	}
+
+	@Test
+	void cbadesKeyInfoSigningCertificateAttributeCheck() {
+		XmlRelatedCertificate xmlRelatedCertificate = new XmlRelatedCertificate();
+		xmlRelatedCertificate.setCertificate(new XmlCertificate());
+		xmlRelatedCertificate.getOrigins().add(CertificateOrigin.KEY_INFO);
+
+		XmlFoundCertificates xmlFoundCertificates = new XmlFoundCertificates();
+		xmlFoundCertificates.getRelatedCertificates().add(xmlRelatedCertificate);
+
+		XmlSignature sig = new XmlSignature();
+		sig.setFoundCertificates(xmlFoundCertificates);
+		sig.setSignatureFormat(SignatureLevel.CB_AdES_BASELINE_B);
+
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
+
+		XmlSAV result = new XmlSAV();
+		SigningCertificateAttributePresentCheck scapc = new SigningCertificateAttributePresentCheck(i18nProvider, result,
+				new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
+		scapc.execute();
+
+		List<XmlConstraint> constraints = result.getConstraint();
+		assertEquals(1, constraints.size());
+		assertEquals(XmlStatus.OK, constraints.get(0).getStatus());
+	}
+
+	@Test
+	void xadesKeyInfoSigningCertificateAttributeCheck() {
+		XmlRelatedCertificate xmlRelatedCertificate = new XmlRelatedCertificate();
+		xmlRelatedCertificate.setCertificate(new XmlCertificate());
+		xmlRelatedCertificate.getOrigins().add(CertificateOrigin.KEY_INFO);
+
+		XmlFoundCertificates xmlFoundCertificates = new XmlFoundCertificates();
+		xmlFoundCertificates.getRelatedCertificates().add(xmlRelatedCertificate);
+
+		XmlSignature sig = new XmlSignature();
+		sig.setFoundCertificates(xmlFoundCertificates);
+		sig.setSignatureFormat(SignatureLevel.XAdES_BASELINE_B);
+
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
+
+		XmlSAV result = new XmlSAV();
+		SigningCertificateAttributePresentCheck scapc = new SigningCertificateAttributePresentCheck(i18nProvider, result,
+				new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
+		scapc.execute();
+
+		List<XmlConstraint> constraints = result.getConstraint();
+		assertEquals(1, constraints.size());
+		assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
+	}
+
+	@Test
+	void tstSigningCertificateAttributeCheck() {
+		XmlRelatedCertificate xmlRelatedCertificate = new XmlRelatedCertificate();
+		xmlRelatedCertificate.setCertificate(new XmlCertificate());
+		xmlRelatedCertificate.getOrigins().add(CertificateOrigin.SIGNED_DATA);
+
+		XmlFoundCertificates xmlFoundCertificates = new XmlFoundCertificates();
+		xmlFoundCertificates.getRelatedCertificates().add(xmlRelatedCertificate);
+
+		XmlTimestamp tst = new XmlTimestamp();
+		tst.setFoundCertificates(xmlFoundCertificates);
+
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
+
+		XmlSAV result = new XmlSAV();
+		SigningCertificateAttributePresentCheck scapc = new SigningCertificateAttributePresentCheck(i18nProvider, result,
+				new TimestampWrapper(tst), new LevelConstraintWrapper(constraint));
+		scapc.execute();
+
+		List<XmlConstraint> constraints = result.getConstraint();
+		assertEquals(1, constraints.size());
+		assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
+	}
+
+	@Test
+	void jadesCertValuesSigningCertificateAttributeCheck() {
+		XmlRelatedCertificate xmlRelatedCertificate = new XmlRelatedCertificate();
+		xmlRelatedCertificate.setCertificate(new XmlCertificate());
+		xmlRelatedCertificate.getOrigins().add(CertificateOrigin.CERTIFICATE_VALUES);
+
+		XmlFoundCertificates xmlFoundCertificates = new XmlFoundCertificates();
+		xmlFoundCertificates.getRelatedCertificates().add(xmlRelatedCertificate);
+
+		XmlSignature sig = new XmlSignature();
+		sig.setFoundCertificates(xmlFoundCertificates);
+		sig.setSignatureFormat(SignatureLevel.JAdES_BASELINE_B);
+
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
+
+		XmlSAV result = new XmlSAV();
+		SigningCertificateAttributePresentCheck scapc = new SigningCertificateAttributePresentCheck(i18nProvider, result,
+				new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
+		scapc.execute();
+
+		List<XmlConstraint> constraints = result.getConstraint();
+		assertEquals(1, constraints.size());
+		assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
+	}
+
 }

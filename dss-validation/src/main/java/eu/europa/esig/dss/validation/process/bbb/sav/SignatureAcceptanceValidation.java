@@ -145,6 +145,15 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 			// verification for JAdES / CB-AdES
 			if (SignatureForm.JAdES.equals(signatureForm) || SignatureForm.CBAdES.equals(signatureForm)) {
 
+				// to verify against X.509 Certificate Chain, if not yet performed
+				if (!token.isSigningCertificateReferencePresent()) {
+
+					item = item.setNextItem(signingCertificateReferencesValidity());
+
+					item = item.setNextItem(allCertificatesInPathReferenced());
+
+				}
+
 				item = item.setNextItem(keyIdentifierPresent());
 
 				if (token.getKeyIdentifierReference() != null) {

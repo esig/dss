@@ -21,8 +21,11 @@
 package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SignatureForm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
@@ -52,8 +55,21 @@ public class SigningCertificateAttributePresentCheck extends ChainItem<XmlSAV> {
 	}
 
 	@Override
-	protected boolean process() {
-		return token.isSigningCertificateReferencePresent();
+	public boolean process() {
+		if (token.isSigningCertificateReferencePresent()) {
+			return true;
+
+		} else if (token instanceof SignatureWrapper) {
+			SignatureWrapper signatureWrapper = (SignatureWrapper) token;
+			SignatureLevel signatureFormat = signatureWrapper.getSignatureFormat();
+			if (signatureFormat != null) {
+				SignatureForm signatureForm = signatureFormat.getSignatureForm();
+				if (SignatureForm.JAdES == signatureForm || SignatureForm.CBAdES == signatureForm) {
+					return token.isCertificateChainPresent();
+				}
+			}
+		}
+		return false;
 	}
 
 	@Override

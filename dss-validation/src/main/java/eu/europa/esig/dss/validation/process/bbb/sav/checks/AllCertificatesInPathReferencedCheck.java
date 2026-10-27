@@ -23,9 +23,13 @@ package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
+import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SignatureForm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
@@ -59,14 +63,37 @@ public class AllCertificatesInPathReferencedCheck extends ChainItem<XmlSAV> {
 
 	@Override
 	protected boolean process() {
-		List<RelatedCertificateWrapper> relatedSigningCertificates = token.foundCertificates()
-				.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
-		List<String> signingCertificateIds = relatedSigningCertificates.stream().map(CertificateWrapper::getId).collect(Collectors.toList());
+		if (token.isSigningCertificateReferencePresent()) {
+			List<RelatedCertificateWrapper> relatedSigningCertificates = token.foundCertificates()
+					.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
+			List<String> signingCertificateIds = relatedSigningCertificates.stream().map(CertificateWrapper::getId).collect(Collectors.toList());
 
-		for (CertificateWrapper certificate : token.getCertificateChain()) {
-			if (!signingCertificateIds.contains(certificate.getId())) {
-				// certificate in the certificate path is not covered by a signing certificate reference
+			for (CertificateWrapper certificate : token.getCertificateChain()) {
+				if (!signingCertificateIds.contains(certificate.getId())) {
+					// certificate in the certificate path is not covered by a signing certificate reference
+					return false;
+				}
+			}
+			return true;
+		}
+
+		if (token instanceof SignatureWrapper) {
+			SignatureWrapper signatureWrapper = (SignatureWrapper) token;
+			SignatureLevel signatureFormat = signatureWrapper.getSignatureFormat();
+			if (signatureFormat == null) {
 				return false;
+			}
+			SignatureForm signatureForm = signatureFormat.getSignatureForm();
+			if (SignatureForm.JAdES == signatureForm || SignatureForm.CBAdES == signatureForm) {
+				List<RelatedCertificateWrapper> certificateChain = token.foundCertificates()
+						.getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO);
+				List<String> certIds = certificateChain.stream().map(CertificateWrapper::getId).collect(Collectors.toList());
+				for (CertificateWrapper certificate : token.getCertificateChain()) {
+					if (!certIds.contains(certificate.getId())) {
+						// certificate in the certificate path is not covered by a certificate in the actual chain
+						return false;
+					}
+				}
 			}
 		}
 		return true;

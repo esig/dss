@@ -1825,6 +1825,7 @@ class QWAC2CertificateProcessExecutorTest extends AbstractTestValidationExecutor
         executor.setCurrentTime(diagnosticData.getValidationDate());
 
         CertificateReports reports = executor.execute();
+        reports.print();
 
         SimpleCertificateReport simpleReport = reports.getSimpleReport();
         assertNotNull(simpleReport);
@@ -1952,12 +1953,12 @@ class QWAC2CertificateProcessExecutorTest extends AbstractTestValidationExecutor
         boolean ctyCheckPresent = false;
         for (XmlConstraint xmlConstraint : xmlSAV.getConstraint()) {
             if (MessageTag.BBB_ICS_ISASCP.getId().equals(xmlConstraint.getName().getKey())) {
-                assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
-                assertEquals(MessageTag.BBB_ICS_ISASCP_ANS.getId(), xmlConstraint.getError().getKey());
+                assertEquals(XmlStatus.OK, xmlConstraint.getStatus()); // still good as contains x5c
                 signCertCheckPresent = true;
             } else if (MessageTag.BBB_ICS_ISASCPU.getId().equals(xmlConstraint.getName().getKey())) {
                 signCertOnlyOneCheckPresent = true;
             } else if (MessageTag.BBB_ICS_ISAKIDP.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
                 kidCheckPresent = true;
             } else if (MessageTag.BBB_SAV_ISQPSTP.getId().equals(xmlConstraint.getName().getKey())) {
                 signTimeCheckPresent = true;
@@ -1966,8 +1967,8 @@ class QWAC2CertificateProcessExecutorTest extends AbstractTestValidationExecutor
             }
         }
         assertTrue(signCertCheckPresent);
-        assertFalse(signCertOnlyOneCheckPresent);
-        assertFalse(kidCheckPresent);
+        assertFalse(signCertOnlyOneCheckPresent); // not executed
+        assertTrue(kidCheckPresent);
         assertFalse(signTimeCheckPresent);
         assertFalse(ctyCheckPresent);
 
