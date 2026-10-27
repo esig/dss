@@ -77,8 +77,8 @@ class CBAdESLevelBCoseSignCountersignatureInArrayRfc8152Test extends AbstractCBA
                 assertFalse(signatureWrapper.isStructuralValidationValid());
                 assertFalse(Utils.isCollectionEmpty(signatureWrapper.getStructuralValidationMessages()));
                 assertEquals(1, Utils.collectionSize(signatureWrapper.getStructuralValidationMessages()));
-                assertTrue(signatureWrapper.getStructuralValidationMessages().get(0).contains("/1/268/0/.cbor"));
-                assertTrue(signatureWrapper.getStructuralValidationMessages().get(0).contains("'7'"));
+                assertTrue(signatureWrapper.getStructuralValidationMessages().get(0).contains("/[1]/268[0]/.cbor/7"));
+                assertTrue(signatureWrapper.getStructuralValidationMessages().get(0).contains("array"));
                 ++masterSigCounter;
 
             } else {

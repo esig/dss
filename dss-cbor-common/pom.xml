@@ -18,7 +18,6 @@
         <dependency>
             <groupId>eu.europa.ec.digit.cddl4j</groupId>
             <artifactId>validator</artifactId>
-            <version>0.1.0</version>
         </dependency>
 
         <dependency>

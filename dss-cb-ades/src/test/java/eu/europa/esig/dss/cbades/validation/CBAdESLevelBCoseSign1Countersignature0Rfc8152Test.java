@@ -112,6 +112,8 @@ class CBAdESLevelBCoseSign1Countersignature0Rfc8152Test extends AbstractCBAdESTe
 
     @Override
     protected void checkStructureValidation(DiagnosticData diagnosticData) {
+        super.checkStructureValidation(diagnosticData);
+
         List<SignatureWrapper> signatures = diagnosticData.getSignatures();
         assertEquals(2, signatures.size());
 
@@ -119,11 +121,8 @@ class CBAdESLevelBCoseSign1Countersignature0Rfc8152Test extends AbstractCBAdESTe
         boolean counterSigFound = false;
         for (SignatureWrapper signatureWrapper : signatures) {
             if (!signatureWrapper.isCounterSignature()) {
-                assertFalse(signatureWrapper.isStructuralValidationValid());
-                assertFalse(Utils.isCollectionEmpty(signatureWrapper.getStructuralValidationMessages()));
-                assertEquals(1, Utils.collectionSize(signatureWrapper.getStructuralValidationMessages()));
-                assertTrue(signatureWrapper.getStructuralValidationMessages().get(0).contains("/1/268/0/.cbor"));
-                assertTrue(signatureWrapper.getStructuralValidationMessages().get(0).contains("'9'"));
+                assertTrue(signatureWrapper.isStructuralValidationValid());
+                assertTrue(Utils.isCollectionEmpty(signatureWrapper.getStructuralValidationMessages()));
                 masterSigFound = true;
 
             } else {

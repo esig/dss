@@ -56,7 +56,7 @@ class CBAdESLevelTClearUHeadersTest extends AbstractCBAdESTestValidation {
         assertFalse(signature.isStructuralValidationValid());
         assertFalse(Utils.isCollectionEmpty(signature.getStructuralValidationMessages()));
         assertEquals(1, Utils.collectionSize(signature.getStructuralValidationMessages()));
-        assertTrue(signature.getStructuralValidationMessages().get(0).contains("/1/268/0"));
+        assertTrue(signature.getStructuralValidationMessages().get(0).contains("/[1]/268[0]"));
         assertTrue(signature.getStructuralValidationMessages().get(0).contains("bstr"));
     }
 

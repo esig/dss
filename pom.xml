@@ -49,7 +49,7 @@
 		<bouncycastle.version>1.86</bouncycastle.version>
 		<xmlsec.version>3.0.6</xmlsec.version>
 		<jose4j.version>0.9.7</jose4j.version>
-		<cbor.version>0.1.0</cbor.version>
+		<cddl4j.version>0.1.0</cddl4j.version>
 		<pdfbox.version>3.0.8</pdfbox.version>
 		<openpdf.version>1.3.43</openpdf.version> <!-- Version 1.4+ supports only Java 11+ -->
 		<verapdf.version>1.30.3</verapdf.version>
@@ -1148,8 +1148,8 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.digit.cddl4j</groupId>
-				<artifactId>cbor</artifactId>
-				<version>${cbor.version}</version>
+				<artifactId>validator</artifactId>
+				<version>${cddl4j.version}</version>
 			</dependency>
 
 			<!-- Logger -->

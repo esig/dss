@@ -28,10 +28,12 @@ import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.utils.Utils;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CBAdESLevelBCoseSign1CountersignatureV2Rfc9338UnsignedPropsWrongTagsTest extends AbstractCBAdESTestValidation {
@@ -73,8 +75,6 @@ class CBAdESLevelBCoseSign1CountersignatureV2Rfc9338UnsignedPropsWrongTagsTest e
 
     @Override
     protected void checkStructureValidation(DiagnosticData diagnosticData) {
-        super.checkStructureValidation(diagnosticData);
-
         List<SignatureWrapper> signatures = diagnosticData.getSignatures();
         assertEquals(2, signatures.size());
 
@@ -84,11 +84,20 @@ class CBAdESLevelBCoseSign1CountersignatureV2Rfc9338UnsignedPropsWrongTagsTest e
             if (!signatureWrapper.isCounterSignature()) {
                 assertEquals(COSESignatureType.COSE_SIGN1, signatureWrapper.getCOSESignatureType());
                 assertTrue(signatureWrapper.isCOSETagged());
+
+                assertTrue(signatureWrapper.isStructuralValidationValid());
+                assertTrue(Utils.isCollectionEmpty(signatureWrapper.getStructuralValidationMessages()));
                 masterSigFound = true;
 
             } else {
                 assertEquals(COSESignatureType.COSE_COUNTER_SIGNATURE_V2, signatureWrapper.getCOSESignatureType());
                 assertTrue(signatureWrapper.isCOSETagged());
+
+                assertFalse(signatureWrapper.isStructuralValidationValid());
+                assertFalse(Utils.isCollectionEmpty(signatureWrapper.getStructuralValidationMessages()));
+                assertEquals(1, Utils.collectionSize(signatureWrapper.getStructuralValidationMessages()));
+                assertTrue(signatureWrapper.getStructuralValidationMessages().get(0).contains("/[0]/.cbor/262[0]/1/1"));
+                assertTrue(signatureWrapper.getStructuralValidationMessages().get(0).contains("#6.32"));
                 counterSigFound = true;
             }
         }

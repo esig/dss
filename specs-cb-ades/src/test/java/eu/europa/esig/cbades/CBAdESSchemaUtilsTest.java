@@ -33,8 +33,8 @@ public class CBAdESSchemaUtilsTest {
 
         List<String> errors = cbadesSchemaUtils.validateAgainstSchema(is);
         assertFalse(errors.isEmpty(), errors.toString());
-        assertEquals(1, errors.size());
-        assertTrue(errors.get(0).contains("[/0/.cbor/267/1]"));
+        assertEquals(1, errors.size(), errors.toString());
+        assertTrue(errors.get(0).contains("[/[0]/.cbor/267/1]"));
         assertTrue(errors.get(0).contains("(#6.32)"));
     }
 
@@ -45,8 +45,7 @@ public class CBAdESSchemaUtilsTest {
         List<String> errors = cbadesSchemaUtils.validateAgainstSchema(is);
         assertFalse(errors.isEmpty(), errors.toString());
         assertEquals(1, errors.size());
-        assertTrue(errors.get(0).contains("[/1/268/0/.cbor]"));
-        assertTrue(errors.get(0).contains("11"));
+        assertTrue(errors.get(0).contains("[/[1]/268[0]/.cbor/11]"));
     }
 
 }

@@ -142,7 +142,7 @@ class CBAdESLevelBCoseSign1CountersignatureRfc8152Test extends AbstractCBAdESTes
 
                 assertFalse(signatureWrapper.isStructuralValidationValid());
                 assertEquals(1, signatureWrapper.getStructuralValidationMessages().size());
-                assertTrue(signatureWrapper.getStructuralValidationMessages().get(0).contains("/1/268/0/.cbor"));
+                assertTrue(signatureWrapper.getStructuralValidationMessages().get(0).contains("/[1]/268[0]/.cbor"));
                 assertTrue(signatureWrapper.getStructuralValidationMessages().get(0).contains("7"));
 
                 masterSigFound = true;

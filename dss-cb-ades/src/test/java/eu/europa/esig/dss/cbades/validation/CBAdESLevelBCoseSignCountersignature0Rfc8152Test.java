@@ -31,7 +31,6 @@ import eu.europa.esig.dss.utils.Utils;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CBAdESLevelBCoseSignCountersignature0Rfc8152Test extends AbstractCBAdESTestValidation {
@@ -65,6 +64,8 @@ class CBAdESLevelBCoseSignCountersignature0Rfc8152Test extends AbstractCBAdESTes
 
     @Override
     protected void checkStructureValidation(DiagnosticData diagnosticData) {
+        super.checkStructureValidation(diagnosticData);
+
         List<SignatureWrapper> signatures = diagnosticData.getSignatures();
         assertEquals(2, signatures.size());
 
@@ -72,11 +73,8 @@ class CBAdESLevelBCoseSignCountersignature0Rfc8152Test extends AbstractCBAdESTes
         boolean counterSigFound = false;
         for (SignatureWrapper signatureWrapper : signatures) {
             if (!signatureWrapper.isCounterSignature()) {
-                assertFalse(signatureWrapper.isStructuralValidationValid());
-                assertFalse(Utils.isCollectionEmpty(signatureWrapper.getStructuralValidationMessages()));
-                assertEquals(1, Utils.collectionSize(signatureWrapper.getStructuralValidationMessages()));
-                assertTrue(signatureWrapper.getStructuralValidationMessages().get(0).contains("/1/268/0/.cbor"));
-                assertTrue(signatureWrapper.getStructuralValidationMessages().get(0).contains("'9'"));
+                assertTrue(signatureWrapper.isStructuralValidationValid());
+                assertTrue(Utils.isCollectionEmpty(signatureWrapper.getStructuralValidationMessages()));
                 masterSigFound = true;
 
             } else {

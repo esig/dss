@@ -275,19 +275,24 @@ sigPSt_l = 7
 
 uHeaders = [+bstr .cbor UHeaderInstance] ;an array of CBOR byte strings each on encapsulating
                                          ;one instance of UHeaderInstance
+
+; NOTE: CDDL does not provide a native way allowing to enforce rules validation for every entry,
+; but also to use only a single parameter occurrence within a map.
+; The current solution is chosen in favor of validation rules enforcement.
+
 UHeaderInstance = {
-    sigTst_l ^=> sigTst // ;Signature time-stamp OR
-    valData_l ^=> valData //    ;Validation data (certificate values and revocation data) OR
-    arcTst_l ^=> arcTst // ;Archive-time-stamp OR
-    refs_l ^=> refs // ;References to certificates and revocation data OR
-    sigRTst_l ^=> sigRTst // ;Signature and references time-stamp OR
-    rfsTst_l ^=> rfsTst // ;References only time-stamp OR
-    sigPSt_l^ => sigPSt // ; Signature Policy Store OR
-    11 ^=> COSE_Countersignature /  ;full counter signature as specified in IETF RFC 9338
-            [+COSE_Countersignature] //
-    12 ^=> COSE_Countersignature0 // ;abbreviated counter signature as specified in IETF RFC 9338
-    33 ^=> bstr / [2*certs:bstr] // ;x5chain for the signing certificate
-    *label => value ;other additional unsigned attributes not specified in the
+    ? sigTst_l ^=> sigTst, ;Signature time-stamp OR
+    ? valData_l ^=> valData,    ;Validation data (certificate values and revocation data) OR
+    ? arcTst_l ^=> arcTst, ;Archive-time-stamp OR
+    ? refs_l ^=> refs, ;References to certificates and revocation data OR
+    ? sigRTst_l ^=> sigRTst, ;Signature and references time-stamp OR
+    ? rfsTst_l ^=> rfsTst, ;References only time-stamp OR
+    ? sigPSt_l ^=> sigPSt, ;Signature Policy Store OR
+    ? 11 ^=> COSE_Countersignature /  ;full counter signature as specified in IETF RFC 9338
+            [+COSE_Countersignature],
+    ? 12 ^=> COSE_Countersignature0, ;abbreviated counter signature as specified in IETF RFC 9338
+    ? 33 ^=> bstr / [2*certs:bstr], ;x5chain for the signing certificate
+    *label => values ;other additional unsigned attributes not specified in the
                     ;present document
 }
 

@@ -43,7 +43,7 @@ class MdocDeviceResponseUtilsTest {
         assertFalse(errors.isEmpty());
         assertEquals(2, errors.size(), errors.toString());
         assertTrue(errors.stream().anyMatch(m -> m.contains("version")));
-        assertTrue(errors.stream().anyMatch(m -> m.contains("{deviceSignature: DeviceSignature} / {deviceMac: DeviceMac}")));
+        assertTrue(errors.stream().anyMatch(m -> m.contains("/documents[0]/deviceSigned/deviceAuth/deviceSignature[0]")));
     }
 
     @Test
