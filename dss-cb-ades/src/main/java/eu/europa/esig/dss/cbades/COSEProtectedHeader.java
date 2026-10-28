@@ -23,7 +23,6 @@ package eu.europa.esig.dss.cbades;
 import eu.europa.ec.digit.cddl4j.cbor.CBOR;
 import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
-import eu.europa.esig.dss.spi.DSSUtils;
 
 /**
  * Represents a COSE protected header structure
@@ -72,7 +71,7 @@ public class COSEProtectedHeader extends COSEHeader {
          * cryptographic computation.
          */
         if (isEmpty()) {
-            return CBOR.bytes(DSSUtils.EMPTY_BYTE_ARRAY);
+            return CBORUtils.EMPTY_BYTE_STRING;
         }
         return CBOR.bytes(CBORUtils.serializeCbor(getValue()));
     }
