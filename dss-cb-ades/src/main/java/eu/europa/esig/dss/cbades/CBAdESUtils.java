@@ -572,16 +572,21 @@ public class CBAdESUtils {
             return Collections.emptyList(); // unknown
         }
         COSESignatureType counterSignatureContext = COSESignatureType.getCounterSignatureContextByHeaderKey(headerKey.asInteger().longValue());
+        if (COSESignatureType.COSE_COUNTER_SIGNATURE == counterSignatureContext &&
+                !(headerValue.isArray() || (headerValue.isTag() && headerValue.getTaggedValue().isArray()))) {
+            // Safe handling of 7 tag element, which may apply for legacy RFC 8152 counter signatures.
+            // Rational: tag 7 has been removed in RFC 9052, but used for sigPSt definition in ETSI TS 119 152-1.
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Not a COSE counter signature with a header id : '{}'", counterSignatureContext.getTag());
+            }
+            return Collections.emptyList();
+        }
         // is known
         if (counterSignatureContext != null) {
             final List<CBAdESSignature> result = new ArrayList<>();
 
             COSEStructure masterSignatureStructure = getMasterSignatureStructure(signature.getCoseSignature(), bodyStructure);
-            COSECounterSignStructure coseCounterSignStructure = COSECounterSignatureParser.fromCBORValue(headerValue)
-                    .setContext(counterSignatureContext)
-                    .setMasterSignature(masterSignatureStructure)
-                    .parse();
-            List<CBORSignature> coseSignatures = CBORSignature.fromCOSECounterSignStructure(coseCounterSignStructure);
+            List<CBORSignature> coseSignatures = parseCounterSignatures(headerValue, counterSignatureContext, masterSignatureStructure);
             for (CBORSignature coseSignature : coseSignatures) {
                 CBAdESSignature cbadesCounterSignature = new CBAdESSignature(coseSignature);
                 cbadesCounterSignature.setFilename(signature.getFilename());
@@ -603,6 +608,21 @@ public class CBAdESUtils {
         }
         return Collections.emptyList();
     }
+
+    private static List<CBORSignature> parseCounterSignatures(CBORValue headerValue, COSESignatureType counterSignatureContext,
+                                                              COSEStructure masterSignatureStructure) {
+        try {
+            COSECounterSignStructure coseCounterSignStructure = COSECounterSignatureParser.fromCBORValue(headerValue)
+                    .setContext(counterSignatureContext)
+                    .setMasterSignature(masterSignatureStructure)
+                    .parse();
+            return CBORSignature.fromCOSECounterSignStructure(coseCounterSignStructure);
+        } catch (Exception e) {
+            LOG.warn("Unable to parse counter signatures : {}", e.getMessage(), e);
+            return Collections.emptyList();
+        }
+    }
+
 
     private static COSEStructure getMasterSignatureStructure(CBORSignature cose, boolean bodyStructure) {
         switch (cose.getContext()) {
