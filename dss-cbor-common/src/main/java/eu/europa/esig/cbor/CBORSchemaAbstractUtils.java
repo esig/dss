@@ -3,6 +3,9 @@ package eu.europa.esig.cbor;
 import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.ec.digit.cddl4j.validator.CddlValidator;
 import eu.europa.ec.digit.cddl4j.validator.schema.CddlSchema;
+import eu.europa.ec.digit.cddl4j.validator.schema.operator.ControlOperator;
+import eu.europa.ec.digit.cddl4j.validator.schema.type.CddlType;
+import eu.europa.ec.digit.cddl4j.validator.validation.ValidationContext;
 import eu.europa.ec.digit.cddl4j.validator.validation.ValidationError;
 import eu.europa.ec.digit.cddl4j.validator.validation.ValidationResult;
 
@@ -192,7 +195,9 @@ public abstract class CBORSchemaAbstractUtils {
      */
     protected CddlSchema getCddlSchema() {
         if (cddlSchema == null) {
-            cddlSchema = loadSchema(getSchemaLocation());
+            // TODO : .default control operator is not yet supported in cddl4j 0.1.0, update when possible
+            cddlSchema = loadSchema(getSchemaLocation())
+                    .withControlOperators(Collections.singletonList(DefaultControLOperator.INSTANCE));
         }
         return cddlSchema;
     }
@@ -213,5 +218,32 @@ public abstract class CBORSchemaAbstractUtils {
      * @return {@link String}
      */
     public abstract String getSchemaLocation();
+
+    /**
+     * Implements handling of the .default control operator
+     */
+    private static final class DefaultControLOperator implements ControlOperator {
+
+        /** Singleton instance. */
+        public static final DefaultControLOperator INSTANCE = new DefaultControLOperator();
+
+        /**
+         * Default constructor
+         */
+        private DefaultControLOperator() {
+            // Singleton.
+        }
+
+        @Override
+        public String getName() {
+            return ".default";
+        }
+
+        @Override
+        public ValidationResult validate(CBORValue value, CddlType controller, ValidationContext ctx) {
+            return ValidationResult.success(); // no processing required
+        }
+
+    }
 
 }

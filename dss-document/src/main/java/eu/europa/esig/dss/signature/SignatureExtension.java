@@ -28,7 +28,7 @@ import eu.europa.esig.dss.model.DSSDocument;
  *
  * @param <SP> implementation of signature parameters corresponding to the supported signature format
  */
-public interface SignatureExtension<SP extends AbstractSignatureParameters> {
+public interface SignatureExtension<SP extends AbstractSignatureParameters<?>> {
 
 	/**
 	 * Extends the level of the signatures contained in a document.

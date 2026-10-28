@@ -342,7 +342,19 @@ public enum COSEHeaderParameter {
     RESPONDER_ID_CHOICE_RESPONDER_ID_BY_NAME(1L),
 
     /** ResponderIdChoice responderIdByKey: the key of the responder wrapped in a CBOR byte string. CBOR Tag '2' */
-    RESPONDER_ID_CHOICE_RESPONDER_ID_BY_KEY(2L);
+    RESPONDER_ID_CHOICE_RESPONDER_ID_BY_KEY(2L),
+
+    /** sigPst docOrLocalUri: either the signature policy document itself or a URI reference to it. CBOR Tag '1' */
+    SIG_PST_DOC_OR_LOCAL_URI(1L),
+
+    /** sigPst spDSpec: identifier of the technical specification defining the syntax of the signature policy. CBOR Tag '2' */
+    SIG_PST_SP_D_SPEC(2L),
+
+    /** docOrLocalUri sigPolDoc: The signature policy document itself. CBOR Tag '1' */
+    DOC_OR_LOCAL_URI_SIG_POL_DOC(1L),
+
+    /** docOrLocalUri sigPolLocalURI: a local URI to the signature policy document. CBOR Tag '2' */
+    DOC_OR_LOCAL_URI_SIG_POL_LOCAL_URI(2L);
     
     /** Long encoded key */
     private final CBORValue cborKey;

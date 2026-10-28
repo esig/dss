@@ -39,6 +39,7 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
+import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -67,6 +68,8 @@ import java.util.Objects;
 public class CBAdESService extends AbstractSignatureService<CBAdESSignatureParameters, CBAdESTimestampParameters> implements
         MultipleDocumentsSignatureService<CBAdESSignatureParameters, CBAdESTimestampParameters>,
         CounterSignatureService<CBAdESCounterSignatureParameters> {
+
+    private static final long serialVersionUID = 3240600838386158252L;
 
     private static final Logger LOG = LoggerFactory.getLogger(CBAdESService.class);
 
@@ -207,6 +210,24 @@ public class CBAdESService extends AbstractSignatureService<CBAdESSignatureParam
     @Override
     public DSSDocument timestamp(List<DSSDocument> toTimestampDocuments, CBAdESTimestampParameters parameters) {
         throw new UnsupportedOperationException("Unsupported operation for this file format");
+    }
+
+    /**
+     * Incorporates a Signature Policy Store as a byte string encoded unsigned property into the CB-AdES Signature
+     *
+     * @param document             {@link DSSDocument} containing a CB-AdES Signature to add a SignaturePolicyStore to
+     * @param signaturePolicyStore {@link SignaturePolicyStore} to add
+     * @return {@link DSSDocument} CBAdESSignature with an incorporates SignaturePolicyStore
+     */
+    public DSSDocument addSignaturePolicyStore(DSSDocument document, SignaturePolicyStore signaturePolicyStore) {
+        Objects.requireNonNull(document, "The document cannot be null");
+        Objects.requireNonNull(signaturePolicyStore, "The signaturePolicyStore cannot be null");
+
+        CBAdESSignaturePolicyStoreBuilder builder = new CBAdESSignaturePolicyStoreBuilder();
+        DSSDocument signatureWithPolicyStore = builder.addSignaturePolicyStore(document, signaturePolicyStore);
+        signatureWithPolicyStore.setName(getFinalFileName(document, SigningOperation.ADD_SIG_POLICY_STORE));
+        signatureWithPolicyStore.setMimeType(document.getMimeType());
+        return signatureWithPolicyStore;
     }
 
     @Override

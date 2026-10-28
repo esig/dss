@@ -25,7 +25,7 @@ import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.enumerations.SigningOperation;
 
 /**
- * JAdES extension
+ * JAdES Baseline signature extension
  *
  */
 public interface JAdESLevelBaselineExtension extends SignatureExtension<JAdESSignatureParameters> {

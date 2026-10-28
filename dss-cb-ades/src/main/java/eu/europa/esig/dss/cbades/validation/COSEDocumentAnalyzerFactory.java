@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.cbades.validation;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.validation.analyzer.DocumentAnalyzerFactory;
 
 /**
@@ -48,7 +49,7 @@ public class COSEDocumentAnalyzerFactory implements DocumentAnalyzerFactory {
         if (analyzer.isSupported(document)) {
             return new COSEDocumentAnalyzer(document);
         }
-        throw new IllegalArgumentException("Not supported document");
+        throw new IllegalInputException("Not supported document");
     }
 
 }

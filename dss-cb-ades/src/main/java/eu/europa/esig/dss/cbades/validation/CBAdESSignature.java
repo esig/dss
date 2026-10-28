@@ -1163,7 +1163,62 @@ public class CBAdESSignature extends DefaultAdvancedSignature {
 
     @Override
     public SignaturePolicyStore getSignaturePolicyStore() {
-        // TODO : not implemented
+        CBAdESUHeaders unsignedProperties = getUHeaders();
+        if (unsignedProperties.isExist()) {
+            List<CBAdESUHeadersComponent> sigPstList = unsignedProperties.getUnsignedPropertiesWithHeaderId(COSEHeaderParameter.SIG_PST.cbor());
+            if (Utils.collectionSize(sigPstList) == 1) {
+                CBORValue sigPst = sigPstList.get(0).getValue();
+                if (!sigPst.isMap()) {
+                    LOG.warn("'sigPSt' shall be a map! The entry is skipped.");
+                    return null;
+                }
+
+                SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
+
+                CBORValue docOrLocalUri = sigPst.getAsMapOrNull(COSEHeaderParameter.SIG_PST_DOC_OR_LOCAL_URI.cbor());
+                if (docOrLocalUri != null) {
+                    byte[] sigPolDoc = docOrLocalUri.getAsBytesOrNull(COSEHeaderParameter.DOC_OR_LOCAL_URI_SIG_POL_DOC.cbor());
+                    CBORValue sigPolLocalURI = docOrLocalUri.get(COSEHeaderParameter.DOC_OR_LOCAL_URI_SIG_POL_LOCAL_URI.cbor());
+                    if (sigPolDoc == null && sigPolLocalURI == null) {
+                        LOG.warn("Unable to process 'sigPSt' unprotected header parameter: " +
+                                "One of 'sigPolDoc' or 'sigPolLocalURI' member shall be present!");
+                        return null;
+                    }
+                    if (sigPolDoc != null) {
+                        signaturePolicyStore.setSignaturePolicyContent(new InMemoryDocument(sigPolDoc));
+                    }
+                    if (sigPolLocalURI != null) {
+                        signaturePolicyStore.setSigPolDocLocalURI(CBORUtils.fromUri(sigPolLocalURI));
+                    }
+
+                } else {
+                    LOG.warn("Unable to process 'sigPSt' unprotected header parameter: " +
+                            "mandatory 'docOrLocalUri' member is not present or malformed!");
+                    return null;
+                }
+
+                CBORValue spDSpec = sigPst.getAsMapOrNull(COSEHeaderParameter.SIG_PST_SP_D_SPEC.cbor());
+                if (spDSpec != null) {
+                    String oid = CBORUtils.fromUri(spDSpec.get(COSEHeaderParameter.OID_ID.cbor()));
+                    oid = DSSUtils.getObjectIdentifierValue(oid);
+                    if (Utils.isStringNotBlank(oid)) {
+                        SpDocSpecification spDocSpecification = new SpDocSpecification();
+                        spDocSpecification.setId(oid);
+
+                        String desc = spDSpec.getAsStringOrNull(COSEHeaderParameter.OID_DESC.cbor());
+                        spDocSpecification.setDescription(desc);
+                        CBORValue docRefs = spDSpec.getAsArrayOrNull(COSEHeaderParameter.OID_DOC_REFS.cbor());
+                        spDocSpecification.setDocumentationReferences(toListOfUriStrings(docRefs).toArray(new String[0]));
+                        signaturePolicyStore.setSpDocSpecification(spDocSpecification);
+
+                    } else {
+                        LOG.warn("Id parameter in the OID is not conformant! The entry is skipped.");
+                    }
+                }
+
+                return signaturePolicyStore;
+            }
+        }
         return null;
     }
 

@@ -231,7 +231,7 @@ public class CBAdESUtils {
             try {
                 return Long.parseLong(itemAsString);
             } catch (NumberFormatException e) {
-                LOG.debug("Unable to decode CBOR String '{}' to Long : {}", itemAsString, e.getMessage());
+                LOG.warn("Unable to decode CBOR String '{}' to Long : {}", itemAsString, e.getMessage());
             }
         } else {
             LOG.warn("Unsupported type of hash algorithm CBOR item : {}", hashAlg.getType());
