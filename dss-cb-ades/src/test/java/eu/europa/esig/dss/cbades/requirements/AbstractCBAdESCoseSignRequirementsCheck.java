@@ -22,7 +22,6 @@ package eu.europa.esig.dss.cbades.requirements;
 
 import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
-import eu.europa.esig.dss.utils.Utils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -120,12 +119,7 @@ public abstract class AbstractCBAdESCoseSignRequirementsCheck extends AbstractCB
 
     protected void checkBodyProtectedHeader(CBORValue bodyProtectedHeader) {
         assertNotNull(bodyProtectedHeader);
-        assertTrue(Utils.isArrayNotEmpty(bodyProtectedHeader.asBytes()));
-
-        CBORValue protectedHeaderObject = CBORUtils.parseCbor(bodyProtectedHeader.asBytes());
-        assertTrue(protectedHeaderObject.isMap());
-
-        assertEquals(0, protectedHeaderObject.size());
+        assertEquals(0, bodyProtectedHeader.asBytes().length);
     }
 
     protected void checkBodyUnprotectedHeader(CBORValue bodyUnprotectedHeader) {

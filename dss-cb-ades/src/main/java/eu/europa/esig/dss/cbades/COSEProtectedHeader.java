@@ -23,6 +23,7 @@ package eu.europa.esig.dss.cbades;
 import eu.europa.ec.digit.cddl4j.cbor.CBOR;
 import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
+import eu.europa.esig.dss.spi.DSSUtils;
 
 /**
  * Represents a COSE protected header structure
@@ -61,6 +62,18 @@ public class COSEProtectedHeader extends COSEHeader {
      * @return {@link CBORValue}
      */
     public CBORValue asByteString() {
+        /*
+         * RFC 9052 "3. Header Parameters"
+         *
+         * protected : Senders SHOULD encode a zero-length map as a zero-length
+         * byte string rather than as a zero-length map (encoded as h'a0'). The
+         * zero-length byte string encoding is preferred, because it is both
+         * shorter and the version used in the serialization structures for
+         * cryptographic computation.
+         */
+        if (isEmpty()) {
+            return CBOR.bytes(DSSUtils.EMPTY_BYTE_ARRAY);
+        }
         return CBOR.bytes(CBORUtils.serializeCbor(getValue()));
     }
 
