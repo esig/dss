@@ -165,8 +165,12 @@ public class CBAdESBaselineRequirementsChecker extends BaselineRequirementsCheck
         List<CBORValue> critList = new ArrayList<>();
 
         // crit (conditional presence, required only for some elements)
-        CBORValue crit = protectedHeader.getAsArrayOrNull(COSEHeaderParameter.CRIT.cbor());
+        CBORValue crit = protectedHeader.get(COSEHeaderParameter.CRIT.cbor());
         if (crit != null) {
+            if (!crit.isArray()) {
+                LOG.warn("'crit' header shall be of array type for a {} signature (see RFC 9052)!", profile);
+                return false;
+            }
             // crit cannot be empty
             critList.addAll(crit.getElements());
             if (crit.size() == 0) {
@@ -192,6 +196,17 @@ public class CBAdESBaselineRequirementsChecker extends BaselineRequirementsCheck
             if (!keySet.contains(critEntry)) {
                 LOG.warn("'crit' header can contain only entries used within a protected header " +
                         "for {} signature (see RFC 9052)! Found header : '{}'", profile, critEntry);
+                return false;
+            }
+
+            /*
+             * If the "crit" value list includes a label for which the header parameter is
+             * not in the protected-header-parameters bucket, this is a fatal error in
+             * processing the message.
+             */
+            if (!CBORUtils.getSupportedProtectedCriticalHeaders().contains(critEntry)) {
+                LOG.warn("crit header shall not contain a header that cannot be understood and processed " +
+                        "for a {} signature (see RFC 9052)! Found header : '{}'", profile, critEntry);
                 return false;
             }
         }
