@@ -240,6 +240,7 @@ public class ReferenceBuilder {
 		reference.setId(referenceIdProvider.getReferenceId());
 		if (Utils.isStringNotEmpty(document.getName())) {
 			reference.setUri(document.getName());
+			reference.setEncodeDocumentName(true);
 		}
 		reference.setContents(document);
 		reference.setDigestMethodAlgorithm(digestAlgorithm);

@@ -40,6 +40,9 @@ public class DSSReference implements Serializable {
 	/** The URI attribute of the reference */
 	private String uri;
 
+	/** Defines whether the URI shall be encoded as a document name (FALSE by default) */
+	private boolean encodeDocumentName = false;
+
 	/** The Type attribute of the reference */
 	private String type;
 
@@ -96,6 +99,31 @@ public class DSSReference implements Serializable {
 	 */
 	public void setUri(String uri) {
 		this.uri = uri;
+	}
+
+	/**
+	 * Gets whether the URI shall be encoded as a document name
+	 *
+	 * @return TRUE if the URI shall be encoded as a document name, FALSE if as a URI reference
+	 */
+	public boolean isEncodeDocumentName() {
+		return encodeDocumentName;
+	}
+
+	/**
+	 * Sets whether the URI shall be encoded as a document name.
+	 * When enabled, all special characters of the URI, including '#' and '?', are considered as a part
+	 * of the document name and are percent-encoded (e.g. "doc#1.xml" results in "doc%231.xml").
+	 * When disabled, the URI is encoded as a URI reference according to RFC 3986, preserving
+	 * the fragment and query components (e.g. "doc.xml#sig" refers to an element with Id "sig" within "doc.xml").
+	 * NOTE: Same-document references (e.g. "#id") are never encoded.
+	 * Default : FALSE (encode as a URI reference). The references created by DSS from the names
+	 * of the signed documents (e.g. for a detached signature) have the value set to TRUE.
+	 *
+	 * @param encodeDocumentName whether the URI shall be encoded as a document name
+	 */
+	public void setEncodeDocumentName(boolean encodeDocumentName) {
+		this.encodeDocumentName = encodeDocumentName;
 	}
 
 	/**
@@ -193,7 +221,8 @@ public class DSSReference implements Serializable {
 
 	@Override
 	public String toString() {
-		return "DSSReference{" + "id='" + id + '\'' + ", uri='" + uri + '\'' + ", type='" + type + '\'' +
+		return "DSSReference{" + "id='" + id + '\'' + ", uri='" + uri + '\'' +
+				", encodeDocumentName=" + encodeDocumentName + ", type='" + type + '\'' +
 				", digestMethod=" + digestMethod + ", contents=" + contents + ", transforms=" + transforms +
 				", object=" + object + '}';
 	}
