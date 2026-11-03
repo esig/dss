@@ -54,6 +54,7 @@ import eu.europa.esig.dss.enumerations.COSESignatureType;
 import eu.europa.esig.dss.enumerations.COSEStructureType;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.enumerations.CertificateThumbprints;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EllipticCurve;
 import eu.europa.esig.dss.enumerations.MimeType;
@@ -460,7 +461,7 @@ public abstract class AbstractMdocDeviceResponseTestCreation extends AbstractAtt
             List<RelatedCertificateWrapper> signingCertificates = foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 
             CBAdESSignatureParameters signatureParameters = signatureWrapper.isKeyBindingSignature() ? getKeyBindingSignatureParameters() : getSignatureParameters();
-            if (signatureParameters.isIncludeCertificateChainThumbprints()) {
+            if (CertificateThumbprints.CERTIFICATE_CHAIN == getSignatureParameters().getCertificateThumbprints()) {
                 BaselineBCertificateSelector certificateSelector = new BaselineBCertificateSelector(
                         signatureParameters.getSigningCertificate(), signatureParameters.getCertificateChain())
                         .setTrustAnchorBPPolicy(signatureParameters.bLevel().isTrustAnchorBPPolicy())

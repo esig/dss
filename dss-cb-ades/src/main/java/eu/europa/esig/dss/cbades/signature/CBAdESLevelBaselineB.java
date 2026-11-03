@@ -30,6 +30,7 @@ import eu.europa.esig.dss.cbades.COSEProtectedHeader;
 import eu.europa.esig.dss.cbades.COSEUnprotectedHeader;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.cbades.cwt.CWTClaims;
+import eu.europa.esig.dss.enumerations.CertificateThumbprints;
 import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeType;
@@ -224,22 +225,40 @@ public class CBAdESLevelBaselineB {
             return;
         }
 
-        DigestAlgorithm digestAlgorithm = parameters.getSigningCertificateDigestMethod();
-        if (parameters.isIncludeCertificateChainThumbprints()) {
-            List<CertificateToken> certificateTokens = getBaselineBCertificates();
-            if (Utils.collectionSize(certificateTokens) > 1) {
-                CBORValue.CBORArrayEditor x5ts = CBOR.array(certificateTokens.size());
-                for (CertificateToken certificateToken : certificateTokens) {
-                    x5ts.add(getCoseCertHash(certificateToken, digestAlgorithm));
-                }
-                addHeader(COSEHeaderParameter.X5TS.cbor(), x5ts.value()); // [2*x5t: COSE_CertHash]
-                return;
+        CertificateThumbprints certificateThumbprints = parameters.getCertificateThumbprints();
+        // TODO : legacy handling, to be removed after 6.6
+        if (certificateThumbprints == null) {
+            if (parameters.isIncludeCertificateChainThumbprints()) {
+                certificateThumbprints = CertificateThumbprints.CERTIFICATE_CHAIN;
             }
-
         }
-        // incorporate 'x5t'
-        CBORValue x5t = getCoseCertHash(signingCertificate, digestAlgorithm);
-        addHeader(COSEHeaderParameter.X5T.cbor(), x5t); // [ hashAlg: (int / tstr), hashValue: bstr ]
+        if (certificateThumbprints == null) {
+            // default
+            certificateThumbprints = CertificateThumbprints.SIGNING_CERTIFICATE;
+        }
+
+        DigestAlgorithm digestAlgorithm = parameters.getSigningCertificateDigestMethod();
+        switch (certificateThumbprints) {
+            case CERTIFICATE_CHAIN:
+                List<CertificateToken> certificateTokens = getBaselineBCertificates();
+                if (Utils.collectionSize(certificateTokens) > 1) {
+                    CBORValue.CBORArrayEditor x5ts = CBOR.array(certificateTokens.size());
+                    for (CertificateToken certificateToken : certificateTokens) {
+                        x5ts.add(getCoseCertHash(certificateToken, digestAlgorithm));
+                    }
+                    addHeader(COSEHeaderParameter.X5TS.cbor(), x5ts.value()); // [2*x5t: COSE_CertHash]
+                    break;
+                }
+                // fallback to signingCertificate
+            case SIGNING_CERTIFICATE:
+                // incorporate 'x5t'
+                CBORValue x5t = getCoseCertHash(signingCertificate, digestAlgorithm);
+                addHeader(COSEHeaderParameter.X5T.cbor(), x5t); // [ hashAlg: (int / tstr), hashValue: bstr ]
+                break;
+            case NONE:
+                // nothing to add
+                break;
+        }
     }
 
     private List<CertificateToken> getBaselineBCertificates() {

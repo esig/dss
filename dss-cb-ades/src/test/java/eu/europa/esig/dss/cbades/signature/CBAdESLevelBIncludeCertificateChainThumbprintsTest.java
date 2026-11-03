@@ -32,6 +32,7 @@ import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.enumerations.CertificateThumbprints;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -71,7 +72,7 @@ class CBAdESLevelBIncludeCertificateChainThumbprintsTest extends AbstractCBAdEST
         signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
         signatureParameters.setSignatureLevel(SignatureLevel.CB_AdES_BASELINE_B);
 
-        signatureParameters.setIncludeCertificateChainThumbprints(true);
+        signatureParameters.setCertificateThumbprints(CertificateThumbprints.CERTIFICATE_CHAIN);
     }
 
     @Override

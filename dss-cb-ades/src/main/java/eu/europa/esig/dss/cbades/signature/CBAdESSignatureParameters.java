@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.cbades.signature;
 
 import eu.europa.esig.dss.enumerations.COSEStructureType;
+import eu.europa.esig.dss.enumerations.CertificateThumbprints;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignatureForm;
@@ -53,8 +54,16 @@ public class CBAdESSignatureParameters extends AbstractSignatureParameters<CBAdE
         /**
          * Insert the 'x5chain' header as an item within the 'uHeaders' unprotected header array (unsigned)
          */
-        uHeaders,
+        uHeaders
     }
+
+    /**
+     * Defines behavior on creation of certificate thumbprints within the protected signature header.
+     * <p>
+     * DEFAULT: CertificateThumbprints.signingCertificate ('x5t' containing the signing certificate thumbprint
+     *          is to be included within the signature)
+     */
+    private CertificateThumbprints certificateThumbprints;
 
     /**
      * Defines if certificate chain binaries must be included in the signature ('x5chain' header)
@@ -66,6 +75,7 @@ public class CBAdESSignatureParameters extends AbstractSignatureParameters<CBAdE
     /**
      * Defines the element within COSE signature to embed the 'x5chain' header parameter into.
      * Applies when the {@code includeCertificateChain} parameter is enabled.
+     * <p>
      * DEFAULT: X5ChainHeaderPlacement.protectedHeader ('x5chain' is to be included within the protected header)
      */
     private X5ChainHeaderPlacement x5ChainHeaderPlacement;
@@ -74,8 +84,12 @@ public class CBAdESSignatureParameters extends AbstractSignatureParameters<CBAdE
      * Defines whether the thumbprints of the whole X.509 certificate chain should be included, using a 'x5ts' signed header.
      * When certificate chain is not provided, only the signing-certificate will be included to the chain.
      * When disabled, creates a 'x5t' signed header with only signing-certificate's thumbprint provided.
+     * <p>
      * DEFAULT : FALSE (the 'x5t' signed header with a signing-certificate's thumbprint to be included)
+     *
+     * @deprecated since DSS 6.6. See {@link CertificateThumbprints}
      */
+    @Deprecated
     private boolean includeCertificateChainThumbprints = false;
 
     /**
@@ -186,6 +200,34 @@ public class CBAdESSignatureParameters extends AbstractSignatureParameters<CBAdE
     }
 
     /**
+     * Gets the parameter configuration for the certificate thumbprints encapsulation within the protected header.
+     *
+     * @return {@link CertificateThumbprints}
+     */
+    public CertificateThumbprints getCertificateThumbprints() {
+        return certificateThumbprints;
+    }
+
+    /**
+     * Sets the behavior on certificate thumbprints encapsulation within the protected header of the signature.
+     * The following options are available:
+     * <ul>
+     *     <li>signingCertificate (default) : adds "5.1.7 The x5t (cert hash) header parameter" containing
+     *         a thumbprint of the signing certificate</li>
+     *     <li>certificateChain : adds "5.2.2 The x5ts (X.509 certificates Thumbprints) header parameter" containing
+     *         thumbprints of the certificate chain</li>
+     *     <li>none : does not incorporate any protected header member containing certificate thumbprints</li>
+     * </ul>
+     * Default: CertificateThumbprints.signingCertificate ('x5t' containing the signing certificate thumbprint
+     *          is to be included within the signature)
+     *
+     * @param certificateThumbprints {@link CertificateThumbprints}
+     */
+    public void setCertificateThumbprints(CertificateThumbprints certificateThumbprints) {
+        this.certificateThumbprints = certificateThumbprints;
+    }
+
+    /**
      * Defines if complete certificate chain binaries must be included into the COSE signature ('x5chain' header)
      *
      * @return TRUE if the certificate chain must be included, FALSE otherwise
@@ -230,7 +272,9 @@ public class CBAdESSignatureParameters extends AbstractSignatureParameters<CBAdE
      * protected header using the 'x5ts' signed header.
      *
      * @return TRUE if the thumbprints of certificate chain to be included, FALSE otherwise
+     * @deprecated since DSS 6.6.
      */
+    @Deprecated
     public boolean isIncludeCertificateChainThumbprints() {
         return includeCertificateChainThumbprints;
     }
@@ -249,6 +293,7 @@ public class CBAdESSignatureParameters extends AbstractSignatureParameters<CBAdE
      *
      * @param includeCertificateChainThumbprints whether the thumbprints of the certificate chain should be included
      */
+    @Deprecated
     public void setIncludeCertificateChainThumbprints(boolean includeCertificateChainThumbprints) {
         this.includeCertificateChainThumbprints = includeCertificateChainThumbprints;
     }

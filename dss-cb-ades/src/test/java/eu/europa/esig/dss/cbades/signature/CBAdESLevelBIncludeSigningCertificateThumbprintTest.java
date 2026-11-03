@@ -32,6 +32,7 @@ import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.enumerations.CertificateThumbprints;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -56,7 +57,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class CBAdESLevelBDoNotIncludeCertificateChainThumbprintsTest extends AbstractCBAdESTestSignature {
+class CBAdESLevelBIncludeSigningCertificateThumbprintTest extends AbstractCBAdESTestSignature {
 
     private DocumentSignatureService<CBAdESSignatureParameters, CBAdESTimestampParameters> service;
     private DSSDocument documentToSign;
@@ -73,7 +74,7 @@ class CBAdESLevelBDoNotIncludeCertificateChainThumbprintsTest extends AbstractCB
         signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
         signatureParameters.setSignatureLevel(SignatureLevel.CB_AdES_BASELINE_B);
 
-        signatureParameters.setIncludeCertificateChainThumbprints(false);
+        signatureParameters.setCertificateThumbprints(CertificateThumbprints.SIGNING_CERTIFICATE);
     }
 
     @Override

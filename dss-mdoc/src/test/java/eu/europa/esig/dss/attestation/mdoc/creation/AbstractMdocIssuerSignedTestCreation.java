@@ -51,6 +51,7 @@ import eu.europa.esig.dss.enumerations.COSESignatureType;
 import eu.europa.esig.dss.enumerations.COSEStructureType;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.enumerations.CertificateThumbprints;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
@@ -444,7 +445,7 @@ public abstract class AbstractMdocIssuerSignedTestCreation extends AbstractAttes
             List<RelatedCertificateWrapper> signingCertificates = foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 
             CBAdESSignatureParameters signatureParameters = getSignatureParameters();
-            if (signatureParameters.isIncludeCertificateChainThumbprints()) {
+            if (CertificateThumbprints.CERTIFICATE_CHAIN == getSignatureParameters().getCertificateThumbprints()) {
                 BaselineBCertificateSelector certificateSelector = new BaselineBCertificateSelector(
                         signatureParameters.getSigningCertificate(), signatureParameters.getCertificateChain())
                         .setTrustAnchorBPPolicy(signatureParameters.bLevel().isTrustAnchorBPPolicy())

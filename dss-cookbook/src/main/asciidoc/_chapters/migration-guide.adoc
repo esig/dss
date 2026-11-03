@@ -46,6 +46,24 @@ tlValidationJob.setValidationPolicy(
         ValidationPolicyLoader.fromValidationPolicy("path/to/policy").create());
 ----
 
+a|CB-AdES signing-certificate reference          a|
+[source,java]
+----
+import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
+
+CBAdESSignatureParameters parameters = new CBAdESSignatureParameters();
+parameters.setIncludeCertificateChainThumbprints(true);
+----
+a|
+[source,java]
+----
+import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
+import eu.europa.esig.dss.enumerations.CertificateThumbprints;
+
+CBAdESSignatureParameters parameters = new CBAdESSignatureParameters();
+signatureParameters.setCertificateThumbprints(CertificateThumbprints.CERTIFICATE_CHAIN);
+----
+
 |===
 
 .Code changes from version 6.5 to 6.5.1

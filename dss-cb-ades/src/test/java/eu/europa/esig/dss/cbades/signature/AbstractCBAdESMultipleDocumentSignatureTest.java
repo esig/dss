@@ -44,6 +44,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.COSESignatureType;
 import eu.europa.esig.dss.enumerations.COSEStructureType;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.enumerations.CertificateThumbprints;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeType;
@@ -309,7 +310,7 @@ public abstract class AbstractCBAdESMultipleDocumentSignatureTest extends
 
             FoundCertificatesProxy foundCertificates = signatureWrapper.foundCertificates();
             List<RelatedCertificateWrapper> signingCertificates = foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
-            if (getSignatureParameters().isIncludeCertificateChainThumbprints()) {
+            if (CertificateThumbprints.CERTIFICATE_CHAIN == getSignatureParameters().getCertificateThumbprints()) {
                 BaselineBCertificateSelector certificateSelector = new BaselineBCertificateSelector(
                         getSignatureParameters().getSigningCertificate(), getSignatureParameters().getCertificateChain())
                         .setTrustAnchorBPPolicy(getSignatureParameters().bLevel().isTrustAnchorBPPolicy())
