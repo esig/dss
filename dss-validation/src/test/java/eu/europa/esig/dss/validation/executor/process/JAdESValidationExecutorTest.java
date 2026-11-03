@@ -22,18 +22,22 @@ package eu.europa.esig.dss.validation.executor.process;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRef;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificates;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.Level;
@@ -695,6 +699,385 @@ class JAdESValidationExecutorTest extends AbstractProcessExecutorTest {
             }
         }
         assertTrue(typPresentCheckFound);
+    }
+    
+    @Test
+    void checkJAdESInvalidSignatureTest() throws Exception {
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+                new File("src/test/resources/diag-data/diag_data_jades_valid.xml"));
+        assertNotNull(diagnosticData);
+
+        XmlSignature signature = diagnosticData.getSignatures().get(0);
+        XmlDigestMatcher xmlDigestMatcher = signature.getDigestMatchers().get(0);
+        xmlDigestMatcher.setDataIntact(false);
+
+        XmlBasicSignature basicSignature = signature.getBasicSignature();
+        basicSignature.setSignatureIntact(false);
+        basicSignature.setSignatureValid(false);
+
+        DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+        executor.setDiagnosticData(diagnosticData);
+        executor.setValidationPolicy(loadDefaultPolicy());
+        executor.setCurrentTime(diagnosticData.getValidationDate());
+
+        Reports reports = executor.execute();
+        assertNotNull(reports);
+
+        SimpleReport simpleReport = reports.getSimpleReport();
+        assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+        assertEquals(SubIndication.SIG_CRYPTO_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+        assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+                i18nProvider.getMessage(MessageTag.BBB_CV_ISI_ANS)));
+
+        DetailedReport detailedReport = reports.getDetailedReport();
+        XmlBasicBuildingBlocks sigBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+        assertNotNull(sigBBB);
+
+        XmlCV xmlCV = sigBBB.getCV();
+        assertNotNull(xmlCV);
+        assertEquals(Indication.FAILED, xmlCV.getConclusion().getIndication());
+        assertEquals(SubIndication.SIG_CRYPTO_FAILURE, xmlCV.getConclusion().getSubIndication());
+
+        int digestMatcherFoundCheckCounter = 0;
+        int digestMatcherIntactCheckCounter = 0;
+        int signatureIntactCheckCounter = 0;
+        for (XmlConstraint xmlConstraint : xmlCV.getConstraint()) {
+            if (MessageTag.BBB_CV_IRDOF.getId().equals(xmlConstraint.getName().getKey())) {
+                ++digestMatcherFoundCheckCounter;
+            } else if (MessageTag.BBB_CV_IRDOI.getId().equals(xmlConstraint.getName().getKey())) {
+                ++digestMatcherIntactCheckCounter;
+            } else if (MessageTag.BBB_CV_ISI.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
+                assertEquals(MessageTag.BBB_CV_ISI_ANS.getId(), xmlConstraint.getError().getKey());
+                ++signatureIntactCheckCounter;
+            }
+        }
+        assertEquals(1, digestMatcherFoundCheckCounter);
+        assertEquals(0, digestMatcherIntactCheckCounter);
+        assertEquals(1, signatureIntactCheckCounter);
+    }
+
+    @Test
+    void checkJAdESDataNotFoundSignatureTest() throws Exception {
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+                new File("src/test/resources/diag-data/diag_data_jades_valid.xml"));
+        assertNotNull(diagnosticData);
+
+        XmlSignature signature = diagnosticData.getSignatures().get(0);
+        XmlDigestMatcher xmlDigestMatcher = signature.getDigestMatchers().get(0);
+        xmlDigestMatcher.setDataFound(false);
+        xmlDigestMatcher.setDataIntact(false);
+
+        XmlBasicSignature basicSignature = signature.getBasicSignature();
+        basicSignature.setSignatureIntact(false);
+        basicSignature.setSignatureValid(false);
+
+        DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+        executor.setDiagnosticData(diagnosticData);
+        executor.setValidationPolicy(loadDefaultPolicy());
+        executor.setCurrentTime(diagnosticData.getValidationDate());
+
+        Reports reports = executor.execute();
+        assertNotNull(reports);
+
+        SimpleReport simpleReport = reports.getSimpleReport();
+        assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+        assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+        assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+                i18nProvider.getMessage(MessageTag.BBB_CV_IRDOF_ANS)));
+
+        DetailedReport detailedReport = reports.getDetailedReport();
+        XmlBasicBuildingBlocks sigBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+        assertNotNull(sigBBB);
+
+        XmlCV xmlCV = sigBBB.getCV();
+        assertNotNull(xmlCV);
+        assertEquals(Indication.INDETERMINATE, xmlCV.getConclusion().getIndication());
+        assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, xmlCV.getConclusion().getSubIndication());
+
+        int digestMatcherFoundCheckCounter = 0;
+        int digestMatcherIntactCheckCounter = 0;
+        int signatureIntactCheckCounter = 0;
+        for (XmlConstraint xmlConstraint : xmlCV.getConstraint()) {
+            if (MessageTag.BBB_CV_IRDOF.getId().equals(xmlConstraint.getName().getKey())) {
+                ++digestMatcherFoundCheckCounter;
+            } else if (MessageTag.BBB_CV_IRDOI.getId().equals(xmlConstraint.getName().getKey())) {
+                ++digestMatcherIntactCheckCounter;
+            } else if (MessageTag.BBB_CV_ISI.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
+                assertEquals(MessageTag.BBB_CV_ISI_ANS.getId(), xmlConstraint.getError().getKey());
+                ++signatureIntactCheckCounter;
+            }
+        }
+        assertEquals(1, digestMatcherFoundCheckCounter);
+        assertEquals(0, digestMatcherIntactCheckCounter);
+        assertEquals(0, signatureIntactCheckCounter);
+    }
+
+    @Test
+    void checkJAdESDetachedSignatureTest() throws Exception {
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+                new File("src/test/resources/diag-data/diag_data_jades_valid.xml"));
+        assertNotNull(diagnosticData);
+
+        XmlSignature signature = diagnosticData.getSignatures().get(0);
+        XmlDigestMatcher xmlDigestMatcher = new XmlDigestMatcher();
+        xmlDigestMatcher.setType(DigestMatcherType.SIG_D_ENTRY);
+        xmlDigestMatcher.setUri("sample.xml");
+        xmlDigestMatcher.setDigestMethod(DigestAlgorithm.SHA256);
+        xmlDigestMatcher.setDigestValue(new byte[] { 0, 1, 2, 3 });
+        xmlDigestMatcher.setDataFound(true);
+        xmlDigestMatcher.setDataIntact(true);
+        signature.getDigestMatchers().add(xmlDigestMatcher);
+
+        DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+        executor.setDiagnosticData(diagnosticData);
+        executor.setValidationPolicy(loadDefaultPolicy());
+        executor.setCurrentTime(diagnosticData.getValidationDate());
+
+        Reports reports = executor.execute();
+        assertNotNull(reports);
+
+        SimpleReport simpleReport = reports.getSimpleReport();
+        assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+        DetailedReport detailedReport = reports.getDetailedReport();
+        XmlBasicBuildingBlocks sigBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+        assertNotNull(sigBBB);
+
+        XmlCV xmlCV = sigBBB.getCV();
+        assertNotNull(xmlCV);
+        assertEquals(Indication.PASSED, xmlCV.getConclusion().getIndication());
+
+        int digestMatcherJWSFoundCheckCounter = 0;
+        int digestMatcherSigDFoundCheckCounter = 0;
+        int digestMatcherIntactCheckCounter = 0;
+        int signatureIntactCheckCounter = 0;
+        for (XmlConstraint xmlConstraint : xmlCV.getConstraint()) {
+            assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+            if (MessageTag.BBB_CV_IRDOF.getId().equals(xmlConstraint.getName().getKey())) {
+                if (i18nProvider.getMessage(MessageTag.REFERENCE, "sample.xml").equals(xmlConstraint.getAdditionalInfo())) {
+                    ++digestMatcherSigDFoundCheckCounter;
+                } else {
+                    ++digestMatcherJWSFoundCheckCounter;
+                }
+            } else if (MessageTag.BBB_CV_IRDOI.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(i18nProvider.getMessage(MessageTag.REFERENCE, "sample.xml"), xmlConstraint.getAdditionalInfo());
+                ++digestMatcherIntactCheckCounter;
+            } else if (MessageTag.BBB_CV_ISI.getId().equals(xmlConstraint.getName().getKey())) {
+                ++signatureIntactCheckCounter;
+            }
+        }
+        assertEquals(1, digestMatcherJWSFoundCheckCounter);
+        assertEquals(1, digestMatcherSigDFoundCheckCounter);
+        assertEquals(1, digestMatcherIntactCheckCounter);
+        assertEquals(1, signatureIntactCheckCounter);
+    }
+
+    @Test
+    void checkJAdESDetachedSignatureDataNotFoundTest() throws Exception {
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+                new File("src/test/resources/diag-data/diag_data_jades_valid.xml"));
+        assertNotNull(diagnosticData);
+
+        XmlSignature signature = diagnosticData.getSignatures().get(0);
+        XmlDigestMatcher xmlDigestMatcher = new XmlDigestMatcher();
+        xmlDigestMatcher.setType(DigestMatcherType.SIG_D_ENTRY);
+        xmlDigestMatcher.setUri("sample.xml");
+        xmlDigestMatcher.setDigestMethod(DigestAlgorithm.SHA256);
+        xmlDigestMatcher.setDigestValue(new byte[] { 0, 1, 2, 3 });
+        xmlDigestMatcher.setDataFound(false);
+        xmlDigestMatcher.setDataIntact(false);
+        signature.getDigestMatchers().add(xmlDigestMatcher);
+
+        DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+        executor.setDiagnosticData(diagnosticData);
+        executor.setValidationPolicy(loadDefaultPolicy());
+        executor.setCurrentTime(diagnosticData.getValidationDate());
+
+        Reports reports = executor.execute();
+        assertNotNull(reports);
+
+        SimpleReport simpleReport = reports.getSimpleReport();
+        assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+        assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+        assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+                i18nProvider.getMessage(MessageTag.BBB_CV_IRDOF_ANS)));
+
+        DetailedReport detailedReport = reports.getDetailedReport();
+        XmlBasicBuildingBlocks sigBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+        assertNotNull(sigBBB);
+
+        XmlCV xmlCV = sigBBB.getCV();
+        assertNotNull(xmlCV);
+        assertEquals(Indication.INDETERMINATE, xmlCV.getConclusion().getIndication());
+        assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, xmlCV.getConclusion().getSubIndication());
+
+        int digestMatcherJWSFoundCheckCounter = 0;
+        int digestMatcherSigDFoundCheckCounter = 0;
+        int digestMatcherIntactCheckCounter = 0;
+        int signatureIntactCheckCounter = 0;
+        for (XmlConstraint xmlConstraint : xmlCV.getConstraint()) {
+            if (MessageTag.BBB_CV_IRDOF.getId().equals(xmlConstraint.getName().getKey())) {
+                if (i18nProvider.getMessage(MessageTag.REFERENCE, "sample.xml").equals(xmlConstraint.getAdditionalInfo())) {
+                    assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
+                    assertEquals(MessageTag.BBB_CV_IRDOF_ANS.getId(), xmlConstraint.getError().getKey());
+                    ++digestMatcherSigDFoundCheckCounter;
+                } else {
+                    assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+                    ++digestMatcherJWSFoundCheckCounter;
+                }
+            } else if (MessageTag.BBB_CV_IRDOI.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+                assertEquals(i18nProvider.getMessage(MessageTag.REFERENCE, "sample.xml"), xmlConstraint.getAdditionalInfo());
+                ++digestMatcherIntactCheckCounter;
+            } else if (MessageTag.BBB_CV_ISI.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+                ++signatureIntactCheckCounter;
+            }
+        }
+        assertEquals(1, digestMatcherJWSFoundCheckCounter);
+        assertEquals(1, digestMatcherSigDFoundCheckCounter);
+        assertEquals(0, digestMatcherIntactCheckCounter);
+        assertEquals(0, signatureIntactCheckCounter);
+    }
+
+    @Test
+    void checkJAdESDetachedSignatureDataNotIntactTest() throws Exception {
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+                new File("src/test/resources/diag-data/diag_data_jades_valid.xml"));
+        assertNotNull(diagnosticData);
+
+        XmlSignature signature = diagnosticData.getSignatures().get(0);
+        XmlDigestMatcher xmlDigestMatcher = new XmlDigestMatcher();
+        xmlDigestMatcher.setType(DigestMatcherType.SIG_D_ENTRY);
+        xmlDigestMatcher.setUri("sample.xml");
+        xmlDigestMatcher.setDigestMethod(DigestAlgorithm.SHA256);
+        xmlDigestMatcher.setDigestValue(new byte[] { 0, 1, 2, 3 });
+        xmlDigestMatcher.setDataFound(true);
+        xmlDigestMatcher.setDataIntact(false);
+        signature.getDigestMatchers().add(xmlDigestMatcher);
+
+        DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+        executor.setDiagnosticData(diagnosticData);
+        executor.setValidationPolicy(loadDefaultPolicy());
+        executor.setCurrentTime(diagnosticData.getValidationDate());
+
+        Reports reports = executor.execute();
+        assertNotNull(reports);
+
+        SimpleReport simpleReport = reports.getSimpleReport();
+        assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+        assertEquals(SubIndication.HASH_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+        assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+                i18nProvider.getMessage(MessageTag.BBB_CV_IRDOI_ANS)));
+
+        DetailedReport detailedReport = reports.getDetailedReport();
+        XmlBasicBuildingBlocks sigBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+        assertNotNull(sigBBB);
+
+        XmlCV xmlCV = sigBBB.getCV();
+        assertNotNull(xmlCV);
+        assertEquals(Indication.FAILED, xmlCV.getConclusion().getIndication());
+        assertEquals(SubIndication.HASH_FAILURE, xmlCV.getConclusion().getSubIndication());
+
+        int digestMatcherJWSFoundCheckCounter = 0;
+        int digestMatcherSigDFoundCheckCounter = 0;
+        int digestMatcherIntactCheckCounter = 0;
+        int signatureIntactCheckCounter = 0;
+        for (XmlConstraint xmlConstraint : xmlCV.getConstraint()) {
+            if (MessageTag.BBB_CV_IRDOF.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+                if (i18nProvider.getMessage(MessageTag.REFERENCE, "sample.xml").equals(xmlConstraint.getAdditionalInfo())) {
+                    ++digestMatcherSigDFoundCheckCounter;
+                } else {
+                    ++digestMatcherJWSFoundCheckCounter;
+                }
+            } else if (MessageTag.BBB_CV_IRDOI.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
+                assertEquals(MessageTag.BBB_CV_IRDOI_ANS.getId(), xmlConstraint.getError().getKey());
+                assertEquals(i18nProvider.getMessage(MessageTag.REFERENCE, "sample.xml"), xmlConstraint.getAdditionalInfo());
+                ++digestMatcherIntactCheckCounter;
+            } else if (MessageTag.BBB_CV_ISI.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+                ++signatureIntactCheckCounter;
+            }
+        }
+        assertEquals(1, digestMatcherJWSFoundCheckCounter);
+        assertEquals(1, digestMatcherSigDFoundCheckCounter);
+        assertEquals(1, digestMatcherIntactCheckCounter);
+        assertEquals(0, signatureIntactCheckCounter);
+    }
+
+    @Test
+    void checkJAdESDetachedSignatureNotIntactTest() throws Exception {
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+                new File("src/test/resources/diag-data/diag_data_jades_valid.xml"));
+        assertNotNull(diagnosticData);
+
+        XmlSignature signature = diagnosticData.getSignatures().get(0);
+        XmlDigestMatcher xmlDigestMatcher = new XmlDigestMatcher();
+        xmlDigestMatcher.setType(DigestMatcherType.SIG_D_ENTRY);
+        xmlDigestMatcher.setUri("sample.xml");
+        xmlDigestMatcher.setDigestMethod(DigestAlgorithm.SHA256);
+        xmlDigestMatcher.setDigestValue(new byte[] { 0, 1, 2, 3 });
+        xmlDigestMatcher.setDataFound(true);
+        xmlDigestMatcher.setDataIntact(true);
+        signature.getDigestMatchers().add(xmlDigestMatcher);
+
+        XmlBasicSignature basicSignature = signature.getBasicSignature();
+        basicSignature.setSignatureIntact(false);
+        basicSignature.setSignatureValid(false);
+
+        DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+        executor.setDiagnosticData(diagnosticData);
+        executor.setValidationPolicy(loadDefaultPolicy());
+        executor.setCurrentTime(diagnosticData.getValidationDate());
+
+        Reports reports = executor.execute();
+        assertNotNull(reports);
+
+        SimpleReport simpleReport = reports.getSimpleReport();
+        assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+        assertEquals(SubIndication.SIG_CRYPTO_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+        assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+                i18nProvider.getMessage(MessageTag.BBB_CV_ISI_ANS)));
+
+        DetailedReport detailedReport = reports.getDetailedReport();
+        XmlBasicBuildingBlocks sigBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+        assertNotNull(sigBBB);
+
+        XmlCV xmlCV = sigBBB.getCV();
+        assertNotNull(xmlCV);
+        assertEquals(Indication.FAILED, xmlCV.getConclusion().getIndication());
+        assertEquals(SubIndication.SIG_CRYPTO_FAILURE, xmlCV.getConclusion().getSubIndication());
+
+        int digestMatcherJWSFoundCheckCounter = 0;
+        int digestMatcherSigDFoundCheckCounter = 0;
+        int digestMatcherIntactCheckCounter = 0;
+        int signatureIntactCheckCounter = 0;
+        for (XmlConstraint xmlConstraint : xmlCV.getConstraint()) {
+            if (MessageTag.BBB_CV_IRDOF.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+                if (i18nProvider.getMessage(MessageTag.REFERENCE, "sample.xml").equals(xmlConstraint.getAdditionalInfo())) {
+                    ++digestMatcherSigDFoundCheckCounter;
+                } else {
+                    ++digestMatcherJWSFoundCheckCounter;
+                }
+            } else if (MessageTag.BBB_CV_IRDOI.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+                assertEquals(i18nProvider.getMessage(MessageTag.REFERENCE, "sample.xml"), xmlConstraint.getAdditionalInfo());
+                ++digestMatcherIntactCheckCounter;
+            } else if (MessageTag.BBB_CV_ISI.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
+                assertEquals(MessageTag.BBB_CV_ISI_ANS.getId(), xmlConstraint.getError().getKey());
+                ++signatureIntactCheckCounter;
+            }
+        }
+        assertEquals(1, digestMatcherJWSFoundCheckCounter);
+        assertEquals(1, digestMatcherSigDFoundCheckCounter);
+        assertEquals(1, digestMatcherIntactCheckCounter);
+        assertEquals(1, signatureIntactCheckCounter);
     }
 
 }

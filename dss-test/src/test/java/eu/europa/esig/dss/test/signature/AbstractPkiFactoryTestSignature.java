@@ -195,6 +195,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		super.checkIssuerSigningCertificateValue(diagnosticData);
 		
 		String signingCertificateId = diagnosticData.getSigningCertificateId(diagnosticData.getFirstSignatureId());
+		assertNotNull(signingCertificateId);
 		String issuerDN = diagnosticData.getCertificateIssuerDN(signingCertificateId);
 		CertificateToken certificate = getSigningCert();
 		assertEquals(certificate.getIssuer().getRFC2253(), issuerDN);

@@ -508,18 +508,30 @@ public class CBAdESCertificateSource extends SignatureCertificateSource {
             kidCertRef = keyIdentifierCertificateRefs.get(0);
         }
 
-        if (signingCertRef != null) {
-            CertificateValidity bestCertificateValidity = null;
-            // check all certificates against the signingCert ref and find the best one
-            final List<CertificateValidity> certificateValidityList = candidates.getCertificateValidityList();
-            for (final CertificateValidity certificateValidity : certificateValidityList) {
-                if (isValid(certificateValidity, signingCertRef, kidCertRef)) {
-                    bestCertificateValidity = certificateValidity;
+        CertificateValidity bestCertificateValidity = null;
+        // check all certificates against the signingCert ref and find the best one
+        final List<CertificateValidity> certificateValidityList = candidates.getCertificateValidityList();
+        for (final CertificateValidity certificateValidity : certificateValidityList) {
+            if (isValid(certificateValidity, signingCertRef, kidCertRef)) {
+                bestCertificateValidity = certificateValidity;
+                break;
+            }
+        }
+        if (bestCertificateValidity == null) {
+            // the first certificate in 'x5chain' shall be the signing certificate
+            List<CertificateToken> keyInfoCertificates = getKeyInfoCertificates();
+            if (Utils.isCollectionNotEmpty(keyInfoCertificates)) {
+                CertificateToken firstCertificate = keyInfoCertificates.get(0);
+                for (final CertificateValidity certificateValidity : certificateValidityList) {
+                    if (firstCertificate.equals(certificateValidity.getCertificateToken())) {
+                        bestCertificateValidity = certificateValidity;
+                        break;
+                    }
                 }
             }
-            if (bestCertificateValidity != null) {
-                candidates.setTheCertificateValidity(bestCertificateValidity);
-            }
+        }
+        if (bestCertificateValidity != null) {
+            candidates.setTheCertificateValidity(bestCertificateValidity);
         }
     }
 

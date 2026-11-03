@@ -128,6 +128,15 @@ public class CryptographicVerification extends Chain<XmlCV> {
 				} else {
 					item = item.setNextItem(referenceDataFound);
 				}
+
+				if (DigestMatcherType.JWS_SIGNING_INPUT == digestMatcher.getType() ||
+						DigestMatcherType.COSE_SIG_STRUCTURE == digestMatcher.getType()) {
+					// JAdES and CB-AdES digest matchers corresponding to the DTBS(R) shall not interfere with
+					// the signature validity verification.
+					// Whether the reference data is found is still checked, to properly handle detached signatures.
+					continue;
+				}
+
 				/*
 				 * 2) The SVA shall check the integrity of the signed data objects. In case of
 				 * failure, the building block shall return the indication FAILED with the
