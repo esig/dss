@@ -187,7 +187,7 @@ public class ReferenceProcessor {
                 String uri = dssReference.getUri();
                 if (uri != null) {
                     if (!DSSXMLUtils.isSameDocumentReference(uri)) {
-                        uri = DSSUtils.encodeURI(uri);
+                        uri = dssReference.isEncodeDocumentName() ? DSSUtils.encodeDocumentName(uri) : DSSUtils.encodeURI(uri);
                     }
                     referenceDom.setAttribute(XMLDSigAttribute.URI.getAttributeName(), uri);
                 }

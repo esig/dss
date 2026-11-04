@@ -125,7 +125,7 @@ public abstract class AbstractASiCManifestBuilder {
 	 */
 	protected void addSigReference(final Document documentDom, final Element asicManifestDom) {
 		final Element sigReferenceDom = DomUtils.addElement(documentDom, asicManifestDom, ASiCManifestNamespace.NS, ASiCManifestElement.SIG_REFERENCE);
-		sigReferenceDom.setAttribute(ASiCManifestAttribute.URI.getAttributeName(), DSSUtils.encodeURI(sigReferenceUri));
+		sigReferenceDom.setAttribute(ASiCManifestAttribute.URI.getAttributeName(), DSSUtils.encodeDocumentName(sigReferenceUri));
 		MimeType sigReferenceMimeType = getSigReferenceMimeType();
 		if (sigReferenceMimeType != null) {
 			sigReferenceDom.setAttribute(ASiCManifestAttribute.MIME_TYPE.getAttributeName(), sigReferenceMimeType.getMimeTypeString());
@@ -206,7 +206,7 @@ public abstract class AbstractASiCManifestBuilder {
 											 DSSDocument document, DigestAlgorithm digestAlgorithm) {
 		final Element dataObjectReferenceDom = DomUtils.addElement(documentDom, asicManifestDom, ASiCManifestNamespace.NS, ASiCManifestElement.DATA_OBJECT_REFERENCE);
 		
-		dataObjectReferenceDom.setAttribute(ASiCManifestAttribute.URI.getAttributeName(), DSSUtils.encodeURI(document.getName()));
+		dataObjectReferenceDom.setAttribute(ASiCManifestAttribute.URI.getAttributeName(), DSSUtils.encodeDocumentName(document.getName()));
 
 		MimeType mimeType = document.getMimeType();
 		if (mimeType != null) {
