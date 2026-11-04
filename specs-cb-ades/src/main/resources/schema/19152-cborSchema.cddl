@@ -194,8 +194,8 @@ srAts = {
 CertifiedAttrs = [ + CertifiedAttr]
 CertifiedAttr = {CertifiedAttrChoice}
 CertifiedAttrChoice = (
-    1 => pkiObj // ;x509AttrCert: encapsulates a X.509 attribute certificate
-    2 => pkiObj  ; otherAttrCert: encapsulates another type of attribute certificate
+    1 => pkiOb // ;x509AttrCert: encapsulates a X.509 attribute certificate
+    2 => pkiOb  ; otherAttrCert: encapsulates another type of attribute certificate
 )
 AttrArrays = [+NotCertifiedItem]
 NotCertifiedItem = [
