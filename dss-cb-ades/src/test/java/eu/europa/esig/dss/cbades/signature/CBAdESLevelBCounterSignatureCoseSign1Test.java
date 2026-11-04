@@ -140,7 +140,7 @@ class CBAdESLevelBCounterSignatureCoseSign1Test extends AbstractCBAdESCounterSig
         assertTrue(countersignatureComponent.isMap());
         assertEquals(1, countersignatureComponent.size());
 
-        CBORValue counterSignatureV2Object = countersignatureComponent.get(COSEHeaderParameter.COUNTER_SIGNATURE_V2.cbor());
+        CBORValue counterSignatureV2Object = countersignatureComponent.get(COSEHeaderParameter.COUNTER_SIGNATURE_RFC_9338.cbor());
         assertNotNull(counterSignatureV2Object);
         assertFalse(counterSignatureV2Object.isTag());
         assertTrue(counterSignatureV2Object.isArray());

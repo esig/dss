@@ -23,6 +23,7 @@ package eu.europa.esig.dss.cbades.cbor;
 import eu.europa.ec.digit.cddl4j.cbor.CBOR;
 import eu.europa.ec.digit.cddl4j.cbor.CBORDecodeException;
 import eu.europa.ec.digit.cddl4j.cbor.CBORDecoder;
+import eu.europa.ec.digit.cddl4j.cbor.CBOREncoder;
 import eu.europa.ec.digit.cddl4j.cbor.CBORTags;
 import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -42,6 +43,7 @@ import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -50,7 +52,10 @@ import java.util.stream.Stream;
 import static eu.europa.esig.dss.cbades.COSEHeaderParameter.ADO_TST;
 import static eu.europa.esig.dss.cbades.COSEHeaderParameter.ALG;
 import static eu.europa.esig.dss.cbades.COSEHeaderParameter.CONTENT_TYPE;
-import static eu.europa.esig.dss.cbades.COSEHeaderParameter.COUNTER_SIGNATURE;
+import static eu.europa.esig.dss.cbades.COSEHeaderParameter.COUNTER_SIGNATURE0_RFC_8152;
+import static eu.europa.esig.dss.cbades.COSEHeaderParameter.COUNTER_SIGNATURE0_RFC_9338;
+import static eu.europa.esig.dss.cbades.COSEHeaderParameter.COUNTER_SIGNATURE_RFC_8152;
+import static eu.europa.esig.dss.cbades.COSEHeaderParameter.COUNTER_SIGNATURE_RFC_9338;
 import static eu.europa.esig.dss.cbades.COSEHeaderParameter.CRIT;
 import static eu.europa.esig.dss.cbades.COSEHeaderParameter.CWT_CLAIMS;
 import static eu.europa.esig.dss.cbades.COSEHeaderParameter.IV;
@@ -99,6 +104,11 @@ public final class CBORUtils {
      */
     private static final Set<CBORValue> requiredCriticalHeaders;
 
+    /**
+     * Set of supported COSE counter signature headers
+     */
+    private static final Set<CBORValue> coseCounterSignatureHeaders;
+
     static {
         EMPTY_BYTE_STRING = CBOR.bytes(new byte[0]);
 
@@ -108,7 +118,7 @@ public final class CBORUtils {
                 /* RFC 9360 */
                 X5BAG.cbor(), X5CHAIN.cbor(), X5T.cbor(), X5U.cbor(),
                 /* RFC 8152 */
-                COUNTER_SIGNATURE.cbor(),
+                COUNTER_SIGNATURE_RFC_8152.cbor(),
                 /* RFC 9597 */
                 CWT_CLAIMS.cbor(),
                 /* CB-AdES TS 119 152-1 headers */
@@ -118,6 +128,11 @@ public final class CBORUtils {
         requiredCriticalHeaders = Stream.of(
                 /* CB-AdES TS 119 152-1 headers */
                 SIG_D.cbor()
+        ).collect(Collectors.toSet());
+
+        coseCounterSignatureHeaders = Stream.of(
+                COUNTER_SIGNATURE_RFC_8152.cbor(), COUNTER_SIGNATURE0_RFC_8152.cbor(),
+                COUNTER_SIGNATURE_RFC_9338.cbor(), COUNTER_SIGNATURE0_RFC_9338.cbor()
         ).collect(Collectors.toSet());
     }
 
@@ -282,7 +297,7 @@ public final class CBORUtils {
      * @return a set of supported protected critical header identifiers
      */
     public static Set<CBORValue> getSupportedProtectedCriticalHeaders() {
-        return supportedCriticalHeaders;
+        return Collections.unmodifiableSet(supportedCriticalHeaders);
     }
 
     /**
@@ -308,6 +323,15 @@ public final class CBORUtils {
      */
     public static boolean isRequiredCriticalHeader(CBORValue headerId) {
         return requiredCriticalHeaders.contains(headerId);
+    }
+
+    /**
+     * Gets a set of supported COSE counter signature header parameters
+     *
+     * @return a set of {@link CBORValue}s
+     */
+    public static Set<CBORValue> getCoseCounterSignatureHeaders() {
+        return Collections.unmodifiableSet(coseCounterSignatureHeaders);
     }
 
     /**

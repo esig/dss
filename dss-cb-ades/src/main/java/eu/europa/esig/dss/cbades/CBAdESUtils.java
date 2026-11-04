@@ -560,53 +560,68 @@ public class CBAdESUtils {
     /**
      * Builds counter signatures from a CBORObject value with the given {@code headerKey}
      *
-     * @param signature {@link CBAdESSignature} master signature
+     * @param masterSignature {@link CBAdESSignature} master signature
      * @param headerKey {@link CBORValue} key of the header embedding the counter signature
      * @param headerValue {@link CBORValue} the header value encapsulating the counter signature
      * @param bodyStructure TRUE if the counter signature has been extracted from the body structure (for COSE_SIGN), FALSE otherwise
      * @return a list of {@link CBAdESSignature}s
      */
-    public static List<CBAdESSignature> buildCounterSignatures(CBAdESSignature signature, CBORValue headerKey,
+    public static List<CBAdESSignature> buildCounterSignatures(CBAdESSignature masterSignature, CBORValue headerKey,
                                                                CBORValue headerValue, boolean bodyStructure) {
         if (!headerKey.isUnsignedInteger()) {
             return Collections.emptyList(); // unknown
         }
-        COSESignatureType counterSignatureContext = COSESignatureType.getCounterSignatureContextByHeaderKey(headerKey.asInteger().longValue());
-        if (COSESignatureType.COSE_COUNTER_SIGNATURE == counterSignatureContext &&
-                !(headerValue.isArray() || (headerValue.isTag() && headerValue.getTaggedValue().isArray()))) {
-            // Safe handling of 7 tag element, which may apply for legacy RFC 8152 counter signatures.
-            // Rational: tag 7 has been removed in RFC 9052, but used for sigPSt definition in ETSI TS 119 152-1.
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Not a COSE counter signature with a header id : '{}'", counterSignatureContext.getTag());
+
+        COSESignatureType masterSignatureType = masterSignature.getCOSESignatureType();
+        COSESignatureType counterSignatureContext;
+        if (COSEHeaderParameter.COUNTER_SIGNATURE_RFC_8152.cbor().equals(headerKey)) {
+            if (!(headerValue.isArray() || (headerValue.isTag() && headerValue.getTaggedValue().isArray()))) {
+                // Safe handling of 7 tag element, which may apply for legacy RFC 8152 counter signatures.
+                // Rational: tag 7 has been removed in RFC 9052, but used for sigPSt definition in ETSI TS 119 152-1.
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Not a COSE counter signature with a header id : '{}'", headerKey);
+                }
+                return Collections.emptyList();
             }
+            counterSignatureContext = COSESignatureType.COSE_COUNTER_SIGNATURE;
+
+        } else if (COSEHeaderParameter.COUNTER_SIGNATURE0_RFC_8152.cbor().equals(headerKey)) {
+            counterSignatureContext = COSESignatureType.COSE_COUNTER_SIGNATURE0;
+
+        } else if (COSEHeaderParameter.COUNTER_SIGNATURE_RFC_9338.cbor().equals(headerKey)) {
+            counterSignatureContext = COSESignatureType.COSE_SIGN1 == masterSignatureType ?
+                    COSESignatureType.COSE_COUNTER_SIGNATURE_V2 : COSESignatureType.COSE_COUNTER_SIGNATURE;
+
+        } else if (COSEHeaderParameter.COUNTER_SIGNATURE0_RFC_9338.cbor().equals(headerKey)) {
+            counterSignatureContext = COSESignatureType.COSE_SIGN1 == masterSignatureType ?
+                    COSESignatureType.COSE_COUNTER_SIGNATURE0_V2 : COSESignatureType.COSE_COUNTER_SIGNATURE0;
+
+        } else {
             return Collections.emptyList();
         }
-        // is known
-        if (counterSignatureContext != null) {
-            final List<CBAdESSignature> result = new ArrayList<>();
 
-            COSEStructure masterSignatureStructure = getMasterSignatureStructure(signature.getCoseSignature(), bodyStructure);
-            List<CBORSignature> coseSignatures = parseCounterSignatures(headerValue, counterSignatureContext, masterSignatureStructure);
-            for (CBORSignature coseSignature : coseSignatures) {
-                CBAdESSignature cbadesCounterSignature = new CBAdESSignature(coseSignature);
-                cbadesCounterSignature.setFilename(signature.getFilename());
-                cbadesCounterSignature.setMasterSignature(signature);
-                if (coseSignature.getExternallySuppliedData() != null) {
-                    cbadesCounterSignature.getCoseSignature().setExternalAttributes(coseSignature.getExternallySuppliedData());
-                }
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("A COSE counter signature found with Id : '{}'", cbadesCounterSignature.getId());
-                }
-                // only COSE_Sign1 covers master signature's payload
-                if (COSESignatureType.COSE_SIGN1 == signature.getCOSESignatureType() && signature.isDetachedSignature()) {
-                    signature.checkSignatureIntegrity(); // ensure payload
-                    coseSignature.setPayload(signature.getCoseSignature().getPayload());
-                }
-                result.add(cbadesCounterSignature);
+        final List<CBAdESSignature> result = new ArrayList<>();
+
+        COSEStructure masterSignatureStructure = getMasterSignatureStructure(masterSignature.getCoseSignature(), bodyStructure);
+        List<CBORSignature> coseSignatures = parseCounterSignatures(headerValue, counterSignatureContext, masterSignatureStructure);
+        for (CBORSignature coseSignature : coseSignatures) {
+            CBAdESSignature cbadesCounterSignature = new CBAdESSignature(coseSignature);
+            cbadesCounterSignature.setFilename(masterSignature.getFilename());
+            cbadesCounterSignature.setMasterSignature(masterSignature);
+            if (coseSignature.getExternallySuppliedData() != null) {
+                cbadesCounterSignature.getCoseSignature().setExternalAttributes(coseSignature.getExternallySuppliedData());
             }
-            return result;
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("A COSE counter signature found with Id : '{}'", cbadesCounterSignature.getId());
+            }
+            // only COSE_Sign1 covers master signature's payload
+            if (COSESignatureType.COSE_SIGN1 == masterSignature.getCOSESignatureType() && masterSignature.isDetachedSignature()) {
+                masterSignature.checkSignatureIntegrity(); // ensure payload
+                coseSignature.setPayload(masterSignature.getCoseSignature().getPayload());
+            }
+            result.add(cbadesCounterSignature);
         }
-        return Collections.emptyList();
+        return result;
     }
 
     private static List<CBORSignature> parseCounterSignatures(CBORValue headerValue, COSESignatureType counterSignatureContext,

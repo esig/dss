@@ -640,11 +640,13 @@ public class CBORSignature {
          *
          * NOTE: The field is also omitted for CounterSignature0 and Countersignature0V2 attributes
          */
-        if (signerProtectedHeader != null && !signerProtectedHeader.isEmpty()) {
+        if (COSESignatureType.COSE_SIGN1 == context
+                || COSESignatureType.COSE_COUNTER_SIGNATURE0 == context
+                || COSESignatureType.COSE_COUNTER_SIGNATURE0_V2 == context) {
+            // continue
+        } else if (signerProtectedHeader != null && !signerProtectedHeader.isEmpty()) {
             array.add(signerProtectedHeader.asByteString());
-        } else if (COSESignatureType.COSE_SIGN1 != context
-                && COSESignatureType.COSE_COUNTER_SIGNATURE0 != context
-                && COSESignatureType.COSE_COUNTER_SIGNATURE0_V2 != context) {
+        } else {
             array.add(CBORUtils.EMPTY_BYTE_STRING);
         }
 

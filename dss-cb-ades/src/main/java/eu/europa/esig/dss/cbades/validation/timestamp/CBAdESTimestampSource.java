@@ -206,10 +206,10 @@ public class CBAdESTimestampSource extends SignatureTimestampSource<CBAdESSignat
 
     @Override
     protected boolean isCounterSignature(CBAdESAttribute unsignedAttribute) {
-        return COSEHeaderParameter.COUNTER_SIGNATURE.cbor().equals(unsignedAttribute.getHeaderId()) ||
-                COSEHeaderParameter.COUNTER_SIGNATURE0.cbor().equals(unsignedAttribute.getHeaderId()) ||
-                COSEHeaderParameter.COUNTER_SIGNATURE_V2.cbor().equals(unsignedAttribute.getHeaderId()) ||
-                COSEHeaderParameter.COUNTER_SIGNATURE0_V2.cbor().equals(unsignedAttribute.getHeaderId());
+        return COSEHeaderParameter.COUNTER_SIGNATURE_RFC_8152.cbor().equals(unsignedAttribute.getHeaderId()) ||
+                COSEHeaderParameter.COUNTER_SIGNATURE0_RFC_8152.cbor().equals(unsignedAttribute.getHeaderId()) ||
+                COSEHeaderParameter.COUNTER_SIGNATURE_RFC_9338.cbor().equals(unsignedAttribute.getHeaderId()) ||
+                COSEHeaderParameter.COUNTER_SIGNATURE0_RFC_9338.cbor().equals(unsignedAttribute.getHeaderId());
     }
 
     @Override

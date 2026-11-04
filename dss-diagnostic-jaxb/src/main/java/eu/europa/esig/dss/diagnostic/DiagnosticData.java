@@ -1136,6 +1136,7 @@ public class DiagnosticData {
 	
 	/**
 	 * Returns a set of {@link SignatureWrapper}s for a given {@code masterSignatureWrapper}
+	 *
 	 * @param masterSignatureWrapper - {@link SignatureWrapper} to get counter signatures for
 	 * @return set of {@link SignatureWrapper}s
 	 */

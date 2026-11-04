@@ -275,7 +275,14 @@ public abstract class AbstractCBAdESCounterSignatureTest extends AbstractCounter
             assertNotNull(coseSignatureType);
 
             if (signature.isCounterSignature()) {
-                assertEquals(COSESignatureType.COSE_COUNTER_SIGNATURE_V2, coseSignatureType);
+                SignatureWrapper masterSignature = signature.getParent();
+                assertNotNull(masterSignature);
+                if (COSESignatureType.COSE_SIGN1 == masterSignature.getCOSESignatureType()) {
+                    assertEquals(COSESignatureType.COSE_COUNTER_SIGNATURE_V2, coseSignatureType);
+                } else {
+                    assertEquals(COSESignatureType.COSE_COUNTER_SIGNATURE, coseSignatureType);
+                }
+
             } else if (COSEStructureType.COSE_SIGN == getSignatureParameters().getCoseStructureType()) {
                 assertEquals(COSESignatureType.COSE_SIGN, coseSignatureType);
             } else if (COSEStructureType.COSE_SIGN1 == getSignatureParameters().getCoseStructureType()) {

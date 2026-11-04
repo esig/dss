@@ -23,6 +23,7 @@ package eu.europa.esig.dss.cbades.signature;
 import eu.europa.esig.dss.cbades.validation.AbstractCBAdESTestValidation;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.COSESignatureType;
 import eu.europa.esig.dss.enumerations.COSEStructureType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -44,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class CBAdESNestedCounterSignatureTest extends AbstractCBAdESTestValidation {
+class CBAdESCoseSignNestedCounterSignatureTest extends AbstractCBAdESTestValidation {
 
     private CBAdESService service;
     private DSSDocument documentToSign;
@@ -138,10 +139,13 @@ class CBAdESNestedCounterSignatureTest extends AbstractCBAdESTestValidation {
         boolean nestedCounterSignatureFound = false;
         for (SignatureWrapper signatureWrapper : signatureWrappers) {
             if (!signatureWrapper.isCounterSignature()) {
+                assertEquals(COSESignatureType.COSE_SIGN, signatureWrapper.getCOSESignatureType());
                 rootSignatureFound = true;
             } else if (signatureWrapper.getParent() != null && signatureWrapper.getParent().getParent() == null) {
+                assertEquals(COSESignatureType.COSE_COUNTER_SIGNATURE, signatureWrapper.getCOSESignatureType());
                 counterSignatureFound = true;
             } else if (signatureWrapper.getParent() != null && signatureWrapper.getParent().getParent() != null) {
+                assertEquals(COSESignatureType.COSE_COUNTER_SIGNATURE, signatureWrapper.getCOSESignatureType());
                 nestedCounterSignatureFound = true;
             }
         }

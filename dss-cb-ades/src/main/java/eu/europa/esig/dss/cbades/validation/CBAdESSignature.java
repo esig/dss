@@ -28,7 +28,6 @@ import eu.europa.esig.dss.cbades.COSEHeaderParameter;
 import eu.europa.esig.dss.cbades.COSEStructure;
 import eu.europa.esig.dss.cbades.COSEUnprotectedHeader;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
-import eu.europa.esig.dss.cbades.cbor.CBORValueFactory;
 import eu.europa.esig.dss.cbades.cwt.CWTClaims;
 import eu.europa.esig.dss.cbades.validation.scope.CBAdESSignatureScopeFinder;
 import eu.europa.esig.dss.cbades.validation.timestamp.CBAdESTimestampSource;
@@ -1231,8 +1230,7 @@ public class CBAdESSignature extends DefaultAdvancedSignature {
 
         COSEUnprotectedHeader bodyUnprotectedHeader = cose.getBodyUnprotectedHeader();
         COSEUnprotectedHeader signerUnprotectedHeader = cose.getSignerUnprotectedHeader();
-        for (COSESignatureType coseContext : COSESignatureType.values()) {
-            CBORValue headerKey = CBORValueFactory.toCBORValue(coseContext.getCounterSignatureHeaderKey());
+        for (CBORValue headerKey : CBORUtils.getCoseCounterSignatureHeaders()) {
             if (headerKey != null) {
                 CBORValue headerValue = null;
                 boolean bodyStructure = false;

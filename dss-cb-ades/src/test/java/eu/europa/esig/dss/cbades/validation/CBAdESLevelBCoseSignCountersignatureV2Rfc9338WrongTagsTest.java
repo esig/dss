@@ -93,7 +93,7 @@ class CBAdESLevelBCoseSignCountersignatureV2Rfc9338WrongTagsTest extends Abstrac
                 masterSigFound = true;
 
             } else {
-                assertEquals(COSESignatureType.COSE_COUNTER_SIGNATURE_V2, signatureWrapper.getCOSESignatureType());
+                assertEquals(COSESignatureType.COSE_COUNTER_SIGNATURE, signatureWrapper.getCOSESignatureType());
                 assertTrue(signatureWrapper.isCOSETagged());
 
                 assertFalse(signatureWrapper.isStructuralValidationValid());

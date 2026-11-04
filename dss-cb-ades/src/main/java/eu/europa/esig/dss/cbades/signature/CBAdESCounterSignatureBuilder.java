@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.cbades.signature;
 
-import eu.europa.ec.digit.cddl4j.cbor.CBOR;
 import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.CBAdESUtils;
 import eu.europa.esig.dss.cbades.COSECounterSignStructure;
 import eu.europa.esig.dss.cbades.COSECounterSignature;
+import eu.europa.esig.dss.cbades.COSEHeaderParameter;
 import eu.europa.esig.dss.cbades.COSEStructure;
 import eu.europa.esig.dss.cbades.validation.CBAdESSignature;
 import eu.europa.esig.dss.cbades.validation.CBAdESUHeaders;
@@ -180,7 +180,7 @@ public class CBAdESCounterSignatureBuilder extends CBAdESBuilder {
             coseCounterSignature = (COSECounterSignature) counterSignature.getCoseSignature().getSignerSignature();
         }
 
-        uHeaders.addComponent(CBOR.integer(coseCounterSignature.getContext().getCounterSignatureHeaderKey()), coseCounterSignature.toCBORValue());
+        uHeaders.addComponent(COSEHeaderParameter.COUNTER_SIGNATURE_RFC_9338.cbor(), coseCounterSignature.toCBORValue());
 
         CBAdESSignature upperSignature = updateMasterSignatureRecursively(masterSignature);
         COSEStructure coseSignStructure = upperSignature.getCoseSignature().getCoseSignStructure();
@@ -190,7 +190,7 @@ public class CBAdESCounterSignatureBuilder extends CBAdESBuilder {
 
     private CBAdESSignature getCounterSignatureToExtend(COSECounterSignature coseCounterSignature) {
         CBAdESSignature counterSignature = CBAdESUtils.buildCounterSignatures(masterSignature,
-                CBOR.integer(coseCounterSignature.getContext().getCounterSignatureHeaderKey()),
+                COSEHeaderParameter.COUNTER_SIGNATURE_RFC_9338.cbor(),
                 coseCounterSignature.toCBORValue(), false).iterator().next();
         counterSignature.initBaselineRequirementsChecker(certificateVerifier);
         return counterSignature;
@@ -225,12 +225,18 @@ public class CBAdESCounterSignatureBuilder extends CBAdESBuilder {
     @Override
     protected COSEStructure createCOSESignStructure(SignatureValue signatureValue) {
         final COSECounterSignature coseCounterSignature = new COSECounterSignature();
-        coseCounterSignature.setContext(COSESignatureType.COSE_COUNTER_SIGNATURE_V2); // the only supported counter signature type
+        coseCounterSignature.setContext(getCounterSignatureContext()); // the only supported counter signature type
         coseCounterSignature.setMasterSignature(getMasterSignatureStructure());
         coseCounterSignature.setTagged(Utils.isTrue(parameters.isTagged()));
         coseCounterSignature.setProtectedHeader(getProtectedHeader());
         coseCounterSignature.setSignature(getSignature(signatureValue));
         return coseCounterSignature;
+    }
+
+    private COSESignatureType getCounterSignatureContext() {
+        CBORSignature cose = masterSignature.getCoseSignature();
+        return COSESignatureType.COSE_SIGN1 == cose.getContext() ?
+                COSESignatureType.COSE_COUNTER_SIGNATURE_V2 : COSESignatureType.COSE_COUNTER_SIGNATURE;
     }
 
     private COSEStructure getMasterSignatureStructure() {

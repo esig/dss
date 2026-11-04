@@ -38,16 +38,16 @@ public enum COSESignatureType {
     COSE_SIGNATURE(null, null, null),
 
     /** For full counter-signatures */
-    COSE_COUNTER_SIGNATURE("CounterSignature", "COSE_Countersignature", 19L, true, false, 7L),
+    COSE_COUNTER_SIGNATURE("CounterSignature", "COSE_Countersignature", 19L, true, false),
 
     /** For abbreviated counter-signatures0 */
-    COSE_COUNTER_SIGNATURE0("CounterSignature0", "COSE_Countersignature0", null, true, false, 9L),
+    COSE_COUNTER_SIGNATURE0("CounterSignature0", "COSE_Countersignature0", null, true, false),
 
     /** For full counter-signatures with other_fields present */
-    COSE_COUNTER_SIGNATURE_V2("CounterSignatureV2", "COSE_Countersignature_V2", 19L, true, true, 11L),
+    COSE_COUNTER_SIGNATURE_V2("CounterSignatureV2", "COSE_Countersignature_V2", 19L, true, true),
 
     /** For abbreviated counter-signatures0 with other_fields present */
-    COSE_COUNTER_SIGNATURE0_V2("CounterSignature0V2", "COSE_Countersignature0_V2", null, true, true, 12L);
+    COSE_COUNTER_SIGNATURE0_V2("CounterSignature0V2", "COSE_Countersignature0_V2", null, true, true);
 
     /** The context label used as a part of a DTBS computation */
     private final String context;
@@ -64,9 +64,6 @@ public enum COSESignatureType {
     /** Defines if the signature context corresponds to an RFC 9338 counter signature V2 */
     private final boolean counterSignatureV2;
 
-    /** The key used to identify the counter signature header parameter */
-    private final Long counterSignatureHeaderKey;
-
     /**
      * Default constructor
      *
@@ -75,7 +72,7 @@ public enum COSESignatureType {
      * @param tag long value of the tag label key
      */
     COSESignatureType(final String context, final String label, final Long tag) {
-        this(context, label, tag, false, false, null);
+        this(context, label, tag, false, false);
     }
 
     /**
@@ -86,16 +83,14 @@ public enum COSESignatureType {
      * @param tag long value of the tag label key
      * @param counterSignature whether the context corresponds to the counter signature
      * @param counterSignatureV2 whether the context corresponds to the counter signature V2
-     * @param counterSignatureHeaderKey {@link Long} key used to define a counter signature header parameter
      */
     COSESignatureType(final String context, final String label, final Long tag, final boolean counterSignature,
-                      final boolean counterSignatureV2, final Long counterSignatureHeaderKey) {
+                      final boolean counterSignatureV2) {
         this.context = context;
         this.label = label;
         this.tag = tag;
         this.counterSignature = counterSignature;
         this.counterSignatureV2 = counterSignatureV2;
-        this.counterSignatureHeaderKey = counterSignatureHeaderKey;
     }
 
     /**
@@ -146,15 +141,6 @@ public enum COSESignatureType {
     }
 
     /**
-     * Gets the header key of unsigned property used to embed the counter signature in
-     *
-     * @return {@link Long}
-     */
-    public Long getCounterSignatureHeaderKey() {
-        return counterSignatureHeaderKey;
-    }
-
-    /**
      * Gets the corresponding {@code COSESignatureType} enum for the given {@code label}, if found
      *
      * @param label {@link String}
@@ -164,23 +150,6 @@ public enum COSESignatureType {
         Objects.requireNonNull(label, "Label string shall be defined!");
         for (COSESignatureType coseSignatureType : values()) {
             if (label.equals(coseSignatureType.label)) {
-                return coseSignatureType;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * This method returns a corresponding counter signature context based on the used header identifier
-     *
-     * @param headerKey {@link Long} the used identifier of the header enveloping the counter signature
-     * @return {@link COSESignatureType} when the header is known, NULL otherwise
-     */
-    public static COSESignatureType getCounterSignatureContextByHeaderKey(Long headerKey) {
-        Objects.requireNonNull(headerKey, "Header key shall be defined!");
-        for (COSESignatureType coseSignatureType : values()) {
-            Long counterSigHeaderKey = coseSignatureType.counterSignatureHeaderKey;
-            if (counterSigHeaderKey != null && counterSigHeaderKey.equals(headerKey)) {
                 return coseSignatureType;
             }
         }

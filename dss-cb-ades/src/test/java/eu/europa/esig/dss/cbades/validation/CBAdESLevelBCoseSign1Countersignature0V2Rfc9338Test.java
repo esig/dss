@@ -26,12 +26,10 @@ import eu.europa.esig.dss.enumerations.COSESignatureType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.utils.Utils;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CBAdESLevelBCoseSign1Countersignature0V2Rfc9338Test extends AbstractCBAdESTestValidation {
@@ -56,33 +54,6 @@ class CBAdESLevelBCoseSign1Countersignature0V2Rfc9338Test extends AbstractCBAdES
                 masterSigFound = true;
             } else {
                 assertEquals(COSESignatureType.COSE_COUNTER_SIGNATURE0_V2, signatureWrapper.getCOSESignatureType());
-                counterSigFound = true;
-            }
-        }
-        assertTrue(masterSigFound);
-        assertTrue(counterSigFound);
-    }
-
-
-    @Override
-    protected void checkStructureValidation(DiagnosticData diagnosticData) {
-        List<SignatureWrapper> signatures = diagnosticData.getSignatures();
-        assertEquals(2, signatures.size());
-
-        boolean masterSigFound = false;
-        boolean counterSigFound = false;
-        for (SignatureWrapper signatureWrapper : signatures) {
-            if (!signatureWrapper.isCounterSignature()) {
-                assertFalse(signatureWrapper.isStructuralValidationValid());
-                assertFalse(Utils.isCollectionEmpty(signatureWrapper.getStructuralValidationMessages()));
-                assertEquals(1, Utils.collectionSize(signatureWrapper.getStructuralValidationMessages()));
-                assertTrue(signatureWrapper.getStructuralValidationMessages().get(0).contains("/[1]/268[0]/.cbor/12"));
-                assertTrue(signatureWrapper.getStructuralValidationMessages().get(0).contains("array"));
-                masterSigFound = true;
-
-            } else {
-                assertTrue(signatureWrapper.isStructuralValidationValid());
-                assertTrue(Utils.isCollectionEmpty(signatureWrapper.getStructuralValidationMessages()));
                 counterSigFound = true;
             }
         }

@@ -49,21 +49,21 @@ public enum COSEHeaderParameter {
     /** Partial Initialization Vector. CBOR Tag '6' */
     PARTIAL_IV(6L),
 
-    /* RFC 8152 Header parameters */
+    /* RFC 8152 Header parameters (legacy) */
 
     /** Counter signature. CBOR Tag '7' */
-    COUNTER_SIGNATURE(7L),
+    COUNTER_SIGNATURE_RFC_8152(7L),
 
     /** Counter signature0. CBOR Tag '9' */
-    COUNTER_SIGNATURE0(9L),
+    COUNTER_SIGNATURE0_RFC_8152(9L),
 
     /* RFC 9338 Header parameters */
 
-    /** Counter signature V2. CBOR Tag '11' */
-    COUNTER_SIGNATURE_V2(11L),
+    /** Counter signature (V2). CBOR Tag '11' */
+    COUNTER_SIGNATURE_RFC_9338(11L),
 
-    /** Counter signature0 V2. CBOR Tag '12' */
-    COUNTER_SIGNATURE0_V2(12L),
+    /** Counter signature0 (V2). CBOR Tag '12' */
+    COUNTER_SIGNATURE0_RFC_9338(12L),
 
     /* RFC 9597 Header Parameters */
 

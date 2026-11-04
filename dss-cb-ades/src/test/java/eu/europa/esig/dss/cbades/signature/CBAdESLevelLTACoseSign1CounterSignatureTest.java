@@ -139,7 +139,7 @@ class CBAdESLevelLTACoseSign1CounterSignatureTest extends AbstractCBAdESCounterS
                 assertNotNull(tstTokens);
                 assertEquals(1, tstTokens.size());
             }
-            CBORValue counterSig = uHeaderObject.get(COSEHeaderParameter.COUNTER_SIGNATURE_V2.cbor());
+            CBORValue counterSig = uHeaderObject.get(COSEHeaderParameter.COUNTER_SIGNATURE_RFC_9338.cbor());
             if (counterSig != null) {
                 ++counterSigCounter;
 

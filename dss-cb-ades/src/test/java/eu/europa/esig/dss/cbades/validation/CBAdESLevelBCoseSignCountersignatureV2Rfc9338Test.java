@@ -87,7 +87,7 @@ class CBAdESLevelBCoseSignCountersignatureV2Rfc9338Test extends AbstractCBAdESTe
                 masterSigFound = true;
 
             } else {
-                assertEquals(COSESignatureType.COSE_COUNTER_SIGNATURE_V2, signatureWrapper.getCOSESignatureType());
+                assertEquals(COSESignatureType.COSE_COUNTER_SIGNATURE, signatureWrapper.getCOSESignatureType());
                 assertFalse(signatureWrapper.isCOSETagged());
                 counterSigFound = true;
             }
