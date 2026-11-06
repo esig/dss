@@ -49,8 +49,6 @@ import org.bouncycastle.asn1.ASN1Encodable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -199,49 +197,56 @@ public final class PAdESUtils {
 		}
 		byte[] signature = Utils.toHex(cmsSignedData).getBytes();
 
-		ByteArrayOutputStream temp = null;
 		try (DSSResourcesHandler resourcesHandler = resourcesHandlerBuilder.createResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
-			 InputStream is = toBeSignedDocument.openStream();
-			 BufferedInputStream bis = new BufferedInputStream(is)) {
+			 InputStream is = toBeSignedDocument.openStream()) {
 
 			final byte startSuspicion = '<';
 			final byte continueSuspicion = '0';
 
 			boolean suspicion = false;
 			boolean cmsPasted = false;
+			int zeros = 0;
 
-			int b;
-			while ((b = bis.read()) != -1) {
+			// NOTE: read by blocks, as per-byte read/write calls are costly on large documents
+			final byte[] buffer = new byte[8192];
+			int count;
+			while ((count = is.read(buffer)) != -1) {
+				int from = 0;
+				for (int i = 0; i < count; i++) {
+					byte b = buffer[i];
 
-				if (suspicion) {
-					if (continueSuspicion == b) {
-						temp.write(b);
-						if (signature.length == temp.size()) {
-							if (cmsPasted) {
-								throw new IllegalInputException("PDF document contains more than one empty signature!");
+					if (suspicion) {
+						if (continueSuspicion == b) {
+							from = i + 1;
+							if (signature.length == ++zeros) {
+								if (cmsPasted) {
+									throw new IllegalInputException("PDF document contains more than one empty signature!");
+								}
+								os.write(signature);
+								suspicion = false;
+								cmsPasted = true;
 							}
-							os.write(signature);
-							temp.close();
-							suspicion = false;
-							cmsPasted = true;
-						}
-						continue;
+							continue;
 
-					} else {
-						os.write(temp.toByteArray());
-						temp.close();
-						suspicion = false;
+						} else {
+							if (zeros > 0) {
+								byte[] temp = new byte[zeros];
+								Arrays.fill(temp, continueSuspicion);
+								os.write(temp);
+							}
+							suspicion = false;
+						}
+					}
+
+					if (startSuspicion == b) {
+						os.write(buffer, from, i + 1 - from);
+						from = i + 1;
+						zeros = 0;
+						suspicion = true;
 					}
 				}
-
-				os.write(b);
-
-				if (startSuspicion == b) {
-					temp = new ByteArrayOutputStream();
-					suspicion = true;
-				}
-
+				os.write(buffer, from, count - from);
 			}
 
 			if (!cmsPasted) {
@@ -253,11 +258,6 @@ public final class PAdESUtils {
 		} catch (IOException e) {
 			throw new DSSException(String.format(
 					"Unable to replace /Contents value within a toBeSigned document. Reason : %s", e.getMessage()), e);
-
-		} finally {
-			if (temp != null) {
-				Utils.closeQuietly(temp);
-			}
 		}
 	}
 
@@ -273,62 +273,63 @@ public final class PAdESUtils {
 		final List<PdfByteRangeDocument> revisions = new ArrayList<>();
 
 		int position = 0;
-		ByteArrayOutputStream tempLine = null;
-		try (InputStream is = document.openStream();
-			 BufferedInputStream bis = new BufferedInputStream(is)) {
-			tempLine = new ByteArrayOutputStream();
-			int b;
-			while ((b = bis.read()) != -1) {
-				++position;
+		// line prefix compared to %%EOF
+		final byte[] line = new byte[PDF_EOF_STRING.length];
+		int lineLength = 0;
+		// end of the last %%EOF, with its line break
+		int eofPosition = 0;
+		// bytes still to check for a line break after %%EOF
+		int eofBytesToRead = 0;
+		try (InputStream is = document.openStream()) {
+			// NOTE: read by blocks, as per-byte read calls are costly on large documents
+			final byte[] buffer = new byte[8192];
+			int count;
+			while ((count = is.read(buffer)) != -1) {
+				for (int i = 0; i < count; i++) {
+					byte b = buffer[i];
+					++position;
 
-				tempLine.write(b);
-				byte[] stringBytes = tempLine.toByteArray();
-
-				if (Arrays.equals(PDF_EOF_STRING, stringBytes)) {
-					tempLine.close();
-					tempLine = new ByteArrayOutputStream();
-
-					int eofPosition = position;
-					int c = bis.read();
-					if (c != -1) {
-						++position;
-					}
-
-					if (DSSUtils.LINE_FEED == c) {
-						// if \n
-						++eofPosition;
-					} else if (DSSUtils.CARRIAGE_RETURN == c) {
-						// if \r
-						++eofPosition;
-
-						int d = bis.read();
-						if (d != -1) {
-							++position;
-						}
-						if (DSSUtils.LINE_FEED == d) {
-							// if \r\n
+					if (eofBytesToRead > 0) {
+						if (DSSUtils.LINE_FEED == b) {
+							// if \n or \r\n
 							++eofPosition;
+							eofBytesToRead = 0;
+						} else if (DSSUtils.CARRIAGE_RETURN == b && eofBytesToRead == 2) {
+							// if \r
+							++eofPosition;
+							eofBytesToRead = 1;
+							continue;
+						} else {
+							eofBytesToRead = 0;
 						}
+						revisions.add(new PdfByteRangeDocument(document, getTwoIntegersByteRange(0, eofPosition)));
+						continue;
 					}
 
-					revisions.add(new PdfByteRangeDocument(document, getTwoIntegersByteRange(0, eofPosition)));
+					if (lineLength < line.length) {
+						line[lineLength] = b;
+					}
+					++lineLength;
 
-				} else if (DSSUtils.isLineBreakByte((byte) b) || stringBytes.length > PDF_EOF_STRING.length) {
-					tempLine.close();
-					tempLine = new ByteArrayOutputStream();
+					if (lineLength == line.length && Arrays.equals(PDF_EOF_STRING, line)) {
+						lineLength = 0;
+						eofPosition = position;
+						eofBytesToRead = 2;
+
+					} else if (DSSUtils.isLineBreakByte(b) || lineLength > line.length) {
+						lineLength = 0;
+					}
 				}
+			}
 
+			if (eofBytesToRead > 0) {
+				revisions.add(new PdfByteRangeDocument(document, getTwoIntegersByteRange(0, eofPosition)));
 			}
 
 			return revisions;
 
 		} catch (IOException e) {
 			throw new DSSException("Unable to retrieve the last revision", e);
-
-		} finally {
-			if (tempLine != null) {
-				Utils.closeQuietly(tempLine);
-			}
 		}
 	}
 
