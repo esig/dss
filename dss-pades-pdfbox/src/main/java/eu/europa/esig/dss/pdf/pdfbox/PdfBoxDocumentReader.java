@@ -30,6 +30,7 @@ import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
 import eu.europa.esig.dss.pades.validation.ByteRange;
+import eu.europa.esig.dss.pades.validation.PdfByteRangeDocument;
 import eu.europa.esig.dss.pades.validation.PdfObjectKey;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.pades.validation.PdfSignatureField;
@@ -57,6 +58,8 @@ import org.apache.pdfbox.cos.COSObject;
 import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.io.RandomAccessReadBuffer;
+import org.apache.pdfbox.io.RandomAccessReadBufferedFile;
+import org.apache.pdfbox.io.RandomAccessReadView;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -69,6 +72,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -147,6 +151,20 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 				FileDocument fileDocument = (FileDocument) dssDocument;
 				this.pdDocument = Loader.loadPDF(fileDocument.getFile(), passwordProtection, memoryUsageSetting.streamCache);
 
+			} else if (PdfMemoryUsageSetting.Mode.MEMORY_FULL != pdfMemoryUsageSetting.getMode() && isFileRevision(dssDocument)) {
+				PdfByteRangeDocument revision = (PdfByteRangeDocument) dssDocument;
+				File file = ((FileDocument) revision.getPdfDocument()).getFile();
+				ByteRange byteRange = revision.getByteRange();
+				// NOTE: FileRangeView closes the file on PDDocument.close()
+				FileRangeView fileRangeView = new FileRangeView(new RandomAccessReadBufferedFile(file),
+						byteRange.getFirstPartStart(), byteRange.getFirstPartEnd());
+				try {
+					this.pdDocument = Loader.loadPDF(fileRangeView, passwordProtection, memoryUsageSetting.streamCache);
+				} catch (IOException | RuntimeException e) {
+					Utils.closeQuietly(fileRangeView);
+					throw e;
+				}
+
 			} else if (dssDocument instanceof InMemoryDocument) {
 				InMemoryDocument inMemoryDocument = (InMemoryDocument) dssDocument;
 				this.pdDocument = Loader.loadPDF(inMemoryDocument.getBytes(), passwordProtection, null, null, memoryUsageSetting.streamCache);
@@ -161,6 +179,26 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 		} catch (org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException e) {
 			throw new InvalidPasswordException(String.format("Encrypted document : %s", e.getMessage()));
 		}
+	}
+
+	/**
+	 * Checks whether the document is a single part within a file, e.g. a revision extracted on validation
+	 *
+	 * @param dssDocument {@link DSSDocument} to check
+	 * @return TRUE if the document can be read directly from the file, FALSE otherwise
+	 */
+	private static boolean isFileRevision(DSSDocument dssDocument) {
+		if (dssDocument instanceof PdfByteRangeDocument) {
+			PdfByteRangeDocument byteRangeDocument = (PdfByteRangeDocument) dssDocument;
+			if (byteRangeDocument.getPdfDocument() instanceof FileDocument) {
+				File file = ((FileDocument) byteRangeDocument.getPdfDocument()).getFile();
+				ByteRange byteRange = byteRangeDocument.getByteRange();
+				// NOTE: an invalid ByteRange (e.g. beyond the end of file) is read the default way
+				return byteRange.getSecondPartEnd() == 0 && byteRange.getFirstPartStart() >= 0 && byteRange.getFirstPartEnd() >= 0
+						&& (long) byteRange.getFirstPartStart() + byteRange.getFirstPartEnd() <= file.length();
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -556,6 +594,38 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	@Override
 	public PdfArray createPdfArray() {
 		return new PdfBoxArray(pdDocument);
+	}
+
+	/**
+	 * This class is used to read a part of a file without loading it into memory,
+	 * supporting {@code createView} used by PDFBox to read the streams
+	 */
+	private static class FileRangeView extends RandomAccessReadView {
+
+		/** The file to read */
+		private final RandomAccessReadBufferedFile file;
+
+		/** The position of the part within the file */
+		private final long offset;
+
+		/**
+		 * Default constructor
+		 *
+		 * @param file {@link RandomAccessReadBufferedFile} to read, closed on the view closing
+		 * @param offset the position of the part within the file
+		 * @param length the length of the part
+		 */
+		FileRangeView(final RandomAccessReadBufferedFile file, final long offset, final long length) {
+			super(file, offset, length, true);
+			this.file = file;
+			this.offset = offset;
+		}
+
+		@Override
+		public RandomAccessReadView createView(long startPosition, long streamLength) throws IOException {
+			return file.createView(offset + startPosition, streamLength);
+		}
+
 	}
 
 }

@@ -55,6 +55,15 @@ public class PdfByteRangeDocument extends CommonDocument {
     }
 
     /**
+     * Returns the input PDF document the {@code ByteRange} is read from
+     *
+     * @return {@link DSSDocument}
+     */
+    public DSSDocument getPdfDocument() {
+        return pdfDocument;
+    }
+
+    /**
      * Returns the {@code ByteRange} of the document
      *
      * @return {@link ByteRange}
