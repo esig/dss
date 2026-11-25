@@ -65,7 +65,7 @@ class MdocISOMdLWithKBWrongTypeTest extends AbstractMdocDeviceResponseTestCreati
         // TODO : introduce a method that allows validation of the keyBinding signature parameters
         keyBindingParameters = new MdocKeyBindingParameters();
         keyBindingParameters.setDocType(MdocConstants.ISO23220_1_MID_DOC_TYPE); // leads to a different payload on validation
-        keyBindingParameters.setSessionTranscript(buildSessionTranscript());
+        keyBindingParameters.setSessionTranscript(getSessionTranscript());
     }
 
     @Override

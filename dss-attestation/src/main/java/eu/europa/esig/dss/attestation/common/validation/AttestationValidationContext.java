@@ -179,7 +179,7 @@ public class AttestationValidationContext extends SignatureValidationContext {
 
         if (isAttestationRevocationCheckRequired(attestation)) {
             if (attestationRevocationSource == null) {
-                LOG.info("No AttestationRevocationSource has been provided. attestation revocation check is skipped.");
+                LOG.info("No AttestationRevocationSource has been provided. Attestation revocation check is skipped.");
                 return;
             }
             if (LOG.isTraceEnabled()) {

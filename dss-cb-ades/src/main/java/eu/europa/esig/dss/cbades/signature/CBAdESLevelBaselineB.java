@@ -212,7 +212,7 @@ public class CBAdESLevelBaselineB {
     protected void incorporateSigningCertificateUri() {
         String x509Url = parameters.getX509Url();
         if (Utils.isStringNotEmpty(x509Url)) {
-            addHeader(COSEHeaderParameter.X5U.cbor(), x509Url);
+            addHeader(COSEHeaderParameter.X5U.cbor(), CBORUtils.toCborUri(x509Url));
         }
     }
 
@@ -228,21 +228,19 @@ public class CBAdESLevelBaselineB {
         DigestAlgorithm digestAlgorithm = parameters.getSigningCertificateDigestMethod();
         if (parameters.isIncludeCertificateChainThumbprints()) {
             List<CertificateToken> certificateTokens = getBaselineBCertificates();
-            if (Utils.isCollectionNotEmpty(certificateTokens)) {
+            if (Utils.collectionSize(certificateTokens) > 1) {
                 CBORArray x5ts = new CBORArray(certificateTokens.size());
                 for (CertificateToken certificateToken : certificateTokens) {
                     x5ts.add(getCoseCertHash(certificateToken, digestAlgorithm));
                 }
-                addHeader(COSEHeaderParameter.X5TS.cbor(), x5ts); // [+x5t : COSE_CertHash]
-            } else {
-                LOG.debug("No certificate chain found to be incorporated within 'x5ts' signed header");
+                addHeader(COSEHeaderParameter.X5TS.cbor(), x5ts); // [2*x5t: COSE_CertHash]
+                return;
             }
 
-        } else {
-            // incorporate 'x5t'
-            CBORArray x5t = getCoseCertHash(signingCertificate, digestAlgorithm);
-            addHeader(COSEHeaderParameter.X5T.cbor(), x5t); // [ hashAlg: (int / tstr), hashValue: bstr ]
         }
+        // incorporate 'x5t'
+        CBORArray x5t = getCoseCertHash(signingCertificate, digestAlgorithm);
+        addHeader(COSEHeaderParameter.X5T.cbor(), x5t); // [ hashAlg: (int / tstr), hashValue: bstr ]
     }
 
     private List<CertificateToken> getBaselineBCertificates() {
@@ -625,7 +623,7 @@ public class CBAdESLevelBaselineB {
 
         final String spuri = signaturePolicy.getSpuri();
         if (Utils.isStringNotEmpty(spuri)) {
-            sigPQualifiers.add(getQualifier(COSEHeaderParameter.SIG_P_QUAL_SP_URI.cbor(), spuri));
+            sigPQualifiers.add(getQualifier(COSEHeaderParameter.SIG_P_QUAL_SP_URI.cbor(), CBORUtils.toCborUri(spuri)));
         }
 
         final UserNotice userNotice = signaturePolicy.getUserNotice();
@@ -752,7 +750,7 @@ public class CBAdESLevelBaselineB {
 
     private CBORMap getSigDForObjectIdByUriMechanism(List<DSSDocument> detachedContents) {
         CBORMap sigDParams = new CBORMap();
-        sigDParams.put(COSEHeaderParameter.SIG_D_MID.cbor(), SigDMechanism.OBJECT_ID_BY_URI.getCBAdESUri());
+        sigDParams.put(COSEHeaderParameter.SIG_D_MID.cbor(), CBORUtils.toCborUri(SigDMechanism.OBJECT_ID_BY_URI.getCBAdESUri()));
         sigDParams.put(COSEHeaderParameter.SIG_D_PARS.cbor(), getSignedDataReferences(detachedContents));
         sigDParams.put(COSEHeaderParameter.SIG_D_CTYS.cbor(), getSignedDataMimeTypesIfPresent(detachedContents));
         return sigDParams;
@@ -761,7 +759,7 @@ public class CBAdESLevelBaselineB {
     private CBORMap getSigDForObjectIdByUriHashMechanism(List<DSSDocument> detachedContents) {
         CBORMap sigDParams = new CBORMap();
 
-        sigDParams.put(COSEHeaderParameter.SIG_D_MID.cbor(), SigDMechanism.OBJECT_ID_BY_URI_HASH.getCBAdESUri());
+        sigDParams.put(COSEHeaderParameter.SIG_D_MID.cbor(), CBORUtils.toCborUri(SigDMechanism.OBJECT_ID_BY_URI_HASH.getCBAdESUri()));
         sigDParams.put(COSEHeaderParameter.SIG_D_PARS.cbor(), getSignedDataReferences(detachedContents));
 
         DigestAlgorithm digestAlgorithm = getReferenceDigestAlgorithmOrDefault();

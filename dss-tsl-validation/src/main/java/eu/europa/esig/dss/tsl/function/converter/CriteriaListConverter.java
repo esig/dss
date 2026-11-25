@@ -109,6 +109,16 @@ public class CriteriaListConverter implements Function<CriteriaListType, Conditi
 		}
 	}
 
+	private String getOID(IdentifierType identifier) {
+		String id = identifier.getValue();
+		// ES TSL : <ns4:Identifier
+		// Qualifier="OIDAsURN">urn:oid:1.3.6.1.4.1.36035.1.3.1</ns4:Identifier>
+		if (DSSUtils.isUrnOid(id)) {
+			id = DSSUtils.getOidCode(id);
+		}
+		return id;
+	}
+
 	/**
 	 * ETSI TS 119 612 V1.1.1 / 5.5.9.2.2.3
 	 * 

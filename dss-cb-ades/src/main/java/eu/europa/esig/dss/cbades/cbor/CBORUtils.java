@@ -25,6 +25,7 @@ import co.nstant.in.cbor.CborEncoder;
 import co.nstant.in.cbor.CborException;
 import co.nstant.in.cbor.model.DataItem;
 import co.nstant.in.cbor.model.Tag;
+import co.nstant.in.cbor.model.UnicodeString;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -81,6 +82,9 @@ public final class CBORUtils {
 
     /** Tag for the CBOR "full-date" object */
     public static final long CBOR_FULL_DATE_TAG = 1004;
+
+    /** Tag for the CBOR "uri" object */
+    private static final long CBOR_URI_TAG = 32;
 
     /**
      * Contains protected header names that are supported and can be present in the critical ('crit') attribute
@@ -408,6 +412,42 @@ public final class CBORUtils {
             return null;
         }
         return DSSUtils.getDateFromMilliseconds(timeValueInMilliseconds);
+    }
+
+    /**
+     * Produces a tagged CBOR Uri object (tag #6.32(tstr)).
+     * NOTE: The method is meant to provide a smooth migration to cddl4j project. To be removed later.
+     *
+     * @param uri {@link String}
+     * @return {@link CBORObject}
+     */
+    public static CBORObject toCborUri(String uri) {
+        CBORSimpleObject cborObject = new CBORSimpleObject(new UnicodeString(uri));
+        cborObject.setTag(CBOR_URI_TAG);
+        return cborObject;
+    }
+
+    /**
+     * Obtains a String extracted from a uri encoded CBOR tagged value #6.32(tstr).
+     * NOTE: The method is meant to provide a smooth migration to cddl4j project.
+     * To be changed to accept CBORValue later.
+     *
+     * @param cborValue {@link CBORObject}
+     * @return {@link String}
+     */
+    public static String fromUri(CBORObject cborValue) {
+        if (cborValue == null) {
+            return null;
+        }
+        if (cborValue.isTagged() && cborValue.getTag().getValue() == 32) {
+            return cborValue.getValueAsString();
+
+        } else if (cborValue.isUnicodeString()) {
+            LOG.warn("uri encoded (#6.32(tstr)) CBOR value is expected. Obtained String : {}", cborValue);
+            return cborValue.getValueAsString();
+        }
+        LOG.warn("uri encoded (#6.32(tstr)) CBOR value is expected. Obtained value : {}", cborValue);
+        return null;
     }
 
 }

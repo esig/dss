@@ -20,21 +20,53 @@
  */
 package eu.europa.esig.dss.cbades.validation;
 
-import eu.europa.esig.dss.enumerations.COSESignatureType;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
+import eu.europa.esig.dss.enumerations.COSESignatureType;
+import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CBAdESLevelBCoseSign1CountersignatureV2InArrayRfc9338UnsignedPropsTest extends AbstractCBAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
         return new FileDocument("src/test/resources/validation/cb-ades-cosesign1-countersignatureV2-rfc9338-unsigned-props-array.cose");
+    }
+
+    @Override
+    protected void checkCommitmentTypeIndications(DiagnosticData diagnosticData) {
+        super.checkCommitmentTypeIndications(diagnosticData);
+
+        List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+        assertEquals(3, signatures.size());
+
+        int masterSigCounter = 0;
+        int counterSigCounter = 0;
+        for (SignatureWrapper signatureWrapper : signatures) {
+            if (!signatureWrapper.isCounterSignature()) {
+                List<XmlCommitmentTypeIndication> commitmentTypeIndications = signatureWrapper.getCommitmentTypeIndications();
+                assertEquals(0, commitmentTypeIndications.size());
+                ++masterSigCounter;
+
+            } else {
+                List<XmlCommitmentTypeIndication> commitmentTypeIndications = signatureWrapper.getCommitmentTypeIndications();
+                assertEquals(1, commitmentTypeIndications.size());
+
+                XmlCommitmentTypeIndication commitmentTypeIndication = commitmentTypeIndications.get(0);
+                assertEquals(CommitmentTypeEnum.ProofOfCreation.getUri(), commitmentTypeIndication.getIdentifier());
+                assertEquals(CommitmentTypeEnum.ProofOfCreation.getDescription(), commitmentTypeIndication.getDescription());
+                ++counterSigCounter;
+            }
+        }
+        assertEquals(1, masterSigCounter);
+        assertEquals(2, counterSigCounter);
     }
 
     @Override
@@ -45,18 +77,26 @@ class CBAdESLevelBCoseSign1CountersignatureV2InArrayRfc9338UnsignedPropsTest ext
         assertEquals(3, signatures.size());
 
         int masterSigCounter = 0;
-        int counterSigCounter = 0;
+        int counterSigTaggedCounter = 0;
+        int counterSigUntaggedCounter = 0;
         for (SignatureWrapper signatureWrapper : signatures) {
             if (!signatureWrapper.isCounterSignature()) {
                 assertEquals(COSESignatureType.COSE_SIGN1, signatureWrapper.getCOSESignatureType());
+                assertTrue(signatureWrapper.isCOSETagged());
                 ++masterSigCounter;
+
             } else {
                 assertEquals(COSESignatureType.COSE_COUNTER_SIGNATURE_V2, signatureWrapper.getCOSESignatureType());
-                ++counterSigCounter;
+                if (signatureWrapper.isCOSETagged()) {
+                    ++counterSigTaggedCounter;
+                } else {
+                    ++counterSigUntaggedCounter;
+                }
             }
         }
         assertEquals(1, masterSigCounter);
-        assertEquals(2, counterSigCounter);
+        assertEquals(0, counterSigTaggedCounter);
+        assertEquals(2, counterSigUntaggedCounter);
     }
 
 }

@@ -242,6 +242,9 @@ public class CBAdESSignatureParameters extends AbstractSignatureParameters<CBAdE
      * in the provided order.
      * When disabled, creates a 'x5t' signed header with only signing-certificate's thumbprint provided.
      * <p>
+     * NOTE: if enabled, but only one certificate is present within the certificate chain,
+     * 'x5t' signed header will be created.
+     * <p>
      * DEFAULT : FALSE (the 'x5t' signed header with a signing-certificate's thumbprint to be included)
      *
      * @param includeCertificateChainThumbprints whether the thumbprints of the certificate chain should be included

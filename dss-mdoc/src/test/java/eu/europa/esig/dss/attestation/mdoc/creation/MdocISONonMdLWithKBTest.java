@@ -71,7 +71,7 @@ class MdocISONonMdLWithKBTest extends AbstractMdocDeviceResponseTestCreation {
 
         keyBindingParameters = new MdocKeyBindingParameters();
         keyBindingParameters.setDocType(MdocConstants.ISO23220_1_MID_DOC_TYPE);
-        keyBindingParameters.setSessionTranscript(buildSessionTranscript());
+        keyBindingParameters.setSessionTranscript(getSessionTranscript());
     }
 
     @Override

@@ -20,10 +20,12 @@
  */
 package eu.europa.esig.dss.cbades.extension;
 
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -44,6 +46,13 @@ class CBAdESExtensionTClearUHeadersToTTest extends AbstractCBAdESTestExtension {
     @Override
     protected SignatureLevel getFinalSignatureLevel() {
         return SignatureLevel.CB_AdES_BASELINE_T;
+    }
+
+    @Override
+    protected CertificateVerifier getCompleteCertificateVerifier() {
+        CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
+        certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
+        return certificateVerifier;
     }
 
     @Test

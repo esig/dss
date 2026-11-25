@@ -153,6 +153,7 @@ class CBAdESLevelBDetachedCoseSignRefsByHashWithCounterSignatureTest extends Abs
 
         CBORObject counterSignatureV2Object = cborMap.getHeader(COSEHeaderParameter.COUNTER_SIGNATURE_V2.cbor());
         assertNotNull(counterSignatureV2Object);
+        assertFalse(counterSignatureV2Object.isTagged());
         assertTrue(counterSignatureV2Object.isArray());
 
         COSECounterSignStructure coseCounterSignStructure = COSECounterSignatureParser.fromCBORObject(counterSignatureV2Object)

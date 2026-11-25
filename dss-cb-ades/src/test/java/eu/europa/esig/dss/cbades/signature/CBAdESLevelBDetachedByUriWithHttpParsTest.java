@@ -26,6 +26,7 @@ import eu.europa.esig.dss.cbades.COSESign1;
 import eu.europa.esig.dss.cbades.COSESignStructure;
 import eu.europa.esig.dss.cbades.cbor.CBORArray;
 import eu.europa.esig.dss.cbades.cbor.CBORMap;
+import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
@@ -50,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class CBAdESLevelBDetachedByUryWithHttpParsTest extends AbstractCBAdESMultipleDocumentSignatureTest {
+class CBAdESLevelBDetachedByUriWithHttpParsTest extends AbstractCBAdESMultipleDocumentSignatureTest {
 
     private static final String DOC_ONE_NAME = "https://nowina.lu/pub/CBAdES/ObjectIdByURIHash-1.html";
     private static final String DOC_TWO_NAME = "https://nowina.lu/pub/CBAdES/ObjectIdByURIHash-2.html";
@@ -100,9 +101,11 @@ class CBAdESLevelBDetachedByUryWithHttpParsTest extends AbstractCBAdESMultipleDo
         CBORMap sigD = protectedHeader.getAsMap(COSEHeaderParameter.SIG_D.cbor());
         assertNotNull(sigD);
 
-        String mId = sigD.getAsString(COSEHeaderParameter.SIG_D_MID.cbor());
+        CBORObject mId = sigD.getHeader(COSEHeaderParameter.SIG_D_MID.cbor());
         assertNotNull(mId);
-        assertEquals(SigDMechanism.OBJECT_ID_BY_URI.getCBAdESUri(), mId);
+        assertTrue(mId.isTagged());
+        assertEquals(32, mId.getTag().getValue());
+        assertEquals(SigDMechanism.OBJECT_ID_BY_URI.getCBAdESUri(), mId.getValueAsString());
 
         Long hashM = sigD.getAsLong(COSEHeaderParameter.SIG_D_HASH_M.cbor());
         assertNull(hashM);
