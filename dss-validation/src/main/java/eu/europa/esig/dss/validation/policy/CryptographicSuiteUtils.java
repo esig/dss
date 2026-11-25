@@ -376,6 +376,12 @@ public final class CryptographicSuiteUtils {
      */
     public static boolean isSignatureAlgorithmReliableAtTime(CryptographicSuite cryptographicSuite, SignatureAlgorithm signatureAlgorithm,
                                                              String keyLength, Date validationTime) {
+        // An unidentified signature algorithm (null) is not reliable. Without this check
+        // the validation ends with a NullPointerException when AcceptableEncryptionAlgo and MiniPublicKeySize
+        // are below FAIL (the check chain continues up to SignatureAlgorithmAtValidationTimeCheck).
+        if (signatureAlgorithm == null) {
+            return false;
+        }
         Set<CryptographicSuiteEvaluation> evaluations = cryptographicSuite.getAcceptableSignatureAlgorithms().get(signatureAlgorithm);
         return reliableEvaluationExistsAtTime(signatureAlgorithm.getEncryptionAlgorithm(), parseKeySize(keyLength), evaluations, validationTime);
     }
